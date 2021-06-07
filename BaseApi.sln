@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31112.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaseApi", "BaseApi\BaseApi.csproj", "{6F482163-3F51-487F-8F7D-37A1D4DAEA8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChargeApi", "BaseApi\ChargeApi.csproj", "{6F482163-3F51-487F-8F7D-37A1D4DAEA8B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaseApi.Tests", "BaseApi.Tests\BaseApi.Tests.csproj", "{DE8E4E61-EB76-416B-8417-E8F2F6A0C0D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChargeApi.Tests", "BaseApi.Tests\ChargeApi.Tests.csproj", "{DE8E4E61-EB76-416B-8417-E8F2F6A0C0D3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Terraform", "Terraform", "{20433368-3BCA-4986-8E19-E98EEFE0B439}"
 EndProject

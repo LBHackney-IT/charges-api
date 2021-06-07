@@ -5,26 +5,55 @@ namespace BaseApi.V1.Factories
 {
     public static class EntityFactory
     {
-        public static Entity ToDomain(this DatabaseEntity databaseEntity)
+        public static Charge ToDomain(this ChargeDbEntity databaseEntity)
         {
-            //TODO: Map the rest of the fields in the domain object.
-            // More information on this can be found here https://github.com/LBHackney-IT/lbh-base-api/wiki/Factory-object-mappings
-
-            return new Entity
+            return new Charge
             {
                 Id = databaseEntity.Id,
-                CreatedAt = databaseEntity.CreatedAt
+                TargetId = databaseEntity.TargetId,
+                ChargeType = databaseEntity.ChargeType,
+                DataImportSource = databaseEntity.DataImportSource,
+                DebitActive = databaseEntity.DebitActive,
+                DebitCode = databaseEntity.DebitCode,
+                DebitCodeDescription = databaseEntity.DebitCodeDescription,
+                DebitLastCharged = databaseEntity.DebitLastCharged,
+                DebitNextDue = databaseEntity.DebitNextDue,
+                DebitSource = databaseEntity.DebitSource,
+                DebitValue = databaseEntity.DebitValue,
+                EffectiveStartDate = databaseEntity.EffectiveStartDate,
+                PeriodCode = databaseEntity.PeriodCode,
+                PropertyDebit = databaseEntity.PropertyDebit,
+                ServiceChargeSchedule = databaseEntity.ServiceChargeSchedule,
+                TerminationDate = databaseEntity.TerminationDate,
+                TimeStamp = databaseEntity.TimeStamp,
+                TargetType = databaseEntity.TargetType,
+                ChargeDetails = databaseEntity.ChargeDetails                
             };
         }
 
-        public static DatabaseEntity ToDatabase(this Entity entity)
+        public static ChargeDbEntity ToDatabase(this Charge entity)
         {
-            //TODO: Map the rest of the fields in the database object.
-
-            return new DatabaseEntity
+            return new ChargeDbEntity
             {
                 Id = entity.Id,
-                CreatedAt = entity.CreatedAt
+                TargetId = entity.TargetId,
+                ChargeType = entity.ChargeType,
+                TimeStamp = entity.TimeStamp,
+                TerminationDate = entity.TerminationDate,
+                ServiceChargeSchedule = entity.ServiceChargeSchedule,
+                PropertyDebit = entity.PropertyDebit,
+                PeriodCode = entity.PeriodCode,
+                EffectiveStartDate = entity.EffectiveStartDate,
+                DebitValue = entity.DebitValue,
+                DebitSource = entity.DebitSource,
+                DataImportSource = entity.DataImportSource,
+                DebitActive = entity.DebitActive,
+                DebitCode = entity.DebitCode,
+                DebitCodeDescription = entity.DebitCodeDescription,
+                DebitLastCharged = entity.DebitLastCharged,
+                DebitNextDue = entity.DebitNextDue,
+                TargetType = entity.TargetType,
+                ChargeDetails = entity.ChargeDetails
             };
         }
     }

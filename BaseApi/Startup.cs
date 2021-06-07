@@ -113,9 +113,9 @@ namespace BaseApi
 
             ConfigureLogging(services, Configuration);
 
-            ConfigureDbContext(services);
+            //ConfigureDbContext(services);
             //TODO: For DynamoDb, remove the line above and uncomment the line below.
-            // services.ConfigureDynamoDB();
+            services.ConfigureDynamoDB();
 
             RegisterGateways(services);
             RegisterUseCases(services);
@@ -125,7 +125,7 @@ namespace BaseApi
         {
             var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
-            services.AddDbContext<DatabaseContext>(
+            services.AddDbContext<ChargeContext>(
                 opt => opt.UseNpgsql(connectionString).AddXRayInterceptor(true));
         }
 
@@ -151,16 +151,19 @@ namespace BaseApi
 
         private static void RegisterGateways(IServiceCollection services)
         {
-            services.AddScoped<IExampleGateway, ExampleGateway>();
-
+            //services.AddScoped<IChargeApiGateway, ChargeApiGateway>();
             //TODO: For DynamoDb, remove the line above and uncomment the line below.
-            //services.AddScoped<IExampleGateway, DynamoDbGateway>();
+            services.AddScoped<IChargeApiGateway, DynamoDbGateway>();
         }
 
         private static void RegisterUseCases(IServiceCollection services)
         {
             services.AddScoped<IGetAllUseCase, GetAllUseCase>();
             services.AddScoped<IGetByIdUseCase, GetByIdUseCase>();
+            services.AddScoped<IAddUseCase, AddUseCase>();
+            services.AddScoped<IRemoveUseCase, RemoveUseCase>();
+            services.AddScoped<IUpdateUseCase, UpdateUseCase>();
+            services.AddScoped<ICalculateChargesUseCase, CalculateChargesUseCase>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

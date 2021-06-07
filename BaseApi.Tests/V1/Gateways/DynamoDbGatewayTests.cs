@@ -41,12 +41,12 @@ namespace BaseApi.Tests.V1.Gateways
             var entity = _fixture.Create<Entity>();
             var dbEntity = DatabaseEntityHelper.CreateDatabaseEntityFrom(entity);
 
-            _dynamoDb.Setup(x => x.LoadAsync<DatabaseEntity>(entity.Id, default))
+            _dynamoDb.Setup(x => x.LoadAsync<ChargeDbEntity>(entity.Id, default))
                      .ReturnsAsync(dbEntity);
 
             var response = _classUnderTest.GetEntityById(entity.Id);
 
-            _dynamoDb.Verify(x => x.LoadAsync<DatabaseEntity>(entity.Id, default), Times.Once);
+            _dynamoDb.Verify(x => x.LoadAsync<ChargeDbEntity>(entity.Id, default), Times.Once);
 
             entity.Id.Should().Be(response.Id);
             entity.CreatedAt.Should().BeSameDateAs(response.CreatedAt);

@@ -14,12 +14,12 @@ namespace BaseApi.Tests.V1.Gateways
     public class ExampleGatewayTests : DatabaseTests
     {
         private readonly Fixture _fixture = new Fixture();
-        private ExampleGateway _classUnderTest;
+        private ChargeApiGateway _classUnderTest;
 
         [SetUp]
         public void Setup()
         {
-            _classUnderTest = new ExampleGateway(DatabaseContext);
+            _classUnderTest = new ChargeApiGateway(DatabaseContext);
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace BaseApi.Tests.V1.Gateways
             DatabaseContext.DatabaseEntities.Add(databaseEntity);
             DatabaseContext.SaveChanges();
 
-            var response = _classUnderTest.GetEntityById(databaseEntity.Id);
+            var response = _classUnderTest.GetChargeById(databaseEntity.Id);
 
             databaseEntity.Id.Should().Be(response.Id);
             databaseEntity.CreatedAt.Should().BeSameDateAs(response.CreatedAt);

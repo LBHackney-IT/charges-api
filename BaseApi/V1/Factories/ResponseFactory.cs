@@ -7,16 +7,34 @@ namespace BaseApi.V1.Factories
 {
     public static class ResponseFactory
     {
-        //TODO: Map the fields in the domain object(s) to fields in the response object(s).
-        // More information on this can be found here https://github.com/LBHackney-IT/lbh-base-api/wiki/Factory-object-mappings
-        public static ResponseObject ToResponse(this Entity domain)
+        public static ChargeResponseObject ToResponse(this Charge domain)
         {
-            return new ResponseObject();
+            return new ChargeResponseObject()
+            {
+                Id = domain.Id,
+                TargetId = domain.TargetId,
+                ChargeType = domain.ChargeType,
+                ChargeDetails = domain.ChargeDetails,
+                DataImportSource = domain.DataImportSource,
+                DebitActive = domain.DebitActive,
+                DebitCode = domain.DebitCode,
+                DebitCodeDescription = domain.DebitCodeDescription,
+                DebitLastCharged = domain.DebitLastCharged,
+                DebitValue = domain.DebitValue,
+                DebitNextDue = domain.DebitNextDue,
+                DebitSource = domain.DebitSource,
+                EffectiveStartDate = domain.EffectiveStartDate,
+                PeriodCode = domain.PeriodCode,
+                PropertyDebit = domain.PropertyDebit,
+                ServiceChargeSchedule = domain.ServiceChargeSchedule,
+                TerminationDate = domain.TerminationDate,
+                TimeStamp = domain.TimeStamp
+            };
         }
 
-        public static List<ResponseObject> ToResponse(this IEnumerable<Entity> domainList)
+        public static List<ChargeResponseObject> ToResponse(this IEnumerable<Charge> domainList)
         {
             return domainList.Select(domain => domain.ToResponse()).ToList();
-        }
+        } 
     }
 }

@@ -13,14 +13,14 @@ namespace BaseApi.Tests.V1.UseCase
 {
     public class GetAllUseCaseTests
     {
-        private Mock<IExampleGateway> _mockGateway;
+        private Mock<IChargeApiGateway> _mockGateway;
         private GetAllUseCase _classUnderTest;
         private Fixture _fixture;
 
         [SetUp]
         public void SetUp()
         {
-            _mockGateway = new Mock<IExampleGateway>();
+            _mockGateway = new Mock<IChargeApiGateway>();
             _classUnderTest = new GetAllUseCase(_mockGateway.Object);
             _fixture = new Fixture();
         }
@@ -29,9 +29,9 @@ namespace BaseApi.Tests.V1.UseCase
         public void GetsAllFromTheGateway()
         {
             var stubbedEntities = _fixture.CreateMany<Entity>().ToList();
-            _mockGateway.Setup(x => x.GetAll()).Returns(stubbedEntities);
+            _mockGateway.Setup(x => x.GetAllCharges()).Returns(stubbedEntities);
 
-            var expectedResponse = new ResponseObjectList { ResponseObjects = stubbedEntities.ToResponse() };
+            var expectedResponse = new ChargeResponseObjectList { ChargeResponseObjects = stubbedEntities.ToResponse() };
 
             _classUnderTest.Execute().Should().BeEquivalentTo(expectedResponse);
         }

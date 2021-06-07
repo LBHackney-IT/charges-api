@@ -17,7 +17,7 @@ namespace BaseApi.Tests.V1.Factories
         [Test]
         public void CanMapADatabaseEntityToADomainObject()
         {
-            var databaseEntity = _fixture.Create<DatabaseEntity>();
+            var databaseEntity = _fixture.Create<ChargeDbEntity>();
             var entity = databaseEntity.ToDomain();
 
             databaseEntity.Id.Should().Be(entity.Id);
