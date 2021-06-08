@@ -71,11 +71,14 @@ namespace BaseApi.V1.Controllers
                 return NoContent();
             return Ok(charges);
         }
-
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [Route("")]
         [HttpPost]
         public async Task<IActionResult> Post(Charge charge)
         {
+            var _charge = await _getByIdUseCase.ExecuteAsync(charge.Id).ConfigureAwait(false);
+            if (_charge != null)
+                return Conflict("This record is exists");
             await _addUseCase.ExecuteAsync(charge).ConfigureAwait(false);
             return RedirectToAction("Get", new { id = charge.Id });
             //return CreatedAtAction("Get", new { id = charge.Id });
@@ -90,6 +93,7 @@ namespace BaseApi.V1.Controllers
             throw new NotImplementedException();
         }*/
 
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("{id}")]
         [HttpPut]
         public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] Charge charge)
@@ -101,6 +105,8 @@ namespace BaseApi.V1.Controllers
             return RedirectToAction("Get", new { id = charge.Id });
         }
 
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Route("{id}")]
         [HttpDelete]
         public async Task<IActionResult> Delete([FromRoute] Guid id)

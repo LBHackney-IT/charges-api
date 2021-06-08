@@ -66,7 +66,7 @@ namespace BaseApi.V1.Gateways
         public async Task<List<Charge>> GetAllChargesAsync(string type, Guid targetid)
         {
             //ScanCondition scanCondition_id = new ScanCondition("Id", Amazon.DynamoDBv2.DocumentModel.ScanOperator.GreaterThan, new Guid("00000000-0000-0000-0000-000000000000"));
-            ScanCondition scanCondition_type = new ScanCondition("TargetType", Amazon.DynamoDBv2.DocumentModel.ScanOperator.Equal, type);
+            ScanCondition scanCondition_type = new ScanCondition("TargetType", Amazon.DynamoDBv2.DocumentModel.ScanOperator.Equal, Enum.Parse(typeof(TargetType), type));
             ScanCondition scanCondition_targetid = new ScanCondition("TargetId", Amazon.DynamoDBv2.DocumentModel.ScanOperator.Equal, targetid);
 
             List<ScanCondition> scanConditions = new List<ScanCondition>() {
