@@ -69,10 +69,13 @@ namespace BaseApi.V1.Gateways
             ScanCondition scanCondition_type = new ScanCondition("TargetType", Amazon.DynamoDBv2.DocumentModel.ScanOperator.Equal, Enum.Parse(typeof(TargetType), type));
             ScanCondition scanCondition_targetid = new ScanCondition("TargetId", Amazon.DynamoDBv2.DocumentModel.ScanOperator.Equal, targetid);
 
-            List<ScanCondition> scanConditions = new List<ScanCondition>() {
-                scanCondition_type,
-                scanCondition_targetid
-            };
+            List<ScanCondition> scanConditions = new List<ScanCondition>();
+
+            if (type != null)
+                scanConditions.Add(scanCondition_type);
+            if(targetid != Guid.Parse("00000000-0000-0000-0000-000000000000"))
+                scanConditions.Add(scanCondition_targetid);
+
             List<ChargeDbEntity> data = await _dynamoDbContext.ScanAsync<ChargeDbEntity>(scanConditions).GetRemainingAsync().ConfigureAwait(false);
             return data.Select(p=>p.ToDomain()).ToList();
             /*ScanFilter scanFilter = new ScanFilter();

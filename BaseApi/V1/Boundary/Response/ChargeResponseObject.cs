@@ -1,3 +1,4 @@
+using BaseApi.V1.Domain;
 using ChargeApi.V1.Domain;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,10 @@ namespace BaseApi.V1.Boundary.Response
         public Guid Id { get; set; }
 
         public Guid TargetId { get; set; }
+        /// <example>
+        /// 
+        /// </example>
+        public TargetType TargetType { get; set; }
         /// <example>
         /// 
         /// </example>
