@@ -22,10 +22,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using ChargeApi.V1.HealthCheck;
-using Nest;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Elasticsearch.Net;
 
 namespace ChargeApi
 {
@@ -122,8 +118,7 @@ namespace ChargeApi
             services.ConfigureDynamoDB();
 
             RegisterGateways(services);
-            RegisterUseCases(services);
-            ConfigureElasticsearch(services);
+            RegisterUseCases(services); 
         }
 
         private static void ConfigureDbContext(IServiceCollection services)
@@ -168,20 +163,6 @@ namespace ChargeApi
             services.AddScoped<IAddUseCase, AddUseCase>();
             services.AddScoped<IRemoveUseCase, RemoveUseCase>();
             services.AddScoped<IUpdateUseCase, UpdateUseCase>();
-            services.AddScoped<ICalculateChargesUseCase, CalculateChargesUseCase>();
-        }
-
-        private static void ConfigureElasticsearch(IServiceCollection services)
-        {
-            var url = Environment.GetEnvironmentVariable("ELASTICSEARCH_DOMAIN_URL") ?? "http://localhost:9200";
-            var pool = new SingleNodeConnectionPool(new Uri(url));
-            var connectionSettings =
-                new ConnectionSettings(pool)
-                    .PrettyJson().ThrowExceptions().DisableDirectStreaming();
-            var esClient = new ElasticClient(connectionSettings);
-
-            services.TryAddSingleton<IElasticClient>(esClient);
-            services.AddElasticSearchHealthCheck();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

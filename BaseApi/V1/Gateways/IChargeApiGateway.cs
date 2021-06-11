@@ -11,7 +11,6 @@ namespace ChargeApi.V1.Gateways
         public Charge GetChargeById(Guid id);
         public Task<Charge> GetChargeByIdAsync(Guid id);
 
-        public List<Charge> GetAllCharges(string type, Guid targetid);
         public Task<List<Charge>> GetAllChargesAsync(string type, Guid targetid);
 
         public void Add(Charge charge);
@@ -26,8 +25,5 @@ namespace ChargeApi.V1.Gateways
 
         public void Update(Charge charge);
         public Task UpdateAsync(Charge charge);
-
-        public void CalculateCharges(Guid targetId, string targetType);
-        public Task CalculateChargesAsync(Guid targetId, string targetType);
     }
 }

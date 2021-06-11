@@ -22,15 +22,13 @@ namespace ChargeApi.V1.Controllers
         private readonly IAddUseCase _addUseCase;
         private readonly IRemoveUseCase _removeUseCase;
         private readonly IUpdateUseCase _updateUseCase;
-        private readonly ICalculateChargesUseCase _calculateChargesUseCase;
 
         public ChargeApiController(
             IGetAllUseCase getAllUseCase,
             IGetByIdUseCase getByIdUseCase,
             IAddUseCase addUseCase,
             IRemoveUseCase removeUseCase,
-            IUpdateUseCase updateUseCase,
-            ICalculateChargesUseCase calculateChargesUseCase
+            IUpdateUseCase updateUseCase
         )
         {
             _getAllUseCase = getAllUseCase;
@@ -38,7 +36,6 @@ namespace ChargeApi.V1.Controllers
             _addUseCase = addUseCase;
             _removeUseCase = removeUseCase;
             _updateUseCase = updateUseCase;
-            _calculateChargesUseCase = calculateChargesUseCase;
         }
         /// <summary>
         /// Correspondig charge data according the id 
@@ -81,17 +78,7 @@ namespace ChargeApi.V1.Controllers
                 return Conflict("This record is exists");
             await _addUseCase.ExecuteAsync(charge).ConfigureAwait(false);
             return RedirectToAction("Get", new { id = charge.Id });
-            //return CreatedAtAction("Get", new { id = charge.Id });
         }
-
-        /*[Route("CalculateCharges{targetid}/{targettype}")]
-        [HttpPost]
-        public async Task<IActionResult> CalculateCharges(Guid targetid,string targettype)
-        {
-            throw new NotImplementedException("investigation for the appropriate endpoint");
-            await _calculateChargesUseCase.ExecuteAsync(targetid, targettype).ConfigureAwait(false);
-            throw new NotImplementedException();
-        }*/
 
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("{id}")]

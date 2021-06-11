@@ -58,11 +58,6 @@ namespace ChargeApi.V1.Gateways
             throw new NotImplementedException();
         }
 
-        public List<Charge> GetAllCharges(string type, Guid targetid)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public async Task<List<Charge>> GetAllChargesAsync(string type, Guid targetid)
         {
             //ScanCondition scanCondition_id = new ScanCondition("Id", Amazon.DynamoDBv2.DocumentModel.ScanOperator.GreaterThan, new Guid("00000000-0000-0000-0000-000000000000"));

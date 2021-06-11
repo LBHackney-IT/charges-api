@@ -19,11 +19,6 @@ namespace ChargeApi.V1.UseCase
             _gateway = gateway;
         }
 
-        public ChargeResponseObjectList Execute(string type, Guid targetid)
-        {
-            return new ChargeResponseObjectList { ChargeResponseObjects = _gateway.GetAllCharges(type,targetid).ToResponse() };
-        } 
-
         public async Task<ChargeResponseObjectList> ExecuteAsync(string type,Guid targetid)
         {
             ChargeResponseObjectList chargeResponseObjectList = new ChargeResponseObjectList();
