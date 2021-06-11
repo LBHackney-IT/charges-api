@@ -26,20 +26,6 @@ namespace ChargeApi.V1.Gateways
             return result?.ToDomain();
         }
 
-        public List<Charge> GetAllCharges(string type, Guid targetid)
-        {
-            TargetType targetType;
-            if (Enum.TryParse(type, out targetType))
-            {
-                IQueryable<ChargeDbEntity> data = _chargeDbContext
-                .ChargeEntities
-                .Where(p => p.TargetType == targetType && p.TargetId == targetid);
-                return data.Select(s => s.ToDomain()).ToList();
-            }
-            else
-                throw new ArgumentException("Invalid type");
-        }
-
         public async Task<List<Charge>> GetAllChargesAsync(string type, Guid targetid)
         {
             TargetType targetType;
