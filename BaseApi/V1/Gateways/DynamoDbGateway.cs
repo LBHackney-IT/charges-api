@@ -78,20 +78,6 @@ namespace BaseApi.V1.Gateways
 
             List<ChargeDbEntity> data = await _dynamoDbContext.ScanAsync<ChargeDbEntity>(scanConditions).GetRemainingAsync().ConfigureAwait(false);
             return data.Select(p=>p.ToDomain()).ToList();
-            /*ScanFilter scanFilter = new ScanFilter();
-            scanFilter.AddCondition("Id", ScanOperator.GreaterThan, new Guid("00000000-0000-0000-0000-000000000000"));
-
-            ScanOperationConfig scanOperationConfig = new ScanOperationConfig() {
-                Limit = 2
-            };
-
-            List<ChargeDbEntity> data =
-                await _dynamoDbContext
-                .FromScanAsync<ChargeDbEntity>(scanOperationConfig)
-                .GetRemainingAsync()
-                .ConfigureAwait(false);
-
-            return data.Select(p=>p.ToDomain()).ToList();*/
         }
 
         public Charge GetChargeById(Guid id)

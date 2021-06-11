@@ -1,6 +1,5 @@
 using Amazon.DynamoDBv2.DataModel;
 using BaseApi.V1.Domain;
-using ChargeApi.V1.Domain;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

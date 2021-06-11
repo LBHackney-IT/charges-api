@@ -24,8 +24,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "production", "production", 
 		terraform\production\main.tf = terraform\production\main.tf
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HousingSearchApi", "..\housing-search-api\HousingSearchApi\HousingSearchApi.csproj", "{44FA58AE-0B2F-4FAA-94D4-8FA2248A037F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,10 +38,6 @@ Global
 		{DE8E4E61-EB76-416B-8417-E8F2F6A0C0D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE8E4E61-EB76-416B-8417-E8F2F6A0C0D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE8E4E61-EB76-416B-8417-E8F2F6A0C0D3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{44FA58AE-0B2F-4FAA-94D4-8FA2248A037F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{44FA58AE-0B2F-4FAA-94D4-8FA2248A037F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{44FA58AE-0B2F-4FAA-94D4-8FA2248A037F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{44FA58AE-0B2F-4FAA-94D4-8FA2248A037F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
