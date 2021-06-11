@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using BaseApi.V1.Infrastructure;
+using ChargeApi.V1.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace BaseApi.V1.Controllers
+namespace ChargeApi.V1.Controllers
 {
     public class BaseController : Controller
     {

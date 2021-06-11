@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("HousingSearchApi.Tests")]
 
-namespace BaseApi.V1.HealthCheck
+namespace ChargeApi.V1.HealthCheck
 {
     public static class ElasticSearchHealthCheckExtensions
     {

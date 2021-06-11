@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BaseApi.V1.Infrastructure
+namespace ChargeApi.V1.Infrastructure
 {
     public class DynamoDbEnumListConverter<TEnum> : IPropertyConverter where TEnum : Enum
     {

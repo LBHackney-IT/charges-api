@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace BaseApi.V1.Infrastructure
+namespace ChargeApi.V1.Infrastructure
 {
 
     public class ChargeContext : DbContext

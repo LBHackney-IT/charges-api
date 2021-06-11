@@ -1,6 +1,6 @@
 using System;
 
-namespace BaseApi.V1.UseCase
+namespace ChargeApi.V1.UseCase
 {
     public class TestOpsErrorException : Exception
     {

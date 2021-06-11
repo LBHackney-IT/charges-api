@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BaseApi.V1.HealthCheck
+namespace ChargeApi.V1.HealthCheck
 {
     public class ElasticSearchHealthCheck : IHealthCheck
     {

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using BaseApi.V1.Boundary.Response;
-using BaseApi.V1.Domain;
+using ChargeApi.V1.Boundary.Response;
+using ChargeApi.V1.Domain;
 
-namespace BaseApi.V1.Factories
+namespace ChargeApi.V1.Factories
 {
     public static class ResponseFactory
     {

@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BaseApi.V1.Domain;
-using BaseApi.V1.Factories;
-using BaseApi.V1.Infrastructure;
+using ChargeApi.V1.Domain;
+using ChargeApi.V1.Factories;
+using ChargeApi.V1.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
-namespace BaseApi.V1.Gateways
+namespace ChargeApi.V1.Gateways
 {
     //TODO: Rename to match the data source that is being accessed in the gateway eg. MosaicGateway
     public class ChargeApiGateway : IChargeApiGateway

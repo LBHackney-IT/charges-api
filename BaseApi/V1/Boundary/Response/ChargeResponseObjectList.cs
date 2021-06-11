@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace BaseApi.V1.Boundary.Response
+namespace ChargeApi.V1.Boundary.Response
 {
     //TODO: Rename to represent to object you will be returning eg. ResidentInformationList
     public class ChargeResponseObjectList

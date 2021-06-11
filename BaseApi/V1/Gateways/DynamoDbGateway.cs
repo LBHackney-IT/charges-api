@@ -1,9 +1,9 @@
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
-using BaseApi.V1.Domain;
-using BaseApi.V1.Factories;
-using BaseApi.V1.Infrastructure;
+using ChargeApi.V1.Domain;
+using ChargeApi.V1.Factories;
+using ChargeApi.V1.Infrastructure;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace BaseApi.V1.Gateways
+namespace ChargeApi.V1.Gateways
 {
     public class DynamoDbGateway : IChargeApiGateway
     {

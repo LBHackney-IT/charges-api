@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using BaseApi.V1.Controllers;
+using ChargeApi.V1.Controllers;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
-using BaseApi.V1.Gateways;
-using BaseApi.V1.Infrastructure;
-using BaseApi.V1.UseCase;
-using BaseApi.V1.UseCase.Interfaces;
-using BaseApi.Versioning;
+using ChargeApi.V1.Gateways;
+using ChargeApi.V1.Infrastructure;
+using ChargeApi.V1.UseCase;
+using ChargeApi.V1.UseCase.Interfaces;
+using ChargeApi.Versioning;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -22,12 +22,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using BaseApi.V1.HealthCheck;
+using ChargeApi.V1.HealthCheck;
 using Nest;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Elasticsearch.Net;
 
-namespace BaseApi
+namespace ChargeApi
 {
     public class Startup
     {

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace BaseApi.V1.Infrastructure
+namespace ChargeApi.V1.Infrastructure
 {
     // TODO: This should go in a common NuGet package...
 

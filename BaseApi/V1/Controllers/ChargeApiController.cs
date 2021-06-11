@@ -1,13 +1,13 @@
-using BaseApi.V1.Boundary.Response;
-using BaseApi.V1.Domain;
-using BaseApi.V1.UseCase.Interfaces;
+using ChargeApi.V1.Boundary.Response;
+using ChargeApi.V1.Domain;
+using ChargeApi.V1.UseCase.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using BaseApi.V1.Factories;
+using ChargeApi.V1.Factories;
 
-namespace BaseApi.V1.Controllers
+namespace ChargeApi.V1.Controllers
 {
     [ApiController]
     //TODO: Rename to match the APIs endpoint

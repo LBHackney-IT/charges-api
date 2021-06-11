@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace BaseApi
+namespace ChargeApi
 {
     public static class Program
     {

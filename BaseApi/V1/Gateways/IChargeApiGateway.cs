@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using BaseApi.V1.Domain;
+using ChargeApi.V1.Domain;
 
-namespace BaseApi.V1.Gateways
+namespace ChargeApi.V1.Gateways
 {
     public interface IChargeApiGateway
     {

@@ -1,7 +1,7 @@
-using BaseApi.V1.Domain;
-using BaseApi.V1.Infrastructure;
+using ChargeApi.V1.Domain;
+using ChargeApi.V1.Infrastructure;
 
-namespace BaseApi.V1.Factories
+namespace ChargeApi.V1.Factories
 {
     public static class EntityFactory
     {

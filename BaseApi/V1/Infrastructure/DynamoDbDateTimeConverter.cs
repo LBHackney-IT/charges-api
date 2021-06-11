@@ -2,7 +2,7 @@ using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using System;
 
-namespace BaseApi.V1.Infrastructure
+namespace ChargeApi.V1.Infrastructure
 {
     // TODO: This should go in a common NuGet package...
 

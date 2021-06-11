@@ -1,8 +1,8 @@
-using BaseApi.V1.Domain;
+using ChargeApi.V1.Domain;
 using System;
 using System.Collections.Generic;
 
-namespace BaseApi.V1.Domain
+namespace ChargeApi.V1.Domain
 {
     public class Charge
     {

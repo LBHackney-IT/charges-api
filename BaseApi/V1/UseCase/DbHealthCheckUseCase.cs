@@ -1,7 +1,7 @@
-using BaseApi.V1.Boundary;
+using ChargeApi.V1.Boundary;
 using Microsoft.Extensions.HealthChecks;
 
-namespace BaseApi.V1.UseCase
+namespace ChargeApi.V1.UseCase
 {
     public class DbHealthCheckUseCase
     {

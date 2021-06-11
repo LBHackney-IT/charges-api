@@ -1,4 +1,4 @@
-namespace BaseApi.V1.Boundary
+namespace ChargeApi.V1.Boundary
 {
     public class HealthCheckResponse
     {

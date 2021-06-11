@@ -1,9 +1,9 @@
-using BaseApi.V1.Domain;
+using ChargeApi.V1.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BaseApi.V1.Boundary.Response
+namespace ChargeApi.V1.Boundary.Response
 {
     //TODO: Rename to represent to object you will be returning eg. ResidentInformation, HouseholdDetails e.t.c
     public class ChargeResponseObject

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BaseApi.V1.Domain
+namespace ChargeApi.V1.Domain
 {
     public class ChargeType
     {

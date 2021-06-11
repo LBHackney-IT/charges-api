@@ -1,9 +1,9 @@
-using BaseApi.V1.Boundary.Response;
-using BaseApi.V1.Domain;
+using ChargeApi.V1.Boundary.Response;
+using ChargeApi.V1.Domain;
 using System;
 using System.Threading.Tasks;
 
-namespace BaseApi.V1.UseCase.Interfaces
+namespace ChargeApi.V1.UseCase.Interfaces
 {
     public interface IRemoveUseCase
     {
