@@ -46,17 +46,7 @@ namespace ChargeApi.V1.Gateways
             {
                 await _dynamoDbContext.SaveAsync<ChargeDbEntity>(charge.ToDatabase()).ConfigureAwait(false);
             }
-        }
-
-        public void CalculateCharges(Guid targetId, string targetType)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task CalculateChargesAsync(Guid targetId, string targetType)
-        {
-            throw new NotImplementedException();
-        }
+        } 
 
         public async Task<List<Charge>> GetAllChargesAsync(string type, Guid targetid)
         {
@@ -115,7 +105,7 @@ namespace ChargeApi.V1.Gateways
 
         public void Update(Charge charge)
         {
-            _dynamoDbContext.SaveAsync<ChargeDbEntity>(charge.ToDatabase()).ConfigureAwait(false);
+            _dynamoDbContext.SaveAsync<ChargeDbEntity>(charge.ToDatabase());
         }
 
         public async Task UpdateAsync(Charge charge)
