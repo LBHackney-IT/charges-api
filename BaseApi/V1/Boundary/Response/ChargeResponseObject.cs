@@ -14,7 +14,7 @@ namespace ChargeApi.V1.Boundary.Response
         public Guid Id { get; set; }
         /// <example>
         ///     793dd4ca-d7c4-4110-a8ff-c58eac4b90f8
-        /// </summary>
+        /// </example>
         public Guid TargetId { get; set; }
         /// <example>
         ///     Asset
@@ -106,7 +106,7 @@ namespace ChargeApi.V1.Boundary.Response
         public IEnumerable<ChargeDetails> ChargeDetails { get; set; }
         /// <example>
         ///     235.153
-        /// </summary>
+        /// </example>
         public decimal? TotalAmount => ChargeDetails==null?0:ChargeDetails.Sum(p => p.Amount);
     }
 }
