@@ -13,22 +13,8 @@ namespace ChargeApi.V1.Factories
             {
                 Id = domain.Id,
                 TargetId = domain.TargetId,
-                ChargeType = domain.ChargeType,
                 ChargeDetails = domain.ChargeDetails,
-                DataImportSource = domain.DataImportSource,
-                DebitActive = domain.DebitActive,
-                DebitCode = domain.DebitCode,
-                DebitCodeDescription = domain.DebitCodeDescription,
-                DebitLastCharged = domain.DebitLastCharged,
-                DebitValue = domain.DebitValue,
-                DebitNextDue = domain.DebitNextDue,
-                DebitSource = domain.DebitSource,
-                EffectiveStartDate = domain.EffectiveStartDate,
-                PeriodCode = domain.PeriodCode,
-                PropertyDebit = domain.PropertyDebit,
-                ServiceChargeSchedule = domain.ServiceChargeSchedule,
-                TerminationDate = domain.TerminationDate,
-                TimeStamp = domain.TimeStamp
+                TargetType = domain.TargetType
             };
         }
 
