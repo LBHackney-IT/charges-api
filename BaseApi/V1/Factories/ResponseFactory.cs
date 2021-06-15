@@ -13,7 +13,7 @@ namespace ChargeApi.V1.Factories
             {
                 Id = domain.Id,
                 TargetId = domain.TargetId,
-                ChargeDetails = domain.ChargeDetails,
+                DetailedCharges = domain.DetailedCharges,
                 TargetType = domain.TargetType
             };
         }

@@ -12,7 +12,7 @@ namespace ChargeApi.V1.Factories
                 Id = databaseEntity.Id,
                 TargetId = databaseEntity.TargetId,
                 TargetType = databaseEntity.TargetType,
-                ChargeDetails = databaseEntity.ChargeDetails                
+                DetailedCharges = databaseEntity.DetailedCharges                
             };
         }
 
@@ -23,7 +23,7 @@ namespace ChargeApi.V1.Factories
                 Id = entity.Id,
                 TargetId = entity.TargetId,
                 TargetType = entity.TargetType,
-                ChargeDetails = entity.ChargeDetails
+                DetailedCharges = entity.DetailedCharges
             };
         }
     }

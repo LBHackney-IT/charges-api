@@ -19,7 +19,7 @@ namespace ChargeApi.V1.Infrastructure
         [DynamoDBProperty(AttributeName = "target_type",Converter = typeof(DynamoDbEnumConverter<TargetType>))]
         public TargetType TargetType { get; set; } 
 
-        [DynamoDBProperty(AttributeName = "charge_details", Converter = (typeof(DynamoDbObjectListConverter<ChargeDetails>)))]
-        public IEnumerable<ChargeDetails> ChargeDetails { get; set; }
+        [DynamoDBProperty(AttributeName = "detailed_charges", Converter = (typeof(DynamoDbObjectListConverter<DetailedCharges>)))]
+        public IEnumerable<DetailedCharges> DetailedCharges { get; set; }
     }
 }

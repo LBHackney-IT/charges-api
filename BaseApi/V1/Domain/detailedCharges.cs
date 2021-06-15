@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ChargeApi.V1.Domain
 {
-    public class ChargeDetails
+    public class DetailedCharges
     {
         public string Type { get; set; }
         public string SubType { get; set; }

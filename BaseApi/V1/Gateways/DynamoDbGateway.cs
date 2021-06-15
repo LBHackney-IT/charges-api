@@ -51,15 +51,13 @@ namespace ChargeApi.V1.Gateways
         public async Task<List<Charge>> GetAllChargesAsync(string type, Guid targetid)
         {
             //ScanCondition scanCondition_id = new ScanCondition("Id", Amazon.DynamoDBv2.DocumentModel.ScanOperator.GreaterThan, new Guid("00000000-0000-0000-0000-000000000000"));
-            ScanCondition scanCondition_type = new ScanCondition("TargetType", Amazon.DynamoDBv2.DocumentModel.ScanOperator.Equal, Enum.Parse(typeof(TargetType), type));
-            ScanCondition scanCondition_targetid = new ScanCondition("TargetId", Amazon.DynamoDBv2.DocumentModel.ScanOperator.Equal, targetid);
 
             List<ScanCondition> scanConditions = new List<ScanCondition>();
 
             if (type != null)
-                scanConditions.Add(scanCondition_type);
+                scanConditions.Add(new ScanCondition("TargetType", Amazon.DynamoDBv2.DocumentModel.ScanOperator.Equal, Enum.Parse(typeof(TargetType), type)));
             if(targetid != Guid.Parse("00000000-0000-0000-0000-000000000000"))
-                scanConditions.Add(scanCondition_targetid);
+                scanConditions.Add(new ScanCondition("TargetId", Amazon.DynamoDBv2.DocumentModel.ScanOperator.Equal, targetid));
 
             List<ChargeDbEntity> data = await _dynamoDbContext.ScanAsync<ChargeDbEntity>(scanConditions).GetRemainingAsync().ConfigureAwait(false);
             return data.Select(p=>p.ToDomain()).ToList();

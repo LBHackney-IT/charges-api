@@ -40,10 +40,10 @@ namespace ChargeApi.V1.Boundary.Response
         ///         }
         ///     ]
         /// </example>
-        public IEnumerable<ChargeDetails> ChargeDetails { get; set; }
+        public IEnumerable<DetailedCharges> DetailedCharges { get; set; }
         /// <example>
         ///     235.153
         /// </example>
-        public decimal? TotalAmount => ChargeDetails==null?0:ChargeDetails.Sum(p => p.Amount);
+        public decimal? TotalAmount => DetailedCharges==null?0:DetailedCharges.Sum(p => p.Amount);
     }
 }
