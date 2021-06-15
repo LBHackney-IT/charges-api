@@ -17,12 +17,6 @@ namespace ChargeApi.V1.UseCase
             _gateway = gateway;
         }
 
-        public void Execute(Guid id)
-        {
-            Charge charge = _gateway.GetChargeById(id);
-            _gateway.Remove(charge);
-        }
-
         public async Task ExecuteAsync(Guid id)
         {
             Charge charge = await _gateway.GetChargeByIdAsync(id).ConfigureAwait(false);

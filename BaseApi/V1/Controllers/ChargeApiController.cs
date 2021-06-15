@@ -61,7 +61,7 @@ namespace ChargeApi.V1.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync([FromQuery]string type,[FromQuery] Guid targetid) /*make it async task*/
+        public async Task<IActionResult> GetAllAsync([FromQuery]string type,[FromQuery] Guid targetid)
         {
             var charges = await _getAllUseCase.ExecuteAsync(type,targetid).ConfigureAwait(false);
             if (charges == null)

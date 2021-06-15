@@ -17,14 +17,7 @@ namespace ChargeApi.V1.Gateways
         public ChargeApiGateway(ChargeContext chargeDbContext)
         {
             _chargeDbContext = chargeDbContext;
-        }
-
-        public Charge GetChargeById(Guid id)
-        {
-            var result = _chargeDbContext.ChargeEntities.Find(id);
-
-            return result?.ToDomain();
-        }
+        } 
 
         public async Task<List<Charge>> GetAllChargesAsync(string type, Guid targetid)
         {
@@ -33,7 +26,8 @@ namespace ChargeApi.V1.Gateways
             {
                 IQueryable<ChargeDbEntity> data = _chargeDbContext
                   .ChargeEntities
-                  .Where(p => p.TargetType == targetType && p.TargetId == targetid);
+                  .Where(p => p.TargetType == targetType &&
+                  (targetid==null?true:p.TargetId == targetid));
                 return await data.Select(s => s.ToDomain()).ToListAsync().ConfigureAwait(false);
             }
             else

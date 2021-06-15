@@ -1,14 +1,10 @@
 using Amazon.DynamoDBv2.DataModel;
-using Amazon.DynamoDBv2.DocumentModel;
-using Amazon.DynamoDBv2.Model;
 using ChargeApi.V1.Domain;
 using ChargeApi.V1.Factories;
 using ChargeApi.V1.Infrastructure;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace ChargeApi.V1.Gateways
@@ -61,12 +57,6 @@ namespace ChargeApi.V1.Gateways
 
             List<ChargeDbEntity> data = await _dynamoDbContext.ScanAsync<ChargeDbEntity>(scanConditions).GetRemainingAsync().ConfigureAwait(false);
             return data.Select(p=>p.ToDomain()).ToList();
-        }
-
-        public Charge GetChargeById(Guid id)
-        {
-            var result = _dynamoDbContext.LoadAsync<ChargeDbEntity>(id).GetAwaiter().GetResult();
-            return result?.ToDomain();
         }
 
         public async Task<Charge> GetChargeByIdAsync(Guid id)

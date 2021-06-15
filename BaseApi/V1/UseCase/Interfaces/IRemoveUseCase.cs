@@ -7,7 +7,6 @@ namespace ChargeApi.V1.UseCase.Interfaces
 {
     public interface IRemoveUseCase
     {
-        public void Execute(Guid id);
         public Task ExecuteAsync(Guid id);
     }
 }

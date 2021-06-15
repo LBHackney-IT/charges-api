@@ -8,7 +8,6 @@ namespace ChargeApi.V1.Gateways
 {
     public interface IChargeApiGateway
     {
-        public Charge GetChargeById(Guid id);
         public Task<Charge> GetChargeByIdAsync(Guid id);
 
         public Task<List<Charge>> GetAllChargesAsync(string type, Guid targetid);

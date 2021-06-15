@@ -15,19 +15,10 @@ namespace ChargeApi.V1.UseCase
         {
             _gateway = gateway;
         }
-
-        //TODO: rename id to the name of the identifier that will be used for this API, the type may also need to change
-        public ChargeResponseObject Execute(Guid id)
-        {
-            return _gateway.GetChargeById(id).ToResponse();
-        }
-
         public async Task<ChargeResponseObject> ExecuteAsync(Guid id)
         {
             var charge = await _gateway.GetChargeByIdAsync(id).ConfigureAwait(false);
-            if (charge == null)
-                return null;
-            return charge.ToResponse();
+            return charge?.ToResponse();
         }
     }
 }

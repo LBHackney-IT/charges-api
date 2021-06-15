@@ -24,7 +24,7 @@ namespace ChargeApi.V1.UseCase
             ChargeResponseObjectList chargeResponseObjectList = new ChargeResponseObjectList();
             List<Charge> data = await _gateway.GetAllChargesAsync(type,targetid).ConfigureAwait(false);
 
-            chargeResponseObjectList.ChargeResponseObjects = data.Select(p => p.ToResponse()).ToList();
+            chargeResponseObjectList.ChargeResponseObjects = data?.Select(p => p.ToResponse()).ToList();
 
             return chargeResponseObjectList;
         }
