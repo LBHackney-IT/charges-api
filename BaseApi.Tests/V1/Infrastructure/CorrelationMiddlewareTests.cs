@@ -1,24 +1,23 @@
 using System.Threading.Tasks;
-using BaseApi.V1.Controllers;
-using BaseApi.V1.Infrastructure;
+using ChargeApi.V1.Controllers;
+using ChargeApi.V1.Infrastructure;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using NUnit.Framework;
+using Xunit;
 
-namespace BaseApi.Tests.V1.Infrastructure
+namespace ChargeApi.Tests.V1.Infrastructure
 {
-    [TestFixture]
+    
     public class CorrelationMiddlewareTest
     {
         private CorrelationMiddleware _sut;
 
-        [SetUp]
-        public void Init()
+        public CorrelationMiddlewareTest()
         {
             _sut = new CorrelationMiddleware(null);
         }
 
-        [Test]
+        [Fact]
         public async Task DoesNotReplaceCorrelationIdIfOneExists()
         {
             // Arrange
@@ -34,7 +33,7 @@ namespace BaseApi.Tests.V1.Infrastructure
             httpContext.HttpContext.Request.Headers[Constants.CorrelationId].Should().BeEquivalentTo(headerValue);
         }
 
-        [Test]
+        [Fact]
         public async Task AddsCorrelationIdIfOneDoesNotExist()
         {
             // Arrange

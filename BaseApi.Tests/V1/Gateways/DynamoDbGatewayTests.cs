@@ -1,55 +1,58 @@
 using Amazon.DynamoDBv2.DataModel;
 using AutoFixture;
-using BaseApi.Tests.V1.Helper;
-using BaseApi.V1.Domain;
-using BaseApi.V1.Gateways;
-using BaseApi.V1.Infrastructure;
+using ChargeApi.Tests.V1.Helper;
+using ChargeApi.V1.Domain;
+using ChargeApi.V1.Factories;
+using ChargeApi.V1.Gateways;
+using ChargeApi.V1.Infrastructure;
 using FluentAssertions;
 using Moq;
-using NUnit.Framework;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Xunit;
 
-namespace BaseApi.Tests.V1.Gateways
+namespace ChargeApi.Tests.V1.Gateways
 {
     //TODO: Remove this file if DynamoDb gateway not being used
     //TODO: Rename Tests to match gateway name
     //For instruction on how to run tests please see the wiki: https://github.com/LBHackney-IT/lbh-base-api/wiki/Running-the-test-suite.
-    [TestFixture]
+
     public class DynamoDbGatewayTests
     {
-        private readonly Fixture _fixture = new Fixture();
-        private Mock<IDynamoDBContext> _dynamoDb;
-        private DynamoDbGateway _classUnderTest;
+        //private readonly Fixture _fixture = new Fixture();
+        //private Mock<IDynamoDBContext> _dynamoDb;
+        //private DynamoDbGateway _classUnderTest;
 
-        [SetUp]
-        public void Setup()
-        {
-            _dynamoDb = new Mock<IDynamoDBContext>();
-            _classUnderTest = new DynamoDbGateway(_dynamoDb.Object);
-        }
+        //public DynamoDbGatewayTests()
+        //{
+        //    _dynamoDb = new Mock<IDynamoDBContext>();
+        //    _classUnderTest = new DynamoDbGateway(_dynamoDb.Object);
+        //}
 
-        [Test]
-        public void GetEntityByIdReturnsNullIfEntityDoesntExist()
-        {
-            var response = _classUnderTest.GetEntityById(123);
+        //[Fact]
+        //public void GetEntityByIdReturnsNullIfEntityDoesntExist()
+        //{
+        //    var id = Guid.NewGuid();
+        //    var response = _classUnderTest.GetChargeByIdAsync(id);
 
-            response.Should().BeNull();
-        }
+        //    response.Should().BeNull();
+        //}
 
-        [Test]
-        public void GetEntityByIdReturnsTheEntityIfItExists()
-        {
-            var entity = _fixture.Create<Entity>();
-            var dbEntity = DatabaseEntityHelper.CreateDatabaseEntityFrom(entity);
+        //[Fact]
+        //public async Task GetEntityByIdReturnsTheEntityIfItExists()
+        //{
+        //    // Arrange
+        //    var id = Guid.NewGuid();
+        //    var charge = _fixture.Build<Charge>()
+        //                    .With(x => x.Id, id)
+        //                    .Create();
+        //    charge.DetailedCharges = new[] { charge.DetailedCharges.First() };
+        //    charge.DetailedCharges.First().Amount = 123;
 
-            _dynamoDb.Setup(x => x.LoadAsync<ChargeDbEntity>(entity.Id, default))
-                     .ReturnsAsync(dbEntity);
+        //    var chargedbEntity = charge.ToDatabase();
+        //    await _dynamoDb
 
-            var response = _classUnderTest.GetEntityById(entity.Id);
-
-            _dynamoDb.Verify(x => x.LoadAsync<ChargeDbEntity>(entity.Id, default), Times.Once);
-
-            entity.Id.Should().Be(response.Id);
-            entity.CreatedAt.Should().BeSameDateAs(response.CreatedAt);
-        }
+        //}
     }
 }

@@ -1,14 +1,14 @@
 using System.Linq;
-using BaseApi.Tests.V1.Helper;
-using NUnit.Framework;
+using ChargeApi.Tests.V1.Helper;
+using Xunit;
 
-namespace BaseApi.Tests.V1.Infrastructure
+namespace ChargeApi.Tests.V1.Infrastructure
 {
     //TODO: Remove this file if Postgres is not being used
-    [TestFixture]
-    public class DatabaseContextTest : DatabaseTests
+    
+    public class DatabaseContextTest ////////////: DatabaseTests
     {
-        [Test]
+        /*[Fact]
         public void CanGetADatabaseEntity()
         {
             var databaseEntity = DatabaseEntityHelper.CreateDatabaseEntity();
@@ -19,6 +19,6 @@ namespace BaseApi.Tests.V1.Infrastructure
             var result = DatabaseContext.DatabaseEntities.ToList().FirstOrDefault();
 
             Assert.AreEqual(result, databaseEntity);
-        }
+        }*/
     }
 }

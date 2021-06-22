@@ -1,17 +1,16 @@
-using BaseApi.V1.Gateways;
-using BaseApi.V1.UseCase;
+using ChargeApi.V1.Gateways;
+using ChargeApi.V1.UseCase;
 using Moq;
-using NUnit.Framework;
+using Xunit;
 
-namespace BaseApi.Tests.V1.UseCase
+namespace ChargeApi.Tests.V1.UseCase
 {
     public class GetByIdUseCaseTests
     {
         private Mock<IChargeApiGateway> _mockGateway;
         private GetByIdUseCase _classUnderTest;
 
-        [SetUp]
-        public void SetUp()
+        public GetByIdUseCaseTests()
         {
             _mockGateway = new Mock<IChargeApiGateway>();
             _classUnderTest = new GetByIdUseCase(_mockGateway.Object);

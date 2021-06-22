@@ -1,6 +1,6 @@
 using System;
 
-namespace BaseApi.Tests
+namespace ChargeApi.Tests
 {
     public static class ConnectionString
     {

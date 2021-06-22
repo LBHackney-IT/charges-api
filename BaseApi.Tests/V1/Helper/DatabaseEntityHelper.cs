@@ -1,24 +1,26 @@
 using AutoFixture;
-using BaseApi.V1.Domain;
-using BaseApi.V1.Infrastructure;
+using ChargeApi.V1.Domain;
+using ChargeApi.V1.Infrastructure;
 
-namespace BaseApi.Tests.V1.Helper
+namespace ChargeApi.Tests.V1.Helper
 {
     public static class DatabaseEntityHelper
     {
         public static ChargeDbEntity CreateDatabaseEntity()
         {
-            var entity = new Fixture().Create<Entity>();
+            var entity = new Fixture().Create<Charge>();
 
             return CreateDatabaseEntityFrom(entity);
         }
 
-        public static ChargeDbEntity CreateDatabaseEntityFrom(Entity entity)
+        public static ChargeDbEntity CreateDatabaseEntityFrom(Charge charge)
         {
             return new ChargeDbEntity
             {
-                Id = entity.Id,
-                CreatedAt = entity.CreatedAt,
+                Id = charge.Id,
+                DetailedCharges = charge.DetailedCharges,
+                TargetId = charge.TargetId,
+                TargetType= charge.TargetType
             };
         }
     }
