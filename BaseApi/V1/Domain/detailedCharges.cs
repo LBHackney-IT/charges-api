@@ -13,14 +13,17 @@ namespace ChargeApi.V1.Domain
         public string Type { get; set; }
         public string SubType { get; set; }
         public string Frequency { get; set; }
-        public decimal Amount {
-            get {
+        public decimal Amount
+        {
+            get
+            {
                 return _amount;
             }
-            set {
+            set
+            {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("Amount","Please enter the valid value");
+                    throw new ArgumentOutOfRangeException("Amount", "Please enter the valid value");
                 }
                 _amount = value;
             }

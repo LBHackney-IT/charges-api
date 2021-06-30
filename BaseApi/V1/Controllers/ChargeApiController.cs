@@ -38,7 +38,7 @@ namespace ChargeApi.V1.Controllers
             _updateUseCase = updateUseCase;
         }
         /// <summary>
-        /// Correspondig charge data according the id 
+        /// Corresponding charge data according the id 
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -50,6 +50,9 @@ namespace ChargeApi.V1.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
+            if (id == null)
+                return BadRequest();
+
             var charge = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
             if (charge == null)
                 return NotFound(id);
@@ -65,9 +68,10 @@ namespace ChargeApi.V1.Controllers
         {
             var charges = await _getAllUseCase.ExecuteAsync(type,targetid).ConfigureAwait(false);
             if (charges == null)
-                return NoContent();
+                return NotFound();
             return Ok(charges);
         }
+
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [Route("")]
         [HttpPost]
@@ -81,12 +85,13 @@ namespace ChargeApi.V1.Controllers
         }
 
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        /// [ProducesResponseType(StatusCodes.Status400BadRequest)] ???
         [Route("{id}")]
         [HttpPut]
         public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] Charge charge)
         {
             if (id != charge.Id)
-                return NotFound(id);
+                return NotFound(id); // BadRequest ???
 
             await _updateUseCase.ExecuteAsync(charge).ConfigureAwait(false);
             return RedirectToAction("Get", new { id = charge.Id });
