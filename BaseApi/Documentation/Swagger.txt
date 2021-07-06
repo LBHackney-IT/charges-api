@@ -131,7 +131,7 @@ definitions:
         format: Guid
       TargetType:
         type: string
-        enum: [Asset, Tenuer]
+        enum: [Asset, Tenure]
       DebitCode:
         type: string
       DebitCodeDescription:

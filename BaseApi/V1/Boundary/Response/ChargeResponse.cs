@@ -1,25 +1,38 @@
 using ChargeApi.V1.Domain;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ChargeApi.V1.Boundary.Response
 {
-    //TODO: Rename to represent to object you will be returning eg. ResidentInformation, HouseholdDetails e.t.c
-    public class ChargeResponseObject
+    public class ChargeResponse
     {
+        /// <summary>
+        /// Id of charge model
+        /// </summary>
         /// <example>
-        ///     793dd4ca-d7c4-4110-a8ff-c58eac4b90a7
+        /// 793dd4ca-d7c4-4110-a8ff-c58eac4b90a7
         /// </example>
         public Guid Id { get; set; }
+
+        /// <summary>
+        /// Id of the appropriate tenure
+        /// </summary>
         /// <example>
-        ///     793dd4ca-d7c4-4110-a8ff-c58eac4b90f8
+        /// 793dd4ca-d7c4-4110-a8ff-c58eac4b90f8
         /// </example>
         public Guid TargetId { get; set; }
+
+        /// <summary>
+        /// Values: [Asset, Tenure]
+        /// </summary>
         /// <example>
-        ///     Asset
+        /// Asset
         /// </example>
-        public TargetType TargetType { get; set; } 
+        public TargetType TargetType { get; set; }
+
+        /// <summary>
+        /// Information about charges
+        /// </summary>
         /// <example>
         ///     [
         ///         {
@@ -41,9 +54,5 @@ namespace ChargeApi.V1.Boundary.Response
         ///     ]
         /// </example>
         public IEnumerable<DetailedCharges> DetailedCharges { get; set; }
-        /// <example>
-        ///     235.153
-        /// </example>
-        public decimal? TotalAmount => DetailedCharges==null?0:DetailedCharges.Sum(p => p.Amount);
     }
 }

@@ -1,5 +1,5 @@
+using ChargeApi.V1.Boundary.Request;
 using ChargeApi.V1.Boundary.Response;
-using ChargeApi.V1.Domain;
 using ChargeApi.V1.Factories;
 using ChargeApi.V1.Gateways;
 using ChargeApi.V1.UseCase.Interfaces;
@@ -7,25 +7,22 @@ using System.Threading.Tasks;
 
 namespace ChargeApi.V1.UseCase
 {
-    //TODO: Rename class name and interface name to reflect the entity they are representing eg. GetAllClaimantsUseCase
     public class UpdateUseCase : IUpdateUseCase
     {
         private readonly IChargeApiGateway _gateway;
+
         public UpdateUseCase(IChargeApiGateway gateway)
         {
             _gateway = gateway;
         }
 
-        public ChargeResponseObject Execute(Charge charge)
+        public async Task<ChargeResponse> ExecuteAsync(UpdateChargeRequest charge)
         {
-            _gateway.Update(charge);
-            return charge.ToResponse();
-        }
+            var domain = charge.ToDomain();
 
-        public async Task<ChargeResponseObject> ExecuteAsync(Charge charge)
-        {
-            await _gateway.UpdateAsync(charge).ConfigureAwait(false);
-            return charge.ToResponse();
+            await _gateway.UpdateAsync(domain).ConfigureAwait(false);
+
+            return domain.ToResponse();
         }
     }
 }

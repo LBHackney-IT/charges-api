@@ -2,7 +2,7 @@ using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using System;
 
-namespace ChargeApi.V1.Infrastructure
+namespace ChargeApi.V1.Infrastructure.Converters
 {
     // TODO: This should go in a common NuGet package...
 
@@ -20,10 +20,10 @@ namespace ChargeApi.V1.Infrastructure
 
         public object FromEntry(DynamoDBEntry entry)
         {
-            Primitive primitive = entry as Primitive;
+            var primitive = entry as Primitive;
             if (null == primitive) return default(TEnum);
 
-            TEnum valueAsEnum = (TEnum) Enum.Parse(typeof(TEnum), primitive.AsString());
+            var valueAsEnum = (TEnum) Enum.Parse(typeof(TEnum), primitive.AsString());
             return valueAsEnum;
         }
     }

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ChargeApi.V1.Infrastructure
+namespace ChargeApi.V1.Infrastructure.Converters
 {
     public class DynamoDbEnumListConverter<TEnum> : IPropertyConverter where TEnum : Enum
     {
@@ -21,7 +21,7 @@ namespace ChargeApi.V1.Infrastructure
 
         public object FromEntry(DynamoDBEntry entry)
         {
-            if ((null == entry) || (null != entry.AsDynamoDBNull())) return null;
+            if (null == entry || null != entry.AsDynamoDBNull()) return null;
 
             var list = entry.AsDynamoDBList();
             if (null == list)

@@ -2,7 +2,7 @@ using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using System;
 
-namespace ChargeApi.V1.Infrastructure
+namespace ChargeApi.V1.Infrastructure.Converters
 {
     // TODO: This should go in a common NuGet package...
 
@@ -23,8 +23,8 @@ namespace ChargeApi.V1.Infrastructure
 
         public object FromEntry(DynamoDBEntry entry)
         {
-            Primitive primitive = entry as Primitive;
-            if (null == primitive) return (DateTime?) null;
+            var primitive = entry as Primitive;
+            if (null == primitive) return null;
 
             var dtString = primitive.Value.ToString();
             return DateTime.Parse(dtString, null, System.Globalization.DateTimeStyles.RoundtripKind);

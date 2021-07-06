@@ -1,5 +1,6 @@
+using ChargeApi.V1.Boundary.Request;
 using ChargeApi.V1.Domain;
-using ChargeApi.V1.Infrastructure;
+using ChargeApi.V1.Infrastructure.Entities;
 
 namespace ChargeApi.V1.Factories
 {
@@ -24,6 +25,27 @@ namespace ChargeApi.V1.Factories
                 TargetId = charge.TargetId,
                 TargetType = charge.TargetType,
                 DetailedCharges = charge.DetailedCharges
+            };
+        }
+
+        public static Charge ToDomain(this AddChargeRequest chargeRequest)
+        {
+            return new Charge
+            {
+                TargetId = chargeRequest.TargetId,
+                TargetType = chargeRequest.TargetType,
+                DetailedCharges = chargeRequest.DetailedCharges
+            };
+        }
+
+        public static Charge ToDomain(this UpdateChargeRequest chargeRequest)
+        {
+            return new Charge
+            {
+                Id = chargeRequest.Id,
+                TargetId = chargeRequest.TargetId,
+                TargetType = chargeRequest.TargetType,
+                DetailedCharges = chargeRequest.DetailedCharges
             };
         }
     }

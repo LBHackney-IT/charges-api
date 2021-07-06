@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace ChargeApi.V1.Infrastructure
+namespace ChargeApi.V1.Infrastructure.Converters
 {
     // TODO: This should go in a common NuGet package...
 
@@ -39,7 +39,7 @@ namespace ChargeApi.V1.Infrastructure
 
         public object FromEntry(DynamoDBEntry entry)
         {
-            if ((null == entry) || (null != entry.AsDynamoDBNull())) return null;
+            if (null == entry || null != entry.AsDynamoDBNull()) return null;
 
             var list = entry.AsDynamoDBList();
             if (null == list)
