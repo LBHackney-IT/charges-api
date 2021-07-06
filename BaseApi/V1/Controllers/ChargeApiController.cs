@@ -55,7 +55,7 @@ namespace ChargeApi.V1.Controllers
                     return NotFound(id);
                 return Ok(charge);
             }
-            catch(Exception ex)
+            catch(FormatException ex)
             {
                 return BadRequest(ex.Message);
             }
