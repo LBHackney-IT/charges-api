@@ -1,13 +1,13 @@
-using System.Threading.Tasks;
+using ChargeApi.V1;
 using ChargeApi.V1.Controllers;
-using ChargeApi.V1.Infrastructure;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace ChargeApi.Tests.V1.Infrastructure
 {
-    
+
     public class CorrelationMiddlewareTest
     {
         private CorrelationMiddleware _sut;

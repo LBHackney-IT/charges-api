@@ -257,15 +257,9 @@ namespace ChargeApi.Tests.V1.Controllers
 
             notFoundResult.Should().NotBeNull();
 
-            var response = notFoundResult.Value as BaseErrorResponse;
+            var response = (Guid) notFoundResult.Value;
 
-            response.Should().NotBeNull();
-
-            response.StatusCode.Should().Be((int) HttpStatusCode.NotFound);
-
-            response.Message.Should().BeEquivalentTo("No Charge by provided id cannot be found!");
-
-            response.Details.Should().BeEquivalentTo("");
+            response.Should().Be(new Guid("a93e7d88-5074-4c50-b51a-b35292545ffb"));
         }
 
         [Fact]
