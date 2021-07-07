@@ -1,22 +1,71 @@
+using ChargeApi.V1.Domain;
+using ChargeApi.V1.Factories;
 using ChargeApi.V1.Gateways;
 using ChargeApi.V1.UseCase;
+using FluentAssertions;
 using Moq;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace ChargeApi.Tests.V1.UseCase
 {
     public class GetByIdUseCaseTests
     {
-        private Mock<IChargeApiGateway> _mockGateway;
-        private GetByIdUseCase _classUnderTest;
+        private readonly Mock<IChargeApiGateway> _mockGateway;
+        private readonly GetByIdUseCase _getByIdUseCase;
 
         public GetByIdUseCaseTests()
         {
             _mockGateway = new Mock<IChargeApiGateway>();
-            _classUnderTest = new GetByIdUseCase(_mockGateway.Object);
+            _getByIdUseCase = new GetByIdUseCase(_mockGateway.Object);
         }
 
-        //TODO: test to check that the use case retrieves the correct record from the database.
-        //Guidance on unit testing and example of mocking can be found here https://github.com/LBHackney-IT/lbh-base-api/wiki/Writing-Unit-Tests
+        [Fact]
+        public async Task GetByIdValidIdReturnsCharge()
+        {
+            var domain = new Charge
+            {
+                Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
+                TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
+                TargetType = TargetType.Asset,
+                DetailedCharges = new List<DetailedCharges>()
+                {
+                    new DetailedCharges
+                    {
+                        Type = "Type",
+                        SubType = "SubType",
+                        StartDate = new DateTime(2021, 7, 2),
+                        EndDate = new DateTime(2021, 7, 4),
+                        Amount = 150,
+                        Frequency = "Frequency"
+                    }
+                }
+            };
+
+            var expectedResult = domain.ToResponse();
+
+            _mockGateway.Setup(_ => _.GetChargeByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(domain);
+
+            var result = await _getByIdUseCase.ExecuteAsync(Guid.NewGuid())
+                .ConfigureAwait(false);
+
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Fact]
+        public async Task GetByIdInvalidIdReturnsCharge()
+        {
+            _mockGateway.Setup(_ => _.GetChargeByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync((Charge) null);
+
+            var result = await _getByIdUseCase.ExecuteAsync(Guid.NewGuid())
+                .ConfigureAwait(false);
+
+            result.Should().BeNull();
+        }
     }
 }

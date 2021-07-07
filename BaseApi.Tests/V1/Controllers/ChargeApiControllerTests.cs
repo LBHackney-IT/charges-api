@@ -281,14 +281,64 @@ namespace ChargeApi.Tests.V1.Controllers
             }
         }
 
-        //[Fact]
-        //public async Task AddChargeWithValidDataReturns200()
-        //{
-        //    _addUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<AddChargeRequest>()))
-        //        .ReturnsAsync(new ChargeResponse
-        //        {
+        [Fact]
+        public async Task AddChargeWithValidDataReturns200()
+        {
+            _addUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<AddChargeRequest>()))
+                .ReturnsAsync(new ChargeResponse
+                {
+                    Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
+                    TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
+                    TargetType = TargetType.Asset,
+                    DetailedCharges = new List<DetailedCharges>()
+                    {
+                        new DetailedCharges
+                        {
+                            Type = "Type",
+                            SubType = "SubType",
+                            StartDate = new DateTime(2021, 7, 2),
+                            EndDate = new DateTime(2021, 7, 4),
+                            Amount = 150,
+                            Frequency = "Frequency"
+                        }
+                    }
+                });
 
-        //        });
+            var result = await _chargeController.Post(new AddChargeRequest
+            {
+                TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
+                TargetType = TargetType.Asset,
+                DetailedCharges = new List<DetailedCharges>()
+                {
+                    new DetailedCharges
+                    {
+                        Type = "Type",
+                        SubType = "SubType",
+                        StartDate = new DateTime(2021, 7, 2),
+                        EndDate = new DateTime(2021, 7, 4),
+                        Amount = 150,
+                        Frequency = "Frequency"
+                    }
+                }
+            }).ConfigureAwait(false);
+
+            result.Should().NotBeNull();
+
+            var redirectToActionResult = result as RedirectToActionResult;
+
+            redirectToActionResult.Should().NotBeNull();
+
+            redirectToActionResult.ActionName.Should().BeEquivalentTo("Get");
+
+            redirectToActionResult.RouteValues["id"].Should().NotBeNull();
+
+            redirectToActionResult.RouteValues["id"].Should().BeOfType(typeof(Guid));
+        }
+
+        //[Fact]
+        //public async Task AddChargeWithInvalidDataReturns400()
+        //{
+            
         //}
     }
 }

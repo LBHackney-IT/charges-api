@@ -19,7 +19,6 @@ namespace ChargeApi.V1.UseCase
 
         public async Task<List<ChargeResponse>> ExecuteAsync(string type, Guid targetId)
         {
-            // ToDO: Validate type
             var charges = (await _gateway.GetAllChargesAsync(type, targetId).ConfigureAwait(false)).ToResponse();
 
             return charges;

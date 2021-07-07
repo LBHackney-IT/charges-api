@@ -56,8 +56,12 @@ namespace ChargeApi.V1.Controllers
             try
             {
                 var charge = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
+
                 if (charge == null)
+                {
                     return NotFound(id);
+                }
+
                 return Ok(charge);
             }
             catch(FormatException ex)
@@ -81,8 +85,12 @@ namespace ChargeApi.V1.Controllers
             try
             {
                 var charges = await _getAllUseCase.ExecuteAsync(type, targetId).ConfigureAwait(false);
+
                 if (charges == null)
+                {
                     return NotFound(targetId);
+                }
+
                 return Ok(charges);
             }
             catch (FormatException ex)
@@ -142,13 +150,19 @@ namespace ChargeApi.V1.Controllers
             try
             {
                 if (id != charge.Id)
+                {
                     return BadRequest(id);
+                }
 
                 ChargeResponse chargeResponseObject = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
+
                 if (chargeResponseObject == null)
+                {
                     return NotFound(id);
+                }
 
                 await _updateUseCase.ExecuteAsync(charge).ConfigureAwait(false);
+
                 return RedirectToAction("Get", new { id = charge.Id });
             }
             catch (FormatException ex)
@@ -176,7 +190,9 @@ namespace ChargeApi.V1.Controllers
             {
                 ChargeResponse charge = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
                 if (charge == null)
+                {
                     return NotFound(id);
+                }
                 await _removeUseCase.ExecuteAsync(id).ConfigureAwait(false);
                 return NoContent();
             }

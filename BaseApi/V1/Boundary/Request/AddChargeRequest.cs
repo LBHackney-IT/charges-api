@@ -2,13 +2,12 @@ using ChargeApi.V1.Domain;
 using ChargeApi.V1.Infrastructure;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace ChargeApi.V1.Boundary.Request
 {
     public class AddChargeRequest
     {
-        [Required]
+        [NonEmptyGuid]
         public Guid TargetId { get; set; }
 
         [AllowedValues(TargetType.Asset, TargetType.Tenure)]

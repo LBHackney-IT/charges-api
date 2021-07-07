@@ -17,8 +17,28 @@ namespace ChargeApi.V1.UseCase
             _gateway = gateway;
         }
 
+        public ChargeResponse Execute(AddChargeRequest charge)
+        {
+            if(charge == null)
+            {
+                throw new ArgumentNullException(nameof(charge));
+            }
+
+            var domainModel = charge.ToDomain();
+
+            domainModel.Id = Guid.NewGuid();
+
+            _gateway.Add(domainModel);
+            return domainModel.ToResponse();
+        }
+
         public async Task<ChargeResponse> ExecuteAsync(AddChargeRequest charge)
         {
+            if (charge == null)
+            {
+                throw new ArgumentNullException(nameof(charge));
+            }
+
             var domainModel = charge.ToDomain();
 
             domainModel.Id = Guid.NewGuid();
