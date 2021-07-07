@@ -53,11 +53,6 @@ namespace ChargeApi.V1.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Get([FromRoute] Guid id)
         {
-            if (id == null)
-            {
-                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Id cannot be null!"));
-            }
-
             var charge = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
 
             if (charge == null)
