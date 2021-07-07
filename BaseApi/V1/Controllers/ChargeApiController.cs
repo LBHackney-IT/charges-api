@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace ChargeApi.V1.Controllers
@@ -59,14 +60,14 @@ namespace ChargeApi.V1.Controllers
 
                 if (charge == null)
                 {
-                    return NotFound(id);
+                    return NotFound(new BaseErrorResponse((int) HttpStatusCode.NotFound, "No Charge by provided Id cannot be found!"));
                 }
 
                 return Ok(charge);
             }
             catch(FormatException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, ex.Message));
             }
         }
 
@@ -88,22 +89,22 @@ namespace ChargeApi.V1.Controllers
 
                 if (charges == null)
                 {
-                    return NotFound(targetId);
+                    return NotFound(new BaseErrorResponse((int) HttpStatusCode.NotFound, "No Charges by provided type and targetId cannot be found!"));
                 }
 
                 return Ok(charges);
             }
             catch (FormatException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, ex.Message));
             }
         }
 
         /// <summary>
         /// Create new Charge model
         /// </summary>
-        /// <param name="charge">Charge model for creatr</param>
-        /// <response code="200">Success. Charge models was created successfully</response>
+        /// <param name="charge">Charge model for create</param>
+        /// <response code="200">Success. Charge model was created successfully</response>
         /// <response code="400">Bad Request</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(typeof(ChargeResponse), StatusCodes.Status200OK)]
@@ -114,6 +115,11 @@ namespace ChargeApi.V1.Controllers
         {
             try
             {
+                if(charge == null)
+                {
+                    return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Charge model cannot be null!"));
+                }
+
                 if (ModelState.IsValid)
                 {
                     var chargeResponse = await _addUseCase.ExecuteAsync(charge).ConfigureAwait(false);
@@ -122,12 +128,12 @@ namespace ChargeApi.V1.Controllers
                 }
                 else
                 {
-                    return BadRequest(ModelState.Values.First().Errors[0].ErrorMessage);
+                    return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, GetErrorMessage(ModelState)));
                 }
             }
             catch (FormatException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new BaseErrorResponse((int)HttpStatusCode.BadRequest, ex.Message));
             }
         }
 
@@ -151,14 +157,14 @@ namespace ChargeApi.V1.Controllers
             {
                 if (id != charge.Id)
                 {
-                    return BadRequest(id);
+                    return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Id in route and model are different"));
                 }
 
                 ChargeResponse chargeResponseObject = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
 
                 if (chargeResponseObject == null)
                 {
-                    return NotFound(id);
+                    return NotFound(new BaseErrorResponse((int) HttpStatusCode.NotFound, "No Charge by Id cannot be found!"));
                 }
 
                 await _updateUseCase.ExecuteAsync(charge).ConfigureAwait(false);
@@ -167,7 +173,7 @@ namespace ChargeApi.V1.Controllers
             }
             catch (FormatException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new BaseErrorResponse((int)HttpStatusCode.BadRequest, ex.Message));
             }
         }
 
@@ -189,16 +195,19 @@ namespace ChargeApi.V1.Controllers
             try
             {
                 ChargeResponse charge = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
+
                 if (charge == null)
                 {
-                    return NotFound(id);
+                    return NotFound(new BaseErrorResponse((int) HttpStatusCode.NotFound, "No Charge by Id cannot be found!"));
                 }
+
                 await _removeUseCase.ExecuteAsync(id).ConfigureAwait(false);
+
                 return NoContent();
             }
             catch (FormatException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new BaseErrorResponse((int)HttpStatusCode.BadRequest, ex.Message));
             }
         }
 

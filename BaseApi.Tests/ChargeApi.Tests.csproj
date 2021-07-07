@@ -30,8 +30,4 @@
     <ProjectReference Include="..\BaseApi\ChargeApi.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="V1\E2ETests\" />
-  </ItemGroup>
-
 </Project>

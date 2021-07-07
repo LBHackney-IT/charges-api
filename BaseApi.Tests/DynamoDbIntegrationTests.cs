@@ -16,21 +16,27 @@ namespace ChargeApi.Tests
 
         private readonly List<TableDef> _tables = new List<TableDef>
         {
-            // TODO: Populate the list of table(s) and their key property details here, for example:
-            new TableDef { Name = "Charges", KeyName = "id", KeyType = ScalarAttributeType.N }
+            new TableDef { Name = "charges", KeyName = "id", KeyType = ScalarAttributeType.S }
         };
 
         private static void EnsureEnvVarConfigured(string name, string defaultValue)
         {
             if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(name)))
+            {
                 Environment.SetEnvironmentVariable(name, defaultValue);
+            }
         }
 
         public DynamoDbIntegrationTests()
         {
             EnsureEnvVarConfigured("DynamoDb_LocalMode", "true");
             EnsureEnvVarConfigured("DynamoDb_LocalServiceUrl", "http://localhost:8000");
+            EnsureEnvVarConfigured("DynamoDb_LocalSecretKey", "2cl9i");
+            EnsureEnvVarConfigured("DynamoDb_LocalAccessKey", "vymxp");
             _factory = new DynamoDbMockWebApplicationFactory<TStartup>(_tables);
+
+            Client = _factory.CreateClient();
+            CleanupActions = new List<Action>();
         }
 
         public void Dispose()
@@ -44,6 +50,12 @@ namespace ChargeApi.Tests
         {
             if (disposing && !_disposed)
             {
+                foreach (var act in CleanupActions)
+                {
+                    act();
+                }
+                Client.Dispose();
+
                 if (null != _factory)
                     _factory.Dispose();
                 _disposed = true;

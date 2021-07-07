@@ -8,10 +8,10 @@ namespace ChargeApi.V1.Boundary.Request
 {
     public class UpdateChargeRequest
     {
-        [Required]
+        [NonEmptyGuid]
         public Guid Id { get; set; }
 
-        [Required]
+        [NonEmptyGuid]
         public Guid TargetId { get; set; }
 
         [AllowedValues(TargetType.Asset, TargetType.Tenure)]

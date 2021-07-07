@@ -1,6 +1,8 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
+using Amazon.XRay.Recorder.Core;
+using Amazon.XRay.Recorder.Core.Strategies;
 using ChargeApi.V1.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -45,6 +47,8 @@ namespace ChargeApi.Tests
             {
                 try
                 {
+                    AWSXRayRecorder.Instance.ContextMissingStrategy = ContextMissingStrategy.LOG_ERROR;
+
                     var request = new CreateTableRequest(table.Name,
                         new List<KeySchemaElement> { new KeySchemaElement(table.KeyName, KeyType.HASH) },
                         new List<AttributeDefinition> { new AttributeDefinition(table.KeyName, table.KeyType) },
