@@ -4,9 +4,10 @@ using ChargeApi.V1.UseCase.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Net;
+using System.Linq;
 using System.Threading.Tasks;
+using ChargeApi.V1.Factories;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ChargeApi.V1.Controllers
 {
@@ -53,14 +54,17 @@ namespace ChargeApi.V1.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Get([FromRoute] Guid id)
         {
-            var charge = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
-
-            if (charge == null)
+            try
             {
-                return NotFound(new BaseErrorResponse((int) HttpStatusCode.NotFound, "No Charge by provided id cannot be found!"));
+                var charge = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
+                if (charge == null)
+                    return NotFound(id);
+                return Ok(charge);
             }
-
-            return Ok(charge);
+            catch(FormatException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -75,9 +79,17 @@ namespace ChargeApi.V1.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync([FromQuery] string type, [FromQuery] Guid targetId)
         {
-            var charges = await _getAllUseCase.ExecuteAsync(type, targetId).ConfigureAwait(false);
-
-            return Ok(charges);
+            try
+            {
+                var charges = await _getAllUseCase.ExecuteAsync(type, targetid).ConfigureAwait(false);
+                if (charges == null)
+                    return NotFound(targetid);
+                return Ok(charges);
+            }
+            catch (FormatException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -91,21 +103,25 @@ namespace ChargeApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] AddChargeRequest charge)
+        public async Task<IActionResult> Post(Charge charge)
         {
-            if(charge == null)
+            try
             {
-                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Charge model cannot be null."));
-            }
+                if (ModelState.IsValid)
+                {
+                    await _addUseCase.ExecuteAsync(charge).ConfigureAwait(false);
 
-            if (!ModelState.IsValid)
+                    return RedirectToAction("Get", new {id = charge.Id});
+                }
+                else
+                {
+                    return BadRequest(ModelState.Values.First().Errors[0].ErrorMessage);
+                }
+            }
+            catch (FormatException ex)
             {
-                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, GetErrorMessage(ModelState)));
+                return BadRequest(ex.Message);
             }
-
-            var result = await _addUseCase.ExecuteAsync(charge).ConfigureAwait(false);
-
-            return RedirectToAction("Get", new { id = result.Id });
         }
 
         /// <summary>
@@ -122,33 +138,24 @@ namespace ChargeApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [Route("{id}")]
         [HttpPut]
-        public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] UpdateChargeRequest charge)
+        public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] Charge charge)
         {
-            if (charge == null)
+            try
             {
-                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Charge model cannot be null."));
-            }
+                if (id != charge.Id)
+                    return BadRequest(id);
 
-            if (!ModelState.IsValid)
+                ChargeResponseObject chargeResponseObject = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
+                if (chargeResponseObject == null)
+                    return NotFound(id);
+
+                await _updateUseCase.ExecuteAsync(charge).ConfigureAwait(false);
+                return RedirectToAction("Get", new { id = charge.Id });
+            }
+            catch (FormatException ex)
             {
-                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, GetErrorMessage(ModelState)));
+                return BadRequest(ex.Message);
             }
-
-            if (id != charge.Id)
-            {
-                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Different Ids in model and route."));
-            }
-
-            ChargeResponse chargeEntity = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
-
-            if (chargeEntity == null)
-            {
-                return NotFound(new BaseErrorResponse((int) HttpStatusCode.NotFound, "No Charge by provided id cannot be found!"));
-            }
-
-            await _updateUseCase.ExecuteAsync(charge).ConfigureAwait(false);
-
-            return RedirectToAction("Get", new { id = charge.Id });
         }
 
         /// <summary>
@@ -165,16 +172,19 @@ namespace ChargeApi.V1.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            ChargeResponse charge = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
-
-            if (charge == null)
+            try
             {
-                return NotFound(new BaseErrorResponse((int) HttpStatusCode.NotFound, "No Charge by provided id cannot be found!"));
+                ChargeResponseObject charge = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
+                if (charge == null)
+                    return NotFound(id);
+                await _removeUseCase.ExecuteAsync(id).ConfigureAwait(false);
+                return NoContent();
             }
-
-            await _removeUseCase.ExecuteAsync(id).ConfigureAwait(false);
-
-            return NoContent();
+            catch (FormatException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
+
     }
 }

@@ -3,6 +3,7 @@ using ChargeApi.V1.Domain;
 using FluentAssertions;
 using System;
 using System.Linq;
+using ChargeApi.V1.Infrastructure;
 using Xunit;
 
 namespace ChargeApi.Tests.V1.Domain

@@ -1,4 +1,4 @@
-namespace ChargeApi.V1.Controllers
+namespace ChargeApi.V1
 {
     public static class Constants
     {

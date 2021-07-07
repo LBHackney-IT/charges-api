@@ -14,11 +14,8 @@ namespace ChargeApi.V1.Domain
 
         [Required]
         public string Frequency { get; set; }
-
-        [Range(double.Epsilon, (double) decimal.MaxValue, ErrorMessage = "Please enter the valid Amount.")]
+        [Range(0,double.MaxValue,ErrorMessage = "The amount value is wrong")]
         public decimal Amount { get; set; }
-
-        [RequiredDateTime]
         public DateTime StartDate { get; set; }
 
         [RequiredDateTime]
