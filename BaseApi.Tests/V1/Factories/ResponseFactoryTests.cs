@@ -91,7 +91,6 @@ namespace ChargeApi.Tests.V1.Factories
                 }
             };
 
-            // ToDO: List<Response> or ListResponse
             var listOfCharges = new List<Charge>()
             {
                 firstDomain,

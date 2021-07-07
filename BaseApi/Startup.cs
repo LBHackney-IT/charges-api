@@ -157,9 +157,8 @@ namespace ChargeApi
 
         private static void RegisterGateways(IServiceCollection services)
         {
-            //services.AddScoped<IChargeApiGateway, ChargeApiGateway>();
-            //TODO: For DynamoDb, remove the line above and uncomment the line below.
             services.AddScoped<IChargeApiGateway, DynamoDbGateway>();
+            services.AddSingleton<DynamoDbContextWrapper>();
         }
 
         private static void RegisterUseCases(IServiceCollection services)

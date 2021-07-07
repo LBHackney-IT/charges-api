@@ -6,7 +6,7 @@ using Xunit;
 
 namespace ChargeApi.Tests.V1.Domain
 {
-    public class DetailedChargesTest
+    public class DetailedChargesTests
     {
         [Fact]
         public void DetailedChargesTestHasPropertiesSet()
@@ -20,23 +20,5 @@ namespace ChargeApi.Tests.V1.Domain
             detailedCharges.Type.Should().Be(Constants.TYPE);
             detailedCharges.Frequency.Should().Be(Constants.FREQUENCY);
         }
-
-        //[Theory]
-        //[InlineData(0)]
-        //[InlineData(-100)]
-        //[InlineData(100)]
-        //public void Amountlessthan1ThrowException(decimal value)
-        //{
-        //    DetailedCharges detailedCharges = new DetailedCharges();
-
-        //    if (value <= 0)
-        //        Assert.Throws<ArgumentOutOfRangeException>(() => detailedCharges.Amount = value);
-        //    else
-        //    {
-        //        detailedCharges.Amount = value;
-        //        Assert.True(detailedCharges.Amount == value);
-        //    }
-        //}
-
     }
 }
