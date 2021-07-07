@@ -4,10 +4,9 @@ using ChargeApi.V1.UseCase.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ChargeApi.V1.Factories;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ChargeApi.V1.Controllers
 {
@@ -81,9 +80,9 @@ namespace ChargeApi.V1.Controllers
         {
             try
             {
-                var charges = await _getAllUseCase.ExecuteAsync(type, targetid).ConfigureAwait(false);
+                var charges = await _getAllUseCase.ExecuteAsync(type, targetId).ConfigureAwait(false);
                 if (charges == null)
-                    return NotFound(targetid);
+                    return NotFound(targetId);
                 return Ok(charges);
             }
             catch (FormatException ex)
@@ -103,15 +102,15 @@ namespace ChargeApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpPost]
-        public async Task<IActionResult> Post(Charge charge)
+        public async Task<IActionResult> Post(AddChargeRequest charge)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    await _addUseCase.ExecuteAsync(charge).ConfigureAwait(false);
+                    var chargeResponse = await _addUseCase.ExecuteAsync(charge).ConfigureAwait(false);
 
-                    return RedirectToAction("Get", new {id = charge.Id});
+                    return RedirectToAction("Get", new {id = chargeResponse.Id});
                 }
                 else
                 {
@@ -138,14 +137,14 @@ namespace ChargeApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [Route("{id}")]
         [HttpPut]
-        public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] Charge charge)
+        public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] UpdateChargeRequest charge)
         {
             try
             {
                 if (id != charge.Id)
                     return BadRequest(id);
 
-                ChargeResponseObject chargeResponseObject = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
+                ChargeResponse chargeResponseObject = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
                 if (chargeResponseObject == null)
                     return NotFound(id);
 
@@ -163,6 +162,7 @@ namespace ChargeApi.V1.Controllers
         /// </summary>
         /// <param name="id">The value by which we are looking for charge</param>
         /// <response code="204">Success. Charge models was deleted successfully</response>
+        /// <response code='400'>Bad Request</response>
         /// <response code="404">Charge with provided id cannot be found</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -174,7 +174,7 @@ namespace ChargeApi.V1.Controllers
         {
             try
             {
-                ChargeResponseObject charge = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
+                ChargeResponse charge = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
                 if (charge == null)
                     return NotFound(id);
                 await _removeUseCase.ExecuteAsync(id).ConfigureAwait(false);
