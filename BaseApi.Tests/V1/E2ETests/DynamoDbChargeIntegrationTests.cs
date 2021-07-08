@@ -118,7 +118,7 @@ namespace ChargeApi.Tests.V1.E2ETests
 
             using var response = await Client.PostAsync(uri, stringContent).ConfigureAwait(false);
 
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
 
             var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var apiEntity = JsonConvert.DeserializeObject<ChargeResponse>(responseContent);
@@ -126,6 +126,8 @@ namespace ChargeApi.Tests.V1.E2ETests
             apiEntity.Should().NotBeNull();
 
             apiEntity.Should().BeEquivalentTo(charge, options => options.Excluding(a => a.Id));
+
+            CleanupActions.Add(async () => await DynamoDbContext.DeleteAsync<ChargeDbEntity>(apiEntity.Id).ConfigureAwait(false));
 
             apiEntity.TargetType = TargetType.Tenure;
 
@@ -161,7 +163,7 @@ namespace ChargeApi.Tests.V1.E2ETests
 
             using var response = await Client.PostAsync(uri, stringContent).ConfigureAwait(false);
 
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
 
             var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var apiEntity = JsonConvert.DeserializeObject<ChargeResponse>(responseContent);
@@ -249,7 +251,7 @@ namespace ChargeApi.Tests.V1.E2ETests
 
             using var response = await Client.PostAsync(uri, stringContent).ConfigureAwait(false);
 
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
 
             var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var apiEntity = JsonConvert.DeserializeObject<ChargeResponse>(responseContent);

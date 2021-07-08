@@ -107,10 +107,10 @@ namespace ChargeApi.V1.Controllers
         /// Create new Charge model
         /// </summary>
         /// <param name="charge">Charge model for create</param>
-        /// <response code="200">Success. Charge model was created successfully</response>
+        /// <response code="201">Success. Charge model was created successfully</response>
         /// <response code="400">Bad Request</response>
         /// <response code="500">Internal Server Error</response>
-        [ProducesResponseType(typeof(ChargeResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ChargeResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpPost]
@@ -127,7 +127,7 @@ namespace ChargeApi.V1.Controllers
                 {
                     var chargeResponse = await _addUseCase.ExecuteAsync(charge).ConfigureAwait(false);
 
-                    return RedirectToAction("Get", new {id = chargeResponse.Id});
+                    return CreatedAtAction($"Get", new { id = chargeResponse.Id}, chargeResponse);
                 }
                 else
                 {

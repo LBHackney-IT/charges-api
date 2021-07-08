@@ -21,7 +21,7 @@ namespace ChargeApi.V1.Infrastructure
                 services.AddSingleton<IAmazonDynamoDB>(sp =>
                 {
                     var clientConfig = new AmazonDynamoDBConfig { ServiceURL = url };
-                    var credentials = new BasicAWSCredentials(accessKey, secretKey);
+                    var credentials = new BasicAWSCredentials("2cl9i", "vymxp");
                     return new AmazonDynamoDBClient(credentials, clientConfig);
                 });
             }

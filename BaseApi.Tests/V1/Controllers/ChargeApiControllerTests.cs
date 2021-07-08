@@ -308,7 +308,7 @@ namespace ChargeApi.Tests.V1.Controllers
                     }
                 });
 
-            var result = await _chargeController.Post(new AddChargeRequest
+            var charge = new AddChargeRequest
             {
                 TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
                 TargetType = TargetType.Asset,
@@ -324,19 +324,30 @@ namespace ChargeApi.Tests.V1.Controllers
                         Frequency = "Frequency"
                     }
                 }
-            }).ConfigureAwait(false);
+            };
+
+
+            var result = await _chargeController.Post(charge).ConfigureAwait(false);
 
             result.Should().NotBeNull();
 
-            var redirectToActionResult = result as RedirectToActionResult;
+            var createdAtActionResult = result as CreatedAtActionResult;
 
-            redirectToActionResult.Should().NotBeNull();
+            createdAtActionResult.Should().NotBeNull();
 
-            redirectToActionResult.ActionName.Should().BeEquivalentTo("Get");
+            createdAtActionResult.ActionName.Should().BeEquivalentTo("Get");
 
-            redirectToActionResult.RouteValues["id"].Should().NotBeNull();
+            createdAtActionResult.RouteValues["id"].Should().NotBeNull();
 
-            redirectToActionResult.RouteValues["id"].Should().BeOfType(typeof(Guid));
+            createdAtActionResult.RouteValues["id"].Should().BeOfType(typeof(Guid));
+
+            createdAtActionResult.Value.Should().NotBeNull();
+
+            var chargeResponse = createdAtActionResult.Value as ChargeResponse;
+
+            chargeResponse.Should().NotBeNull();
+
+            chargeResponse.Should().BeEquivalentTo(charge);
         }
 
         [Fact]
