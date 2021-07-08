@@ -70,7 +70,7 @@ namespace ChargeApi.Tests.V1.E2ETests
         }
 
         [Fact]
-        public async Task CreateChargeAndThenGetByIdReturns200()
+        public async Task CreateChargeAndThenGetByIdReturns201()
         {
             var charge = ConstructCharge();
 

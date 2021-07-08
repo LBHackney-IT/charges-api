@@ -286,7 +286,7 @@ namespace ChargeApi.Tests.V1.Controllers
         }
 
         [Fact]
-        public async Task AddChargeWithValidDataReturns200()
+        public async Task AddChargeWithValidDataReturns201()
         {
             _addUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<AddChargeRequest>()))
                 .ReturnsAsync(new ChargeResponse
