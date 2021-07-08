@@ -15,13 +15,14 @@ namespace ChargeApi.V1.Infrastructure
 
             if (localMode)
             {
+                var r = Environment.GetEnvironmentVariables();
                 var url = Environment.GetEnvironmentVariable("DynamoDb_LocalServiceUrl");
                 var accessKey = Environment.GetEnvironmentVariable("DynamoDb_LocalAccessKey");
                 var secretKey = Environment.GetEnvironmentVariable("DynamoDb_LocalSecretKey");
                 services.AddSingleton<IAmazonDynamoDB>(sp =>
                 {
                     var clientConfig = new AmazonDynamoDBConfig { ServiceURL = url };
-                    var credentials = new BasicAWSCredentials("2cl9i", "vymxp");
+                    var credentials = new BasicAWSCredentials(accessKey, secretKey);
                     return new AmazonDynamoDBClient(credentials, clientConfig);
                 });
             }
