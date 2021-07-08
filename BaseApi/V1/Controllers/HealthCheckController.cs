@@ -23,7 +23,7 @@ namespace ChargeApi.V1.Controllers
         [Route("error")]
         public void ThrowError()
         {
-            ThrowOpsErrorUsecase.Execute();
+            ThrowOpsErrorUseCase.Execute();
         }
 
     }

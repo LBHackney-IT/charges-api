@@ -13,7 +13,10 @@ namespace ChargeApi.V1.Infrastructure.Converters
     {
         public DynamoDBEntry ToEntry(object value)
         {
-            if (null == value) return new DynamoDBNull();
+            if (null == value)
+            {
+                return new DynamoDBNull();
+            }
 
             return new Primitive(Enum.GetName(typeof(TEnum), value));
         }
@@ -21,9 +24,14 @@ namespace ChargeApi.V1.Infrastructure.Converters
         public object FromEntry(DynamoDBEntry entry)
         {
             var primitive = entry as Primitive;
-            if (null == primitive) return default(TEnum);
+
+            if (null == primitive)
+            {
+                return default(TEnum);
+            }
 
             var valueAsEnum = (TEnum) Enum.Parse(typeof(TEnum), primitive.AsString());
+
             return valueAsEnum;
         }
     }

@@ -16,7 +16,10 @@ namespace ChargeApi.V1.Infrastructure.Converters
 
         public DynamoDBEntry ToEntry(object value)
         {
-            if (null == value) return new DynamoDBNull();
+            if (null == value)
+            {
+                return new DynamoDBNull();
+            }
 
             return new Primitive { Value = ((DateTime) value).ToUniversalTime().ToString(DATEFORMAT) };
         }
@@ -24,9 +27,14 @@ namespace ChargeApi.V1.Infrastructure.Converters
         public object FromEntry(DynamoDBEntry entry)
         {
             var primitive = entry as Primitive;
-            if (null == primitive) return null;
+
+            if (null == primitive)
+            {
+                return null;
+            }
 
             var dtString = primitive.Value.ToString();
+
             return DateTime.Parse(dtString, null, System.Globalization.DateTimeStyles.RoundtripKind);
         }
     }

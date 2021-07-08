@@ -23,6 +23,7 @@ namespace ChargeApi.V1.Infrastructure
             }
 
             var valueType = value.GetType();
+
             if (!valueType.IsEnum || !Enum.IsDefined(typeof(TargetType), value))
             {
                 return new ValidationResult($"{validationContext.MemberName} should be a type of TargetType enum.");

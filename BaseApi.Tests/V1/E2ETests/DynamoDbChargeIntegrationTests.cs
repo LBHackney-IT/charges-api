@@ -3,7 +3,6 @@ using Amazon.DynamoDBv2.DataModel;
 using ChargeApi.V1.Boundary;
 using ChargeApi.V1.Boundary.Response;
 using ChargeApi.V1.Domain;
-using ChargeApi.V1.Factories;
 using ChargeApi.V1.Infrastructure;
 using ChargeApi.V1.Infrastructure.Entities;
 using FluentAssertions;
