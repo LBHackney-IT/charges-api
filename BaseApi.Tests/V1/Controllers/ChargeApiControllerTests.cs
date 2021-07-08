@@ -339,10 +339,208 @@ namespace ChargeApi.Tests.V1.Controllers
             redirectToActionResult.RouteValues["id"].Should().BeOfType(typeof(Guid));
         }
 
-        //[Fact]
-        //public async Task AddChargeWithInvalidDataReturns400()
-        //{
-            
-        //}
+        [Fact]
+        public async Task AddChargeWithNullReturns400()
+        {
+            var result = await _chargeController.Post(null).ConfigureAwait(false);
+
+            var badRequest = result as BadRequestObjectResult;
+
+            badRequest.Should().NotBeNull();
+
+            var error = badRequest.Value as BaseErrorResponse;
+
+            error.Should().NotBeNull();
+
+            error.StatusCode.Should().Be(400);
+
+            error.Message.Should().BeEquivalentTo("Charge model cannot be null!");
+
+            error.Details.Should().BeEquivalentTo("");
+        }
+
+        [Fact]
+        public async Task PutChargeWithValidModelReturns200()
+        {
+            var charge = new UpdateChargeRequest
+            {
+                Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
+                TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
+                TargetType = TargetType.Asset,
+                DetailedCharges = new List<DetailedCharges>()
+                {
+                    new DetailedCharges
+                    {
+                        Type = "Type",
+                        SubType = "SubType",
+                        StartDate = new DateTime(2021, 7, 2),
+                        EndDate = new DateTime(2021, 7, 4),
+                        Amount = 150,
+                        Frequency = "Frequency"
+                    }
+                }
+            };
+
+            _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(new ChargeResponse());
+
+            _updateUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<UpdateChargeRequest>()))
+                .ReturnsAsync(new ChargeResponse
+                {
+                    Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
+                    TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
+                    TargetType = TargetType.Asset,
+                    DetailedCharges = new List<DetailedCharges>()
+                    {
+                        new DetailedCharges
+                        {
+                            Type = "Type",
+                            SubType = "SubType",
+                            StartDate = new DateTime(2021, 7, 2),
+                            EndDate = new DateTime(2021, 7, 4),
+                            Amount = 150,
+                            Frequency = "Frequency"
+                        }
+                    }
+                });
+
+            var result = await _chargeController.Put(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"), charge)
+                .ConfigureAwait(false);
+
+            var redirectToActionResult = result as RedirectToActionResult;
+
+            redirectToActionResult.Should().NotBeNull();
+
+            redirectToActionResult.ActionName.Should().BeEquivalentTo("Get");
+
+            redirectToActionResult.RouteValues.Should().NotBeNull();
+
+            redirectToActionResult.RouteValues["id"].Should().BeEquivalentTo(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"));
+        }
+
+        [Fact]
+        public async Task PutChargeWithNullReturns400()
+        {
+            var result = await _chargeController.Put(Guid.NewGuid(), null)
+                .ConfigureAwait(false);
+
+            var badRequest = result as BadRequestObjectResult;
+
+            badRequest.Should().NotBeNull();
+
+            var error = badRequest.Value as BaseErrorResponse;
+
+            error.Should().NotBeNull();
+
+            error.StatusCode.Should().Be(400);
+
+            error.Message.Should().BeEquivalentTo("Charge model cannot be null!");
+
+            error.Details.Should().BeEquivalentTo("");
+        }
+
+        [Fact]
+        public async Task PutChargeWithDifferentIdsInRouteAndModelReturns400()
+        {
+            var charge = new UpdateChargeRequest
+            {
+                Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
+                TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
+                TargetType = TargetType.Asset,
+                DetailedCharges = new List<DetailedCharges>()
+                {
+                    new DetailedCharges
+                    {
+                        Type = "Type",
+                        SubType = "SubType",
+                        StartDate = new DateTime(2021, 7, 2),
+                        EndDate = new DateTime(2021, 7, 4),
+                        Amount = 150,
+                        Frequency = "Frequency"
+                    }
+                }
+            };
+
+            var result = await _chargeController.Put(Guid.NewGuid(), charge).ConfigureAwait(false);
+
+            var badRequest = result as BadRequestObjectResult;
+
+            badRequest.Should().NotBeNull();
+
+            var error = badRequest.Value as BaseErrorResponse;
+
+            error.Should().NotBeNull();
+
+            error.StatusCode.Should().Be(400);
+
+            error.Message.Should().BeEquivalentTo("Ids in route and model are different");
+
+            error.Details.Should().BeEquivalentTo("");
+        }
+
+        [Fact]
+        public async Task PutChargeWithInvalidIdReturns404()
+        {
+            _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>()))
+                .ReturnsAsync((ChargeResponse) null);
+
+            var guid = Guid.NewGuid();
+
+            var result = await _chargeController.Put(guid, new UpdateChargeRequest() { Id = guid })
+                .ConfigureAwait(false);
+
+            var notFoundResult = result as NotFoundObjectResult;
+
+            notFoundResult.Should().NotBeNull();
+
+            var error = notFoundResult.Value as BaseErrorResponse;
+
+            error.Should().NotBeNull();
+
+            error.StatusCode.Should().Be(404);
+
+            error.Message.Should().BeEquivalentTo("No Charge by Id cannot be found!");
+
+            error.Details.Should().BeEquivalentTo("");
+        }
+
+        [Fact]
+        public async Task RemoveChargeWithValidIdReturns204()
+        {
+            _removeUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>()))
+                .Returns(Task.CompletedTask);
+
+            _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(new ChargeResponse());
+
+            var result = await _chargeController.Delete(Guid.NewGuid()).ConfigureAwait(false);
+
+            var noContent = result as NoContentResult;
+
+            noContent.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task RemoveChargeWithInvalidIdReturns404()
+        {
+            _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>()))
+                .ReturnsAsync((ChargeResponse) null);
+
+            var result = await _chargeController.Delete(Guid.NewGuid()).ConfigureAwait(false);
+
+            var notFoundResult = result as NotFoundObjectResult;
+
+            notFoundResult.Should().NotBeNull();
+
+            var error = notFoundResult.Value as BaseErrorResponse;
+
+            error.Should().NotBeNull();
+
+            error.StatusCode.Should().Be(404);
+
+            error.Message.Should().BeEquivalentTo("No Charge by Id cannot be found!");
+
+            error.Details.Should().BeEquivalentTo("");
+        }
     }
 }

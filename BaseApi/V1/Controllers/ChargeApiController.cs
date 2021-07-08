@@ -155,9 +155,14 @@ namespace ChargeApi.V1.Controllers
         {
             try
             {
+                if (charge == null)
+                {
+                    return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Charge model cannot be null!"));
+                }
+
                 if (id != charge.Id)
                 {
-                    return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Id in route and model are different"));
+                    return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Ids in route and model are different"));
                 }
 
                 ChargeResponse chargeResponseObject = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);

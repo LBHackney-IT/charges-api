@@ -1,6 +1,5 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
-using AutoFixture;
 using ChargeApi.V1.Boundary;
 using ChargeApi.V1.Boundary.Response;
 using ChargeApi.V1.Domain;
@@ -34,13 +33,6 @@ namespace ChargeApi.Tests.V1.E2ETests
             };
 
             return entity;
-        }
-
-        private async Task SetupTestData(Charge entity)
-        {
-            await DynamoDbContext.SaveAsync(entity.ToDatabase()).ConfigureAwait(false);
-
-            CleanupActions.Add(async () => await DynamoDbContext.DeleteAsync<ChargeDbEntity>(entity.Id).ConfigureAwait(false));
         }
 
         [Fact]
