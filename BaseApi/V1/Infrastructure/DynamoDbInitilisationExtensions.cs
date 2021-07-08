@@ -15,7 +15,6 @@ namespace ChargeApi.V1.Infrastructure
 
             if (localMode)
             {
-                var r = Environment.GetEnvironmentVariables();
                 var url = Environment.GetEnvironmentVariable("DynamoDb_LocalServiceUrl");
                 var accessKey = Environment.GetEnvironmentVariable("DynamoDb_LocalAccessKey");
                 var secretKey = Environment.GetEnvironmentVariable("DynamoDb_LocalSecretKey");

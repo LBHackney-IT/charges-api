@@ -55,7 +55,7 @@ namespace ChargeApi.V1.Gateways
                 new ScanCondition("TargetType", ScanOperator.Equal, Enum.Parse(typeof(TargetType), type)),
             };
 
-            if(targetId != new Guid())
+            if (targetId != Guid.Empty)
             {
                 scanConditions.Add(new ScanCondition("TargetId", ScanOperator.Equal, targetId));
             }
