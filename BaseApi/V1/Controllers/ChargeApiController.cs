@@ -46,8 +46,8 @@ namespace ChargeApi.V1.Controllers
         /// <response code="404">Charge with provided id cannot be found</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(typeof(ChargeResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpGet]
         [Route("{id}")]
@@ -76,8 +76,12 @@ namespace ChargeApi.V1.Controllers
         /// <param name="type">Type of charge</param>
         /// <param name="targetId">Id of the appropriate tenure</param>
         /// <response code="200">Success. Charge models was received successfully</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="404">Charges with provided id cannot be found</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(typeof(List<ChargeResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpGet]
         public async Task<IActionResult> GetAllAsync([FromQuery] string type, [FromQuery] Guid targetId)
@@ -143,6 +147,7 @@ namespace ChargeApi.V1.Controllers
         /// <param name="charge">Charge model for update</param>
         /// <response code="200">Success. Charge models was updated successfully</response>
         /// <response code="400">Bad Request</response>
+        /// <response code="404">Charge with provided id cannot be found</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(typeof(ChargeResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
@@ -186,10 +191,11 @@ namespace ChargeApi.V1.Controllers
         /// </summary>
         /// <param name="id">The value by which we are looking for charge</param>
         /// <response code="204">Success. Charge models was deleted successfully</response>
-        /// <response code='400'>Bad Request</response>
+        /// <response code="400">Bad Request</response>
         /// <response code="404">Charge with provided id cannot be found</response>
         /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [Route("{id}")]
