@@ -32,6 +32,10 @@ namespace ChargeApi.V1
             {
                 await _next.Invoke(context).ConfigureAwait(false);
             }
+            catch(FormatException ex)
+            {
+                await HandleExceptionAsync(context, ex, HttpStatusCode.BadRequest).ConfigureAwait(false);
+            }
             catch (ArgumentNullException ex)
             {
                 await HandleExceptionAsync(context, ex, HttpStatusCode.BadRequest).ConfigureAwait(false);
