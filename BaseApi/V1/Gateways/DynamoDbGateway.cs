@@ -1,7 +1,8 @@
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.DocumentModel;
 using ChargeApi.V1.Domain;
 using ChargeApi.V1.Factories;
-using ChargeApi.V1.Infrastructure;
+using ChargeApi.V1.Infrastructure.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,27 +13,30 @@ namespace ChargeApi.V1.Gateways
     public class DynamoDbGateway : IChargeApiGateway
     {
         private readonly IDynamoDBContext _dynamoDbContext;
+        private readonly DynamoDbContextWrapper _wrapper;
 
-        public DynamoDbGateway(IDynamoDBContext dynamoDbContext)
+        public DynamoDbGateway(IDynamoDBContext dynamoDbContext,
+            DynamoDbContextWrapper wrapper)
         {
             _dynamoDbContext = dynamoDbContext;
+            _wrapper = wrapper;
         }
 
         public void Add(Charge charge)
         {
-            _dynamoDbContext.SaveAsync<ChargeDbEntity>(charge.ToDatabase());
+            _dynamoDbContext.SaveAsync(charge.ToDatabase());
         }
 
         public async Task AddAsync(Charge charge)
         {
-            await _dynamoDbContext.SaveAsync<ChargeDbEntity>(charge.ToDatabase()).ConfigureAwait(false);
+            await _dynamoDbContext.SaveAsync(charge.ToDatabase()).ConfigureAwait(false);
         }
 
         public void AddRange(List<Charge> charges)
         {
             charges.ForEach(e =>
             {
-                _dynamoDbContext.SaveAsync<ChargeDbEntity>(e.ToDatabase());
+                _dynamoDbContext.SaveAsync(e.ToDatabase());
             });
         }
 
@@ -40,34 +44,42 @@ namespace ChargeApi.V1.Gateways
         {
             foreach (Charge charge in charges)
             {
-                await _dynamoDbContext.SaveAsync<ChargeDbEntity>(charge.ToDatabase()).ConfigureAwait(false);
+                await _dynamoDbContext.SaveAsync(charge.ToDatabase()).ConfigureAwait(false);
             }
-        } 
+        }
 
-        public async Task<List<Charge>> GetAllChargesAsync(string type, Guid targetid)
+        public async Task<List<Charge>> GetAllChargesAsync(string type, Guid targetId)
         {
-            //ScanCondition scanCondition_id = new ScanCondition("Id", Amazon.DynamoDBv2.DocumentModel.ScanOperator.GreaterThan, new Guid("00000000-0000-0000-0000-000000000000"));
+            List<ScanCondition> scanConditions = new List<ScanCondition>
+            {
+                new ScanCondition("TargetType", ScanOperator.Equal, Enum.Parse(typeof(TargetType), type)),
+            };
 
-            List<ScanCondition> scanConditions = new List<ScanCondition>();
+            if (targetId != Guid.Empty)
+            {
+                scanConditions.Add(new ScanCondition("TargetId", ScanOperator.Equal, targetId));
+            }
 
-            if (type != null)
-                scanConditions.Add(new ScanCondition("TargetType", Amazon.DynamoDBv2.DocumentModel.ScanOperator.Equal, Enum.Parse(typeof(TargetType), type)));
-            if(targetid != Guid.Parse("00000000-0000-0000-0000-000000000000"))
-                scanConditions.Add(new ScanCondition("TargetId", Amazon.DynamoDBv2.DocumentModel.ScanOperator.Equal, targetid));
+            List<ChargeDbEntity> data = await _wrapper.ScanAsync(_dynamoDbContext, scanConditions).ConfigureAwait(false);
 
-            List<ChargeDbEntity> data = await _dynamoDbContext.ScanAsync<ChargeDbEntity>(scanConditions).GetRemainingAsync().ConfigureAwait(false);
-            return data.Select(p=>p.ToDomain()).ToList();
+            return data.Select(p => p.ToDomain()).ToList();
         }
 
         public async Task<Charge> GetChargeByIdAsync(Guid id)
         {
-            var result = await _dynamoDbContext.LoadAsync<ChargeDbEntity>(id).ConfigureAwait(false);
-            return result?.ToDomain();
+            List<ScanCondition> scanConditions = new List<ScanCondition>
+            {
+                new ScanCondition("Id", ScanOperator.Equal, id)
+            };
+
+            var result = await _wrapper.ScanAsync(_dynamoDbContext, scanConditions).ConfigureAwait(false);
+
+            return result.FirstOrDefault()?.ToDomain();
         }
 
         public void Remove(Charge charge)
         {
-            _dynamoDbContext.DeleteAsync<ChargeDbEntity>(charge.ToDatabase());
+            _dynamoDbContext.DeleteAsync(charge.ToDatabase());
         }
 
         public async Task RemoveAsync(Charge charge)
@@ -93,12 +105,12 @@ namespace ChargeApi.V1.Gateways
 
         public void Update(Charge charge)
         {
-            _dynamoDbContext.SaveAsync<ChargeDbEntity>(charge.ToDatabase());
+            _dynamoDbContext.SaveAsync(charge.ToDatabase());
         }
 
         public async Task UpdateAsync(Charge charge)
         {
-            await _dynamoDbContext.SaveAsync<ChargeDbEntity>(charge.ToDatabase()).ConfigureAwait(false);
+            await _dynamoDbContext.SaveAsync(charge.ToDatabase()).ConfigureAwait(false);
         }
     }
 }

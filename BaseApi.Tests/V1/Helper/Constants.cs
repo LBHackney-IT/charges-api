@@ -1,8 +1,5 @@
 using ChargeApi.V1.Domain;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ChargeApi.Tests.V1.Helper
 {
@@ -20,34 +17,38 @@ namespace ChargeApi.Tests.V1.Helper
 
         public static Charge ConstructChargeFromConstants()
         {
-            var entity = new Charge();
-            entity.Id = Constants.ID;
-            entity.TargetId = Constants.TARGETID;
-            entity.TargetType = Constants.TARGETTYPE;
-            entity.DetailedCharges = new[]
+            var entity = new Charge
+            {
+                Id = ID,
+                TargetId = TARGETID,
+                TargetType = TARGETTYPE,
+                DetailedCharges = new[]
             {
                 new DetailedCharges
                 {
-                    Amount = Constants.AMOUNT,
-                    StartDate = DateTime.Parse(Constants.STARTDATE),
-                    EndDate = DateTime.Parse(Constants.ENDDATE),
-                    Frequency = Constants.FREQUENCY,
-                    SubType = Constants.SUBTYPE,
-                    Type = Constants.TYPE
+                    Amount = AMOUNT,
+                    StartDate = DateTime.Parse(STARTDATE),
+                    EndDate = DateTime.Parse(ENDDATE),
+                    Frequency = FREQUENCY,
+                    SubType = SUBTYPE,
+                    Type = TYPE
                 }
+            }
             };
             return entity;
         }
 
         public static DetailedCharges ConstructDetailedChargesFromConstants()
         {
-            var entity = new DetailedCharges();
-            entity.Amount = Constants.AMOUNT;
-            entity.EndDate = DateTime.Parse(Constants.ENDDATE);
-            entity.Frequency = Constants.FREQUENCY;
-            entity.StartDate = DateTime.Parse(Constants.STARTDATE);
-            entity.SubType = Constants.SUBTYPE;
-            entity.Type = Constants.TYPE;
+            var entity = new DetailedCharges
+            {
+                Amount = AMOUNT,
+                EndDate = DateTime.Parse(ENDDATE),
+                Frequency = FREQUENCY,
+                StartDate = DateTime.Parse(STARTDATE),
+                SubType = SUBTYPE,
+                Type = TYPE
+            };
             return entity;
         }
     }

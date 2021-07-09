@@ -22,6 +22,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using ChargeApi.V1;
 
 namespace ChargeApi
 {
@@ -118,7 +119,12 @@ namespace ChargeApi
             services.ConfigureDynamoDB();
 
             RegisterGateways(services);
-            RegisterUseCases(services); 
+            RegisterUseCases(services);
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
         }
 
         private static void ConfigureDbContext(IServiceCollection services)
@@ -151,9 +157,8 @@ namespace ChargeApi
 
         private static void RegisterGateways(IServiceCollection services)
         {
-            //services.AddScoped<IChargeApiGateway, ChargeApiGateway>();
-            //TODO: For DynamoDb, remove the line above and uncomment the line below.
             services.AddScoped<IChargeApiGateway, DynamoDbGateway>();
+            services.AddSingleton<DynamoDbContextWrapper>();
         }
 
         private static void RegisterUseCases(IServiceCollection services)
@@ -198,6 +203,7 @@ namespace ChargeApi
                         $"{ApiName}-api {apiVersionDescription.GetFormattedApiVersion()}");
                 }
             });
+            app.UseMiddleware<ExceptionMiddleware>();
             app.UseSwagger();
             app.UseRouting();
             app.UseEndpoints(endpoints =>

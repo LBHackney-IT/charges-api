@@ -1,3 +1,4 @@
+using ChargeApi.V1.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChargeApi.V1.Infrastructure

@@ -1,8 +1,7 @@
+using ChargeApi.V1.Domain;
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
-using ChargeApi.V1.Domain;
 
 namespace ChargeApi.V1.Gateways
 {

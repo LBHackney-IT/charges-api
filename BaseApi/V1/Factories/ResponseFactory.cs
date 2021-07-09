@@ -7,9 +7,9 @@ namespace ChargeApi.V1.Factories
 {
     public static class ResponseFactory
     {
-        public static ChargeResponseObject ToResponse(this Charge domain)
+        public static ChargeResponse ToResponse(this Charge domain)
         {
-            return new ChargeResponseObject()
+            return new ChargeResponse()
             {
                 Id = domain.Id,
                 TargetId = domain.TargetId,
@@ -18,7 +18,7 @@ namespace ChargeApi.V1.Factories
             };
         }
 
-        public static List<ChargeResponseObject> ToResponse(this IEnumerable<Charge> domainList)
+        public static List<ChargeResponse> ToResponse(this IEnumerable<Charge> domainList)
         {
             return domainList.Select(domain => domain.ToResponse()).ToList();
         } 

@@ -1,17 +1,16 @@
-using System.Collections.Generic;
+using ChargeApi.V1;
 using ChargeApi.V1.Controllers;
-using ChargeApi.V1.Infrastructure;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Routing;
+using System.Collections.Generic;
 using Xunit;
-using Xunit.Sdk;
 
 namespace ChargeApi.Tests.V1.Controllers
 {
-    
+
     public class BaseControllerTests
     {
         private BaseController _sut;

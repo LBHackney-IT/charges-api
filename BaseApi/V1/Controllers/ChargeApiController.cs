@@ -1,22 +1,19 @@
+using ChargeApi.V1.Boundary.Request;
 using ChargeApi.V1.Boundary.Response;
-using ChargeApi.V1.Domain;
 using ChargeApi.V1.UseCase.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Linq;
+using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
-using ChargeApi.V1.Factories;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ChargeApi.V1.Controllers
 {
     [ApiController]
-    //TODO: Rename to match the APIs endpoint
     [Route("api/v1/charges")]
     [Produces("application/json")]
     [ApiVersion("1.0")]
-    //TODO: rename class to match the API name
     public class ChargeApiController : BaseController
     {
         private readonly IGetAllUseCase _getAllUseCase;
@@ -40,115 +37,153 @@ namespace ChargeApi.V1.Controllers
             _updateUseCase = updateUseCase;
         }
 
-        [ProducesResponseType(typeof(ChargeResponseObject), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        /// <summary>
+        /// Get Charge model by provided id
+        /// </summary>
+        /// <param name="id">The value by which we are looking for charge</param>
+        /// <response code="200">Success. Charge model was received successfully</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="404">Charge with provided id cannot be found</response>
+        /// <response code="500">Internal Server Error</response>
+        [ProducesResponseType(typeof(ChargeResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> Get([FromRoute] Guid id)
         {
-            try
+            var charge = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
+
+            if (charge == null)
             {
-                var charge = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
-                if (charge == null)
-                    return NotFound(id);
-                return Ok(charge);
+                return NotFound(new BaseErrorResponse((int) HttpStatusCode.NotFound, "No Charge by provided Id cannot be found!"));
             }
-            catch(FormatException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+
+            return Ok(charge);
         }
 
-        [ProducesResponseType(typeof(ChargeResponseObjectList), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        /// <summary>
+        /// Get a list of charge models by provided type and targetId
+        /// </summary>
+        /// <param name="type">Type of charge</param>
+        /// <param name="targetId">Id of the appropriate tenure</param>
+        /// <response code="200">Success. Charge models was received successfully</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="404">Charges with provided id cannot be found</response>
+        /// <response code="500">Internal Server Error</response>
+        [ProducesResponseType(typeof(List<ChargeResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync([FromQuery]string type,[FromQuery] Guid targetid)
+        public async Task<IActionResult> GetAllAsync([FromQuery] string type, [FromQuery] Guid targetId)
         {
-            try
+            var charges = await _getAllUseCase.ExecuteAsync(type, targetId).ConfigureAwait(false);
+
+            if (charges == null)
             {
-                var charges = await _getAllUseCase.ExecuteAsync(type, targetid).ConfigureAwait(false);
-                if (charges == null)
-                    return NotFound(targetid);
-                return Ok(charges);
+                return NotFound(new BaseErrorResponse((int) HttpStatusCode.NotFound, "No Charges by provided type and targetId cannot be found!"));
             }
-            catch (FormatException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+
+            return Ok(charges);
         }
 
-        [ProducesResponseType(typeof(ChargeResponseObject), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        /// <summary>
+        /// Create new Charge model
+        /// </summary>
+        /// <param name="charge">Charge model for create</param>
+        /// <response code="201">Success. Charge model was created successfully</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="500">Internal Server Error</response>
+        [ProducesResponseType(typeof(ChargeResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpPost]
-        public async Task<IActionResult> Post(Charge charge)
+        public async Task<IActionResult> Post(AddChargeRequest charge)
         {
-            try
+            if(charge == null)
             {
-                if (ModelState.IsValid)
-                {
-                    await _addUseCase.ExecuteAsync(charge).ConfigureAwait(false);
-
-                    return RedirectToAction("Get", new {id = charge.Id});
-                }
-                else
-                {
-                    return BadRequest(ModelState.Values.First().Errors[0].ErrorMessage);
-                }
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Charge model cannot be null!"));
             }
-            catch (FormatException ex)
+
+            if (ModelState.IsValid)
             {
-                return BadRequest(ex.Message);
+                var chargeResponse = await _addUseCase.ExecuteAsync(charge).ConfigureAwait(false);
+
+                return CreatedAtAction($"Get", new { id = chargeResponse.Id}, chargeResponse);
+            }
+            else
+            {
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, GetErrorMessage(ModelState)));
             }
         }
 
-        [ProducesResponseType(typeof(ChargeResponseObject),StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        /// <summary>
+        /// Update existing charge model
+        /// </summary>
+        /// <param name="id">The value by which we are looking for charge</param>
+        /// <param name="charge">Charge model for update</param>
+        /// <response code="200">Success. Charge models was updated successfully</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="404">Charge with provided id cannot be found</response>
+        /// <response code="500">Internal Server Error</response>
+        [ProducesResponseType(typeof(ChargeResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [Route("{id}")]
         [HttpPut]
-        public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] Charge charge)
+        public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] UpdateChargeRequest charge)
         {
-            try
+            if (charge == null)
             {
-                if (id != charge.Id)
-                    return BadRequest(id);
-
-                ChargeResponseObject chargeResponseObject = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
-                if (chargeResponseObject == null)
-                    return NotFound(id);
-
-                await _updateUseCase.ExecuteAsync(charge).ConfigureAwait(false);
-                return RedirectToAction("Get", new { id = charge.Id });
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Charge model cannot be null!"));
             }
-            catch (FormatException ex)
+
+            if (id != charge.Id)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Ids in route and model are different"));
             }
+
+            ChargeResponse chargeResponseObject = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
+
+            if (chargeResponseObject == null)
+            {
+                return NotFound(new BaseErrorResponse((int) HttpStatusCode.NotFound, "No Charge by Id cannot be found!"));
+            }
+
+            await _updateUseCase.ExecuteAsync(charge).ConfigureAwait(false);
+
+            return RedirectToAction("Get", new { id = charge.Id });
         }
 
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        /// <summary>
+        /// Delete existing charge model
+        /// </summary>
+        /// <param name="id">The value by which we are looking for charge</param>
+        /// <response code="204">Success. Charge models was deleted successfully</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="404">Charge with provided id cannot be found</response>
+        /// <response code="500">Internal Server Error</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [Route("{id}")]
         [HttpDelete]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            try
+            ChargeResponse charge = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
+
+            if (charge == null)
             {
-                ChargeResponseObject charge = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
-                if (charge == null)
-                    return NotFound(id);
-                await _removeUseCase.ExecuteAsync(id).ConfigureAwait(false);
-                return NoContent();
+                return NotFound(new BaseErrorResponse((int) HttpStatusCode.NotFound, "No Charge by Id cannot be found!"));
             }
-            catch (FormatException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+
+            await _removeUseCase.ExecuteAsync(id).ConfigureAwait(false);
+
+            return NoContent();
         }
 
     }

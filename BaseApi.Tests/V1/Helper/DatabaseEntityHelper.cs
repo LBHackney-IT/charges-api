@@ -1,6 +1,6 @@
 using AutoFixture;
 using ChargeApi.V1.Domain;
-using ChargeApi.V1.Infrastructure;
+using ChargeApi.V1.Infrastructure.Entities;
 
 namespace ChargeApi.Tests.V1.Helper
 {
