@@ -24,12 +24,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "production", "production", 
 		terraform\production\main.tf = terraform\production\main.tf
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonApi", "..\Person-Api\PersonApi\PersonApi.csproj", "{859805CA-B81B-4FCE-A621-9F67E30BB911}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LBH.AdultSocialCare.Api", "..\lbh-adult-social-care-api\LBH.AdultSocialCare.Api\LBH.AdultSocialCare.Api.csproj", "{10974490-93D1-444C-BC97-70C639AEF20F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HousingSearchApi", "..\housing-search-api\HousingSearchApi\HousingSearchApi.csproj", "{082775C2-2E55-4132-A887-3DB242181B08}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,18 +38,6 @@ Global
 		{DE8E4E61-EB76-416B-8417-E8F2F6A0C0D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE8E4E61-EB76-416B-8417-E8F2F6A0C0D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE8E4E61-EB76-416B-8417-E8F2F6A0C0D3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{859805CA-B81B-4FCE-A621-9F67E30BB911}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{859805CA-B81B-4FCE-A621-9F67E30BB911}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{859805CA-B81B-4FCE-A621-9F67E30BB911}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{859805CA-B81B-4FCE-A621-9F67E30BB911}.Release|Any CPU.Build.0 = Release|Any CPU
-		{10974490-93D1-444C-BC97-70C639AEF20F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{10974490-93D1-444C-BC97-70C639AEF20F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{10974490-93D1-444C-BC97-70C639AEF20F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{10974490-93D1-444C-BC97-70C639AEF20F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{082775C2-2E55-4132-A887-3DB242181B08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{082775C2-2E55-4132-A887-3DB242181B08}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{082775C2-2E55-4132-A887-3DB242181B08}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{082775C2-2E55-4132-A887-3DB242181B08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

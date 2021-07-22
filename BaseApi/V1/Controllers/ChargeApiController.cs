@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using ChargeApi.V1.Infrastructure;
 
 namespace ChargeApi.V1.Controllers
 {
@@ -115,7 +116,7 @@ namespace ChargeApi.V1.Controllers
             }
             else
             {
-                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, GetErrorMessage(ModelState)));
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, ModelState.GetErrorMessages()));
             }
         }
 
