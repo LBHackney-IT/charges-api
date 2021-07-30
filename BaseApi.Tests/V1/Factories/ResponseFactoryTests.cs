@@ -49,6 +49,69 @@ namespace ChargeApi.Tests.V1.Factories
             detailedCharges[0].Amount.Should().Be(150);
             detailedCharges[0].Frequency.Should().BeEquivalentTo("Frequency");
         }
+        [Fact]
+        public void CanMapAChargeMaintenanceDomainObjectToResponse()
+        {
+            var domain = new ChargeMaintenance
+            {
+                Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
+                ChargesId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
+                Reason = "Uplift",
+                NewValue = new List<DetailedCharges>()
+                    {
+                        new DetailedCharges
+                        {
+                            Type = "service",
+                            SubType = "water",
+                            StartDate = new DateTime(2021, 7, 2),
+                            EndDate = new DateTime(2021, 7, 4),
+                            Amount = 150,
+                            Frequency = "weekly"
+                        }
+                    },
+                ExistingValue = new List<DetailedCharges>()
+                    {
+                        new DetailedCharges
+                        {
+                            Type = "service",
+                            SubType = "water",
+                            StartDate = new DateTime(2021, 7, 2),
+                            EndDate = new DateTime(2021, 7, 4),
+                            Amount = 120,
+                            Frequency = "weekly"
+                        }
+                    },
+                StartDate = new DateTime(2021, 7, 2),
+                Status = ChargeMaintenanceStatus.Pending
+            };
+
+            var response = domain.ToResponse();
+
+            response.Id.Should().Be(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"));
+            response.ChargesId.Should().Be(new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"));
+            response.Status.Should().Be(ChargeMaintenanceStatus.Pending);
+            response.Reason.Should().Be("Uplift");
+            response.StartDate.Should().Be(new DateTime(2021, 7, 2));
+            response.ExistingValue.Should().HaveCount(1);
+
+            var existingCharges = response.ExistingValue.ToList();
+
+            existingCharges[0].Type.Should().BeEquivalentTo("service");
+            existingCharges[0].SubType.Should().BeEquivalentTo("water");
+            existingCharges[0].StartDate.Should().Be(new DateTime(2021, 7, 2));
+            existingCharges[0].EndDate.Should().Be(new DateTime(2021, 7, 4));
+            existingCharges[0].Amount.Should().Be(120);
+            existingCharges[0].Frequency.Should().BeEquivalentTo("weekly");
+
+            var newCharges = response.NewValue.ToList();
+
+            newCharges[0].Type.Should().BeEquivalentTo("service");
+            newCharges[0].SubType.Should().BeEquivalentTo("water");
+            newCharges[0].StartDate.Should().Be(new DateTime(2021, 7, 2));
+            newCharges[0].EndDate.Should().Be(new DateTime(2021, 7, 4));
+            newCharges[0].Amount.Should().Be(150);
+            newCharges[0].Frequency.Should().BeEquivalentTo("weekly");
+        }
 
         [Fact]
         public void CanMapListOfAssetSummaryDomainObjectsToResponse()

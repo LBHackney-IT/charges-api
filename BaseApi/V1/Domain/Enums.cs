@@ -8,4 +8,10 @@ namespace ChargeApi.V1.Domain
         Asset,
         Tenure
     }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum ChargeMaintenanceStatus
+    {
+        Pending,
+        Applied
+    }
 }

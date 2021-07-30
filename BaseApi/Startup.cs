@@ -158,6 +158,7 @@ namespace ChargeApi
         private static void RegisterGateways(IServiceCollection services)
         {
             services.AddScoped<IChargeApiGateway, DynamoDbGateway>();
+            services.AddScoped<IChargeMaintenanceApiGateway, ChargeMaintenanceGateway>();
             services.AddSingleton<DynamoDbContextWrapper>();
         }
 
@@ -168,6 +169,9 @@ namespace ChargeApi
             services.AddScoped<IAddUseCase, AddUseCase>();
             services.AddScoped<IRemoveUseCase, RemoveUseCase>();
             services.AddScoped<IUpdateUseCase, UpdateUseCase>();
+            services.AddScoped<IAddChargeMaintenanceUseCase, AddChargeMaintenanceUseCase>();
+            services.AddScoped<IGetByIdChargeMaintenanceUseCase, GetByIdChargeMaintenanceUseCase>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

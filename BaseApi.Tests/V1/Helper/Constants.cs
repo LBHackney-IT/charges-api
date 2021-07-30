@@ -37,7 +37,42 @@ namespace ChargeApi.Tests.V1.Helper
             };
             return entity;
         }
-
+        public static ChargeMaintenance ConstructChargeMaintenanceFromConstants()
+        {
+            var entity = new ChargeMaintenance
+            {
+                Id = ID,
+                ChargesId = TARGETID,
+                Reason = "Uplift",
+                NewValue = new[]
+                {
+                    new DetailedCharges
+                    {
+                        Amount = AMOUNT,
+                        StartDate = DateTime.Parse(STARTDATE),
+                        EndDate = DateTime.Parse(ENDDATE),
+                        Frequency = FREQUENCY,
+                        SubType = SUBTYPE,
+                        Type = TYPE
+                    }
+                },
+                ExistingValue = new[]
+                {
+                    new DetailedCharges
+                        {
+                            Amount = AMOUNT,
+                            StartDate = DateTime.Parse(STARTDATE),
+                            EndDate = DateTime.Parse(ENDDATE),
+                            Frequency = FREQUENCY,
+                            SubType = SUBTYPE,
+                            Type = TYPE
+                        }
+                } ,
+                StartDate = new DateTime(2021, 7, 2),
+                Status = ChargeMaintenanceStatus.Pending
+            };
+            return entity;
+        }
         public static DetailedCharges ConstructDetailedChargesFromConstants()
         {
             var entity = new DetailedCharges
