@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "BaseApi.Tests": {
+    "ChargesApi.Tests": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
