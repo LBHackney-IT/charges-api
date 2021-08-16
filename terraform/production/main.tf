@@ -37,16 +37,16 @@ terraform {
     }
 }
 
-resource "aws_sns_topic" "accounts_topic" {
-    name                        = "accounts.fifo"
+resource "aws_sns_topic" "charges_topic" {
+    name                        = "charges.fifo"
     fifo_topic                  = true
     content_based_deduplication = true
     kms_master_key_id = "alias/aws/sns"
 }
 
-resource "aws_ssm_parameter" "new_account_created_sns_arn" {
-    name  = "/sns-topic/${var.environment_name}/account_created/arn"
+resource "aws_ssm_parameter" "new_charges_created_sns_arn" {
+    name  = "/sns-topic/${var.environment_name}/charges_created/arn"
     type  = "String"
-    value = aws_sns_topic.accounts_topic.arn
+    value = aws_sns_topic.charges_topic.arn
 }
 
