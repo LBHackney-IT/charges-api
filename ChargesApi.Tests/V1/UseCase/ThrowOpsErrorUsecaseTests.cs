@@ -1,8 +1,8 @@
-using ChargeApi.V1.UseCase;
+using ChargesApi.V1.UseCase;
 using FluentAssertions;
 using Xunit;
 
-namespace ChargeApi.Tests.V1.UseCase
+namespace ChargesApi.Tests.V1.UseCase
 {
     public class ThrowOpsErrorUseCaseTests
     {

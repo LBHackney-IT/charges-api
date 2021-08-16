@@ -3,14 +3,14 @@ using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
 using Amazon.XRay.Recorder.Core;
 using Amazon.XRay.Recorder.Core.Strategies;
-using ChargeApi.V1.Infrastructure;
+using ChargesApi.V1.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 
-namespace ChargeApi.Tests
+namespace ChargesApi.Tests
 {
     public class DynamoDbMockWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class

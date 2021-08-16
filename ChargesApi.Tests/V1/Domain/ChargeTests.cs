@@ -1,12 +1,12 @@
-using ChargeApi.Tests.V1.Helper;
-using ChargeApi.V1.Domain;
+using ChargesApi.Tests.V1.Helper;
+using ChargesApi.V1.Domain;
 using FluentAssertions;
 using System;
 using System.Linq;
-using ChargeApi.V1.Infrastructure;
+using ChargesApi.V1.Infrastructure;
 using Xunit;
 
-namespace ChargeApi.Tests.V1.Domain
+namespace ChargesApi.Tests.V1.Domain
 {
     public class ChargeTests
     {

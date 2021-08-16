@@ -1,9 +1,9 @@
-using ChargeApi.V1.Infrastructure;
+using ChargesApi.V1.Infrastructure;
 using FluentAssertions;
 using System;
 using Xunit;
 
-namespace ChargeApi.Tests.V1.Infrastructure
+namespace ChargesApi.Tests.V1.Infrastructure
 {
     public class ExceptionExtensionsTests
     {

@@ -1,16 +1,16 @@
-using ChargeApi.V1.Domain;
-using ChargeApi.V1.Gateways;
-using ChargeApi.V1.UseCase.Interfaces;
+using ChargesApi.V1.Domain;
+using ChargesApi.V1.Gateways;
+using ChargesApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
 
-namespace ChargeApi.V1.UseCase
+namespace ChargesApi.V1.UseCase
 {
     public class RemoveUseCase : IRemoveUseCase
     {
-        private readonly IChargeApiGateway _gateway;
+        private readonly IChargesApiGateway _gateway;
 
-        public RemoveUseCase(IChargeApiGateway gateway)
+        public RemoveUseCase(IChargesApiGateway gateway)
         {
             _gateway = gateway;
         }

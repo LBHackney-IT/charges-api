@@ -1,8 +1,8 @@
-using ChargeApi.V1.Boundary.Request;
-using ChargeApi.V1.Boundary.Response;
-using ChargeApi.V1.Controllers;
-using ChargeApi.V1.Domain;
-using ChargeApi.V1.UseCase.Interfaces;
+using ChargesApi.V1.Boundary.Request;
+using ChargesApi.V1.Boundary.Response;
+using ChargesApi.V1.Controllers;
+using ChargesApi.V1.Domain;
+using ChargesApi.V1.UseCase.Interfaces;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +16,11 @@ using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace ChargeApi.Tests.V1.Controllers
+namespace ChargesApi.Tests.V1.Controllers
 {
-    public class ChargeApiControllerTests
+    public class ChargesApiControllerTests
     {
-        private readonly ChargeApiController _chargeController;
+        private readonly ChargesApiController _chargeController;
         private readonly ControllerContext _controllerContext;
         private readonly HttpContext _httpContext;
 
@@ -30,7 +30,7 @@ namespace ChargeApi.Tests.V1.Controllers
         private readonly Mock<IRemoveUseCase> _removeUseCase;
         private readonly Mock<IUpdateUseCase> _updateUseCase;
 
-        public ChargeApiControllerTests()
+        public ChargesApiControllerTests()
         {
             _getAllUseCase = new Mock<IGetAllUseCase>();
             _getByIdUseCase = new Mock<IGetByIdUseCase>();
@@ -40,7 +40,7 @@ namespace ChargeApi.Tests.V1.Controllers
 
             _httpContext = new DefaultHttpContext();
             _controllerContext = new ControllerContext(new ActionContext(_httpContext, new RouteData(), new ControllerActionDescriptor()));
-            _chargeController = new ChargeApiController(_getAllUseCase.Object, _getByIdUseCase.Object, _addUseCase.Object,
+            _chargeController = new ChargesApiController(_getAllUseCase.Object, _getByIdUseCase.Object, _addUseCase.Object,
                                                         _removeUseCase.Object, _updateUseCase.Object)
             {
                 ControllerContext = _controllerContext

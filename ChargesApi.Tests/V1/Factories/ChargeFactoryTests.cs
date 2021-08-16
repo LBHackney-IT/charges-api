@@ -1,13 +1,13 @@
-using ChargeApi.V1.Domain;
-using ChargeApi.V1.Factories;
-using ChargeApi.V1.Infrastructure.Entities;
+using ChargesApi.V1.Domain;
+using ChargesApi.V1.Factories;
+using ChargesApi.V1.Infrastructure.Entities;
 using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace ChargeApi.Tests.V1.Factories
+namespace ChargesApi.Tests.V1.Factories
 {
 
     public class ChargeFactoryTests

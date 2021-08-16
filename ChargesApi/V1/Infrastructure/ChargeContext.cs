@@ -1,7 +1,7 @@
-using ChargeApi.V1.Infrastructure.Entities;
+using ChargesApi.V1.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ChargeApi.V1.Infrastructure
+namespace ChargesApi.V1.Infrastructure
 {
 
     public class ChargeContext : DbContext

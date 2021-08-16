@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ChargeApi.V1.Domain
+namespace ChargesApi.V1.Domain
 {
     public class ChargeMaintenance
     {

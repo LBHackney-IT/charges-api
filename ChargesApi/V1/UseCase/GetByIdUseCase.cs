@@ -1,17 +1,17 @@
-using ChargeApi.V1.Boundary.Response;
-using ChargeApi.V1.Factories;
-using ChargeApi.V1.Gateways;
-using ChargeApi.V1.UseCase.Interfaces;
+using ChargesApi.V1.Boundary.Response;
+using ChargesApi.V1.Factories;
+using ChargesApi.V1.Gateways;
+using ChargesApi.V1.UseCase.Interfaces;
 using System;
 using System.Threading.Tasks;
 
-namespace ChargeApi.V1.UseCase
+namespace ChargesApi.V1.UseCase
 {
     public class GetByIdUseCase : IGetByIdUseCase
     {
-        private IChargeApiGateway _gateway;
+        private IChargesApiGateway _gateway;
 
-        public GetByIdUseCase(IChargeApiGateway gateway)
+        public GetByIdUseCase(IChargesApiGateway gateway)
         {
             _gateway = gateway;
         }

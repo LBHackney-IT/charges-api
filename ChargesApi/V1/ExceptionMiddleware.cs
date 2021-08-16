@@ -1,5 +1,5 @@
-using ChargeApi.V1.Boundary.Response;
-using ChargeApi.V1.Infrastructure;
+using ChargesApi.V1.Boundary.Response;
+using ChargesApi.V1.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace ChargeApi.V1
+namespace ChargesApi.V1
 {
     public class ExceptionMiddleware
     {

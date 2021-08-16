@@ -1,7 +1,7 @@
 using Amazon.Lambda.AspNetCoreServer;
 using Microsoft.AspNetCore.Hosting;
 
-namespace ChargeApi
+namespace ChargesApi
 {
     public class LambdaEntryPoint : APIGatewayProxyFunction
     {

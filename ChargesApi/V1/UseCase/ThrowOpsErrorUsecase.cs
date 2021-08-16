@@ -1,5 +1,5 @@
 
-namespace ChargeApi.V1.UseCase
+namespace ChargesApi.V1.UseCase
 {
     public static class ThrowOpsErrorUseCase
     {

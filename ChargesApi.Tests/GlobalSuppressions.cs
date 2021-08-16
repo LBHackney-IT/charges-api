@@ -5,10 +5,10 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:ChargeApi.Tests.V1.Controllers.ChargeApiControllerTests.GetAllByTypeAndTargetIdReturns500~System.Threading.Tasks.Task")]
-[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:ChargeApi.Tests.V1.Controllers.ChargeApiControllerTests.GetByIdReturns500~System.Threading.Tasks.Task")]
-[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:ChargeApi.Tests.V1.UseCase.AddUseCaseTests.AddInvalidModel~System.Threading.Tasks.Task")]
-[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:ChargeApi.Tests.V1.UseCase.UpdateUseCaseTests.UpdateInvalidModel~System.Threading.Tasks.Task")]
-[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:ChargeApi.Tests.V1.UseCase.RemoveUseCaseTests.RemoveChargeInvalidId~System.Threading.Tasks.Task")]
-[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:ChargeApi.Tests.V1.Controllers.ChargeMaintenanceApiControllerTests.GetByIdReturns500~System.Threading.Tasks.Task")]
-[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:ChargeApi.Tests.V1.UseCase.AddChargeMaintenanceUseCaseTests.AddInvalidModel~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:ChargesApi.Tests.V1.Controllers.ChargesApiControllerTests.GetAllByTypeAndTargetIdReturns500~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:ChargesApi.Tests.V1.Controllers.ChargesApiControllerTests.GetByIdReturns500~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:ChargesApi.Tests.V1.UseCase.AddUseCaseTests.AddInvalidModel~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:ChargesApi.Tests.V1.UseCase.UpdateUseCaseTests.UpdateInvalidModel~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:ChargesApi.Tests.V1.UseCase.RemoveUseCaseTests.RemoveChargeInvalidId~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:ChargesApi.Tests.V1.Controllers.ChargeMaintenanceApiControllerTests.GetByIdReturns500~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:ChargesApi.Tests.V1.UseCase.AddChargeMaintenanceUseCaseTests.AddInvalidModel~System.Threading.Tasks.Task")]

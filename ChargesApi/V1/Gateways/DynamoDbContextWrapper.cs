@@ -1,10 +1,10 @@
 using Amazon.DynamoDBv2.DataModel;
-using ChargeApi.V1.Infrastructure.Entities;
+using ChargesApi.V1.Infrastructure.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ChargeApi.V1.Gateways
+namespace ChargesApi.V1.Gateways
 {
     public class DynamoDbContextWrapper
     {

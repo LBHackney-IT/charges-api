@@ -4,7 +4,7 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace ChargeApi.V1.Infrastructure.Converters
+namespace ChargesApi.V1.Infrastructure.Converters
 {
     // TODO: This should go in a common NuGet package...
 

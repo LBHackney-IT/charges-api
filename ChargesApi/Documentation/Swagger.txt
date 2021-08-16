@@ -5,7 +5,7 @@ info:
   description: 'To identify all information to be captured with regards to the Rent charges domain'
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
-basePath: /hamidjolany/chargeAPI/1.0.0
+basePath: /hamidjolany/ChargesApi/1.0.0
 schemes:
  - https
 paths:

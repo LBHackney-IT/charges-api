@@ -1,8 +1,8 @@
-using ChargeApi.V1.Infrastructure;
+using ChargesApi.V1.Infrastructure;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace ChargeApi.V1.Domain
+namespace ChargesApi.V1.Domain
 {
     public class DetailedCharges
     {

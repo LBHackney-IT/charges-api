@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using ChargeApi.V1.Controllers;
+using ChargesApi.V1.Controllers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
 
-namespace ChargeApi.Tests.V1.Controllers
+namespace ChargesApi.Tests.V1.Controllers
 {
     public class HealthCheckControllerTests
     {

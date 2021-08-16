@@ -1,7 +1,7 @@
-using ChargeApi.V1.Domain;
-using ChargeApi.V1.Factories;
-using ChargeApi.V1.Gateways;
-using ChargeApi.V1.UseCase;
+using ChargesApi.V1.Domain;
+using ChargesApi.V1.Factories;
+using ChargesApi.V1.Gateways;
+using ChargesApi.V1.UseCase;
 using FluentAssertions;
 using Moq;
 using System;
@@ -9,16 +9,16 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace ChargeApi.Tests.V1.UseCase
+namespace ChargesApi.Tests.V1.UseCase
 {
     public class GetByIdUseCaseTests
     {
-        private readonly Mock<IChargeApiGateway> _mockGateway;
+        private readonly Mock<IChargesApiGateway> _mockGateway;
         private readonly GetByIdUseCase _getByIdUseCase;
 
         public GetByIdUseCaseTests()
         {
-            _mockGateway = new Mock<IChargeApiGateway>();
+            _mockGateway = new Mock<IChargesApiGateway>();
             _getByIdUseCase = new GetByIdUseCase(_mockGateway.Object);
         }
 

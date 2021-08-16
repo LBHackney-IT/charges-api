@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 
-namespace ChargeApi.Tests
+namespace ChargesApi.Tests
 {
     public class DynamoDbIntegrationTests<TStartup> : IDisposable where TStartup : class
     {
@@ -32,8 +32,8 @@ namespace ChargeApi.Tests
         {
             EnsureEnvVarConfigured("DynamoDb_LocalMode", "true");
             EnsureEnvVarConfigured("DynamoDb_LocalServiceUrl", "http://localhost:8000");
-            EnsureEnvVarConfigured("DynamoDb_LocalSecretKey", "2cl9i");
-            EnsureEnvVarConfigured("DynamoDb_LocalAccessKey", "vymxp");
+            EnsureEnvVarConfigured("DynamoDb_LocalSecretKey", "fco1i2");
+            EnsureEnvVarConfigured("DynamoDb_LocalAccessKey", "8kmm3g");
             _factory = new DynamoDbMockWebApplicationFactory<TStartup>(_tables);
 
             Client = _factory.CreateClient();

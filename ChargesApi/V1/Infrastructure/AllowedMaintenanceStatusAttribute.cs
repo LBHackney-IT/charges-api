@@ -1,10 +1,10 @@
-using ChargeApi.V1.Domain;
+using ChargesApi.V1.Domain;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace ChargeApi.V1.Infrastructure
+namespace ChargesApi.V1.Infrastructure
 {
     public class AllowedMaintenanceStatusAttribute : ValidationAttribute
     {

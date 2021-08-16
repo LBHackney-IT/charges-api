@@ -1,4 +1,4 @@
-namespace ChargeApi.V1.Boundary.Response
+namespace ChargesApi.V1.Boundary.Response
 {
     public class BaseErrorResponse
     {
@@ -31,7 +31,7 @@ namespace ChargeApi.V1.Boundary.Response
         /// Stack Trace of Exception
         /// </summary>
         /// <example>
-        /// at ChargeApi.V1.UseCase.AddChargeUseCase.ExecuteAsync(AddChargeRequest charge)
+        /// at ChargesApi.V1.UseCase.AddChargeUseCase.ExecuteAsync(AddChargeRequest charge)
         /// </example>
         public string Details { get; set; }
     }

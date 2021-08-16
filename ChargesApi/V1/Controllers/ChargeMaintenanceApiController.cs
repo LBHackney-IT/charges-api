@@ -1,14 +1,14 @@
-using ChargeApi.V1.Boundary.Request;
-using ChargeApi.V1.Boundary.Response;
-using ChargeApi.V1.Infrastructure;
-using ChargeApi.V1.UseCase.Interfaces;
+using ChargesApi.V1.Boundary.Request;
+using ChargesApi.V1.Boundary.Response;
+using ChargesApi.V1.Infrastructure;
+using ChargesApi.V1.UseCase.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace ChargeApi.V1.Controllers
+namespace ChargesApi.V1.Controllers
 {
     [ApiController]
     [Route("api/v1/charges-maintenance")]

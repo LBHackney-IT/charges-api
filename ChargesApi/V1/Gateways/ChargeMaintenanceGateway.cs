@@ -1,10 +1,10 @@
 using Amazon.DynamoDBv2.DataModel;
-using ChargeApi.V1.Domain;
-using ChargeApi.V1.Factories;
+using ChargesApi.V1.Domain;
+using ChargesApi.V1.Factories;
 using System;
 using System.Threading.Tasks;
 
-namespace ChargeApi.V1.Gateways
+namespace ChargesApi.V1.Gateways
 {
     public class ChargeMaintenanceGateway : IChargeMaintenanceApiGateway
     {

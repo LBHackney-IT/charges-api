@@ -1,7 +1,7 @@
-using ChargeApi.V1.Boundary.Request;
-using ChargeApi.V1.Boundary.Response;
-using ChargeApi.V1.Domain;
-using ChargeApi.V1.Infrastructure.Entities;
+using ChargesApi.V1.Boundary.Request;
+using ChargesApi.V1.Boundary.Response;
+using ChargesApi.V1.Domain;
+using ChargesApi.V1.Infrastructure.Entities;
 using FluentAssertions;
 using Newtonsoft.Json;
 using System;
@@ -12,7 +12,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace ChargeApi.Tests.V1.E2ETests
+namespace ChargesApi.Tests.V1.E2ETests
 {
     public class DynamoDbChargeMaintenanceIntegrationTests : DynamoDbIntegrationTests<Startup>
     {

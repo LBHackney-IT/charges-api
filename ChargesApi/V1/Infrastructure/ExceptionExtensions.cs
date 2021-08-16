@@ -1,6 +1,6 @@
 using System;
 
-namespace ChargeApi.V1.Infrastructure
+namespace ChargesApi.V1.Infrastructure
 {
     public static class ExceptionExtensions
     {

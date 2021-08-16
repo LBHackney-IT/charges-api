@@ -1,7 +1,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace ChargeApi.V1.Infrastructure
+namespace ChargesApi.V1.Infrastructure
 {
     public static class ModelStateExtension
     {

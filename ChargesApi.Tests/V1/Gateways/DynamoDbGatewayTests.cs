@@ -1,7 +1,7 @@
 using Amazon.DynamoDBv2.DataModel;
-using ChargeApi.V1.Domain;
-using ChargeApi.V1.Gateways;
-using ChargeApi.V1.Infrastructure.Entities;
+using ChargesApi.V1.Domain;
+using ChargesApi.V1.Gateways;
+using ChargesApi.V1.Infrastructure.Entities;
 using FluentAssertions;
 using Moq;
 using System;
@@ -11,7 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace ChargeApi.Tests.V1.Gateways
+namespace ChargesApi.Tests.V1.Gateways
 {
     public class DynamoDbGatewayTests
     {

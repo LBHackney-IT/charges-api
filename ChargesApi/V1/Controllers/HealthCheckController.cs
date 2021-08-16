@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using ChargeApi.V1.UseCase;
+using ChargesApi.V1.UseCase;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ChargeApi.V1.Controllers
+namespace ChargesApi.V1.Controllers
 {
     [Route("api/v1/healthcheck")]
     [ApiController]

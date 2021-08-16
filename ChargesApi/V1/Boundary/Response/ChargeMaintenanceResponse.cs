@@ -1,8 +1,8 @@
-using ChargeApi.V1.Domain;
+using ChargesApi.V1.Domain;
 using System;
 using System.Collections.Generic;
 
-namespace ChargeApi.V1.Boundary.Response
+namespace ChargesApi.V1.Boundary.Response
 {
     public class ChargeMaintenanceResponse
     {

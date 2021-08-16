@@ -1,9 +1,9 @@
-using ChargeApi.V1.Boundary.Response;
+using ChargesApi.V1.Boundary.Response;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ChargeApi.V1.UseCase.Interfaces
+namespace ChargesApi.V1.UseCase.Interfaces
 {
     public interface IGetAllUseCase
     {

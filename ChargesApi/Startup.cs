@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using ChargeApi.V1.Controllers;
+using ChargesApi.V1.Controllers;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
-using ChargeApi.V1.Gateways;
-using ChargeApi.V1.Infrastructure;
-using ChargeApi.V1.UseCase;
-using ChargeApi.V1.UseCase.Interfaces;
-using ChargeApi.Versioning;
+using ChargesApi.V1.Gateways;
+using ChargesApi.V1.Infrastructure;
+using ChargesApi.V1.UseCase;
+using ChargesApi.V1.UseCase.Interfaces;
+using ChargesApi.Versioning;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -22,9 +22,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using ChargeApi.V1;
+using ChargesApi.V1;
 
-namespace ChargeApi
+namespace ChargesApi
 {
     public class Startup
     {
@@ -157,7 +157,7 @@ namespace ChargeApi
 
         private static void RegisterGateways(IServiceCollection services)
         {
-            services.AddScoped<IChargeApiGateway, DynamoDbGateway>();
+            services.AddScoped<IChargesApiGateway, DynamoDbGateway>();
             services.AddScoped<IChargeMaintenanceApiGateway, ChargeMaintenanceGateway>();
             services.AddSingleton<DynamoDbContextWrapper>();
         }

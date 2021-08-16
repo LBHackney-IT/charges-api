@@ -1,10 +1,10 @@
-using ChargeApi.V1.Domain;
-using ChargeApi.V1.Infrastructure;
+using ChargesApi.V1.Domain;
+using ChargesApi.V1.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace ChargeApi.V1.Boundary.Request
+namespace ChargesApi.V1.Boundary.Request
 {
     public class UpdateChargeRequest
     {

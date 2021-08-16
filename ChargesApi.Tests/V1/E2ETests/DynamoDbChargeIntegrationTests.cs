@@ -1,10 +1,10 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
-using ChargeApi.V1.Boundary;
-using ChargeApi.V1.Boundary.Response;
-using ChargeApi.V1.Domain;
-using ChargeApi.V1.Infrastructure;
-using ChargeApi.V1.Infrastructure.Entities;
+using ChargesApi.V1.Boundary;
+using ChargesApi.V1.Boundary.Response;
+using ChargesApi.V1.Domain;
+using ChargesApi.V1.Infrastructure;
+using ChargesApi.V1.Infrastructure.Entities;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -17,7 +17,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace ChargeApi.Tests.V1.E2ETests
+namespace ChargesApi.Tests.V1.E2ETests
 {
     public class DynamoDbChargeIntegrationTests : DynamoDbIntegrationTests<Startup>
     {

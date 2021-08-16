@@ -1,7 +1,7 @@
-using ChargeApi.V1.Domain;
+using ChargesApi.V1.Domain;
 using System;
 
-namespace ChargeApi.Tests.V1.Helper
+namespace ChargesApi.Tests.V1.Helper
 {
     public static class Constants
     {

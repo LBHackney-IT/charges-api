@@ -1,12 +1,12 @@
 using System.Threading;
-using ChargeApi.V1.UseCase;
+using ChargesApi.V1.UseCase;
 using Bogus;
 using FluentAssertions;
 using Microsoft.Extensions.HealthChecks;
 using Moq;
 using Xunit;
 
-namespace ChargeApi.Tests.V1.UseCase
+namespace ChargesApi.Tests.V1.UseCase
 {
 
     public class DbHealthCheckUseCaseTests

@@ -4,7 +4,7 @@ using Amazon.Runtime;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace ChargeApi.V1.Infrastructure
+namespace ChargesApi.V1.Infrastructure
 {
     public static class DynamoDbInitilisationExtensions
     {

@@ -1,8 +1,8 @@
-using ChargeApi.V1.Boundary.Request;
-using ChargeApi.V1.Boundary.Response;
-using ChargeApi.V1.Controllers;
-using ChargeApi.V1.Domain;
-using ChargeApi.V1.UseCase.Interfaces;
+using ChargesApi.V1.Boundary.Request;
+using ChargesApi.V1.Boundary.Response;
+using ChargesApi.V1.Controllers;
+using ChargesApi.V1.Domain;
+using ChargesApi.V1.UseCase.Interfaces;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace ChargeApi.Tests.V1.Controllers
+namespace ChargesApi.Tests.V1.Controllers
 {
     public class ChargeMaintenanceApiControllerTests
     {

@@ -1,5 +1,5 @@
-using ChargeApi.V1;
-using ChargeApi.V1.Controllers;
+using ChargesApi.V1;
+using ChargesApi.V1.Controllers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Routing;
 using System.Collections.Generic;
 using Xunit;
 
-namespace ChargeApi.Tests.V1.Controllers
+namespace ChargesApi.Tests.V1.Controllers
 {
 
     public class BaseControllerTests

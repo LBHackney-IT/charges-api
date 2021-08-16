@@ -1,16 +1,16 @@
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
-using ChargeApi.V1.Domain;
-using ChargeApi.V1.Factories;
-using ChargeApi.V1.Infrastructure.Entities;
+using ChargesApi.V1.Domain;
+using ChargesApi.V1.Factories;
+using ChargesApi.V1.Infrastructure.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ChargeApi.V1.Gateways
+namespace ChargesApi.V1.Gateways
 {
-    public class DynamoDbGateway : IChargeApiGateway
+    public class DynamoDbGateway : IChargesApiGateway
     {
         private readonly IDynamoDBContext _dynamoDbContext;
         private readonly DynamoDbContextWrapper _wrapper;

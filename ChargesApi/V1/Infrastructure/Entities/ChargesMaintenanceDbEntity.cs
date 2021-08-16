@@ -1,10 +1,10 @@
 using Amazon.DynamoDBv2.DataModel;
-using ChargeApi.V1.Domain;
-using ChargeApi.V1.Infrastructure.Converters;
+using ChargesApi.V1.Domain;
+using ChargesApi.V1.Infrastructure.Converters;
 using System;
 using System.Collections.Generic;
 
-namespace ChargeApi.V1.Infrastructure.Entities
+namespace ChargesApi.V1.Infrastructure.Entities
 {
     [DynamoDBTable("charges_maintenance", LowerCamelCaseProperties = true)]
     public class ChargesMaintenanceDbEntity

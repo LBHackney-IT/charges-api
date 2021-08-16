@@ -1,23 +1,23 @@
-using ChargeApi.V1.Boundary.Request;
-using ChargeApi.V1.Domain;
-using ChargeApi.V1.Gateways;
-using ChargeApi.V1.UseCase;
+using ChargesApi.V1.Boundary.Request;
+using ChargesApi.V1.Domain;
+using ChargesApi.V1.Gateways;
+using ChargesApi.V1.UseCase;
 using FluentAssertions;
 using Moq;
 using System;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace ChargeApi.Tests.V1.UseCase
+namespace ChargesApi.Tests.V1.UseCase
 {
     public class UpdateUseCaseTests
     {
-        private readonly Mock<IChargeApiGateway> _mockChargeGateway;
+        private readonly Mock<IChargesApiGateway> _mockChargeGateway;
         private readonly UpdateUseCase _updateUseCase;
 
         public UpdateUseCaseTests()
         {
-            _mockChargeGateway = new Mock<IChargeApiGateway>();
+            _mockChargeGateway = new Mock<IChargesApiGateway>();
             _updateUseCase = new UpdateUseCase(_mockChargeGateway.Object);
         }
 

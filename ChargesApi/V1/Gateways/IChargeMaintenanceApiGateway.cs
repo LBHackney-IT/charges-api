@@ -1,8 +1,8 @@
-using ChargeApi.V1.Domain;
+using ChargesApi.V1.Domain;
 using System;
 using System.Threading.Tasks;
 
-namespace ChargeApi.V1.Gateways
+namespace ChargesApi.V1.Gateways
 {
     public interface IChargeMaintenanceApiGateway
     {

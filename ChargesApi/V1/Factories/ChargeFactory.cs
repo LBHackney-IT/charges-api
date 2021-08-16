@@ -1,8 +1,8 @@
-using ChargeApi.V1.Boundary.Request;
-using ChargeApi.V1.Domain;
-using ChargeApi.V1.Infrastructure.Entities;
+using ChargesApi.V1.Boundary.Request;
+using ChargesApi.V1.Domain;
+using ChargesApi.V1.Infrastructure.Entities;
 
-namespace ChargeApi.V1.Factories
+namespace ChargesApi.V1.Factories
 {
     public static class ChargeFactory
     {

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
-namespace ChargeApi.Versioning
+namespace ChargesApi.Versioning
 {
     public static class ApiVersionDescriptionExtensions
     {

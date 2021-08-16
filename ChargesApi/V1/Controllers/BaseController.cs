@@ -6,7 +6,7 @@ using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ChargeApi.V1.Controllers
+namespace ChargesApi.V1.Controllers
 {
     public class BaseController : Controller
     {
