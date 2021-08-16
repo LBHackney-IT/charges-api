@@ -34,8 +34,8 @@ services:
       - DynamoDb_LocalMode=true
       - DynamoDb_LocalServiceUrl=http://dynamodb-database:8000
       - AWS_REGION=eu-west-2
-      - AWS_ACCESS_KEY_ID=fco1i2
-      - AWS_SECRET_ACCESS_KEY=8kmm3g
+      - AWS_ACCESS_KEY_ID=2cl9i
+      - AWS_SECRET_ACCESS_KEY=vymxp
     links:
       - dynamodb-database
 
