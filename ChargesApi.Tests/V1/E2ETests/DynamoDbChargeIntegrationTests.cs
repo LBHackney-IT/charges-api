@@ -21,7 +21,7 @@ namespace ChargesApi.Tests.V1.E2ETests
 {
     public class DynamoDbChargeIntegrationTests : DynamoDbIntegrationTests<Startup>
     {
-        private static Charge ConstructCharge()
+        public static Charge ConstructCharge()
         {
             var entity = new Charge
             {

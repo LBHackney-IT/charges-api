@@ -20,7 +20,7 @@ namespace ChargesApi.Tests.V1.E2ETests
         {
             var entity = new AddChargeMaintenanceRequest
             {
-                ChargesId = new Guid("546842e9-add9-4453-9a3b-95fafdfd80c0"),
+                ChargesId = Guid.NewGuid(),
                 Reason = "Uplift",
                 NewValue = new List<DetailedCharges>()
                     {
@@ -52,6 +52,7 @@ namespace ChargesApi.Tests.V1.E2ETests
 
             return entity;
         }
+        
         [Fact]
         public async Task GetChargeMaintenanceByIdNotFoundReturns404()
         {
@@ -74,7 +75,11 @@ namespace ChargesApi.Tests.V1.E2ETests
         [Fact]
         public async Task CreateChargeMaintenanceAndThenGetByIdReturns201()
         {
+            var charge = DynamoDbChargeIntegrationTests.ConstructCharge();
+            var chargeResponse = await CreateChargeAndValidateResponse(charge).ConfigureAwait(false);
+
             var chargeMaintenance = ConstructChargeMaintenance();
+            chargeMaintenance.ChargesId = chargeResponse.Id;
 
             var response = await CreateChargeMaintenanceAndValidateResponse(chargeMaintenance).ConfigureAwait(false);
 
@@ -125,6 +130,31 @@ namespace ChargesApi.Tests.V1.E2ETests
             apiEntity.Should().NotBeNull();
 
             chargeMaintenance.Should().BeEquivalentTo(apiEntity, options => options.Excluding(a => a.Id));
+
+            return apiEntity;
+        }
+        private async Task<ChargeResponse> CreateChargeAndValidateResponse(Charge charge)
+        {
+            var uri = new Uri($"api/v1/charges", UriKind.Relative);
+
+            string body = JsonConvert.SerializeObject(charge);
+
+            using StringContent stringContent = new StringContent(body);
+
+            stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            using var response = await Client.PostAsync(uri, stringContent).ConfigureAwait(false);
+
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
+
+            var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var apiEntity = JsonConvert.DeserializeObject<ChargeResponse>(responseContent);
+
+            CleanupActions.Add(async () => await DynamoDbContext.DeleteAsync<ChargeDbEntity>(apiEntity.Id).ConfigureAwait(false));
+
+            apiEntity.Should().NotBeNull();
+
+            apiEntity.Should().BeEquivalentTo(charge, options => options.Excluding(a => a.Id));
 
             return apiEntity;
         }
