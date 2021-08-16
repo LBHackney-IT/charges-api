@@ -52,7 +52,6 @@ namespace ChargesApi.Tests.V1.E2ETests
 
             return entity;
         }
-        
         [Fact]
         public async Task GetChargeMaintenanceByIdNotFoundReturns404()
         {
