@@ -33,6 +33,6 @@ namespace ChargeApi.V1.Factories
         public static List<ChargeResponse> ToResponse(this IEnumerable<Charge> domainList)
         {
             return domainList.Select(domain => domain.ToResponse()).ToList();
-        } 
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace ChargeApi.V1.UseCase
 
         public ChargeResponse Execute(AddChargeRequest charge)
         {
-            if(charge == null)
+            if (charge == null)
             {
                 throw new ArgumentNullException(nameof(charge));
             }

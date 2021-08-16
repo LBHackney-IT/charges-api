@@ -67,7 +67,7 @@ namespace ChargeApi.Tests.V1.Helper
                             SubType = SUBTYPE,
                             Type = TYPE
                         }
-                } ,
+                },
                 StartDate = new DateTime(2021, 7, 2),
                 Status = ChargeMaintenanceStatus.Pending
             };

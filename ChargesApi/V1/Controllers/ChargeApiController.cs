@@ -103,7 +103,7 @@ namespace ChargeApi.V1.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(AddChargeRequest charge)
         {
-            if(charge == null)
+            if (charge == null)
             {
                 return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Charge model cannot be null!"));
             }
@@ -112,7 +112,7 @@ namespace ChargeApi.V1.Controllers
             {
                 var chargeResponse = await _addUseCase.ExecuteAsync(charge).ConfigureAwait(false);
 
-                return CreatedAtAction($"Get", new { id = chargeResponse.Id}, chargeResponse);
+                return CreatedAtAction($"Get", new { id = chargeResponse.Id }, chargeResponse);
             }
             else
             {

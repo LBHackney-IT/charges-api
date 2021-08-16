@@ -170,8 +170,7 @@ namespace ChargeApi
             services.AddScoped<IRemoveUseCase, RemoveUseCase>();
             services.AddScoped<IUpdateUseCase, UpdateUseCase>();
             services.AddScoped<IAddChargeMaintenanceUseCase, AddChargeMaintenanceUseCase>();
-            services.AddScoped<IGetByIdChargeMaintenanceUseCase, GetByIdChargeMaintenanceUseCase>();
-            
+            services.AddScoped<IGetByIdChargeMaintenanceUseCase, GetByIdChargeMaintenanceUseCase>();           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

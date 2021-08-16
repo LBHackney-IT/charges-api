@@ -139,7 +139,7 @@ namespace ChargeApi.Tests.V1.E2ETests
             var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var apiEntity = JsonConvert.DeserializeObject<ChargeMaintenanceResponse>(responseContent);
 
-            chargeMaintenance.Should().BeEquivalentTo(apiEntity, opt => opt.Excluding( x => x.Id ));
+            chargeMaintenance.Should().BeEquivalentTo(apiEntity, opt => opt.Excluding(x => x.Id));
         }
     }
 }

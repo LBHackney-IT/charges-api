@@ -7,7 +7,7 @@ using System.Net.Http;
 
 namespace ChargeApi.Tests
 {
-    public class DynamoDbIntegrationTests<TStartup>: IDisposable where TStartup : class
+    public class DynamoDbIntegrationTests<TStartup> : IDisposable where TStartup : class
     {
         protected HttpClient Client { get; private set; }
         private readonly DynamoDbMockWebApplicationFactory<TStartup> _factory;

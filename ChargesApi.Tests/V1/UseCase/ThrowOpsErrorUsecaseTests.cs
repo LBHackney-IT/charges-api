@@ -4,7 +4,6 @@ using Xunit;
 
 namespace ChargeApi.Tests.V1.UseCase
 {
-    
     public class ThrowOpsErrorUseCaseTests
     {
         [Fact]

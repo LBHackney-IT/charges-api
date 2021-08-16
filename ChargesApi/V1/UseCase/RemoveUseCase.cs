@@ -19,7 +19,7 @@ namespace ChargeApi.V1.UseCase
         {
             Charge charge = await _gateway.GetChargeByIdAsync(id).ConfigureAwait(false);
 
-            if(charge == null)
+            if (charge == null)
             {
                 throw new Exception($"Cannot find charge with provided id: {id}");
             }

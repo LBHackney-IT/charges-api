@@ -18,7 +18,7 @@ namespace ChargeApi.V1.Factories
                 Id = chargeEntity.Id,
                 TargetId = chargeEntity.TargetId,
                 TargetType = chargeEntity.TargetType,
-                DetailedCharges = chargeEntity.DetailedCharges                
+                DetailedCharges = chargeEntity.DetailedCharges
             };
         }
 

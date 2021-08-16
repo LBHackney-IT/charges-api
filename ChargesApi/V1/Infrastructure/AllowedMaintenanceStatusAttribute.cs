@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace ChargeApi.V1.Infrastructure
 {
-    public class AllowedMaintenanceStatusAttribute:ValidationAttribute
+    public class AllowedMaintenanceStatusAttribute : ValidationAttribute
     {
         private readonly List<ChargeMaintenanceStatus> _allowedEnumItems;
 
