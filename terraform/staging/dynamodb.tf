@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "chargesapi_dynamodb_table" {
-    name                  = "Accounts"
+    name                  = "Charges"
     billing_mode          = "PROVISIONED"
     read_capacity         = 10
     write_capacity        = 10
