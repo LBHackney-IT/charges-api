@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace ChargesApi.V1.Infrastructure.Entities
 {
-    [DynamoDBTable("charges_maintenance", LowerCamelCaseProperties = true)]
+    [DynamoDBTable("ChargesMaintenance", LowerCamelCaseProperties = true)]
     public class ChargesMaintenanceDbEntity
     {
         [DynamoDBHashKey]
