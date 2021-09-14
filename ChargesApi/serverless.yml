@@ -118,10 +118,6 @@ resources:
                           - Ref: 'AWS::Region'
                           - Ref: 'AWS::AccountId'
                           - 'table/Charges'
-          - PolicyName: chargesListDynamoDBAccess
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
                 - Effect: Allow
                   Action:
                     - "dynamodb:BatchGet*"
@@ -141,10 +137,6 @@ resources:
                           - Ref: 'AWS::Region'
                           - Ref: 'AWS::AccountId'
                           - 'table/ChargesList'
-          - PolicyName: chargesMaintenanceDynamoDBAccess
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
                 - Effect: Allow
                   Action:
                     - "dynamodb:BatchGet*"
@@ -164,8 +156,6 @@ resources:
                           - Ref: 'AWS::Region'
                           - Ref: 'AWS::AccountId'
                           - 'table/ChargesMaintenance'
-
-
 custom:
   vpc:
     development:
