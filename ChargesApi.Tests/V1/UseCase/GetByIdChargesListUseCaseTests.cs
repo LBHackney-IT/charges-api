@@ -26,7 +26,6 @@ namespace ChargesApi.Tests.V1.UseCase
         public async Task GetByIdValidIdReturnsCharge()
         {
             var domain = _fixture.Create<ChargesList>();
-            
             var expectedResult = domain.ToResponse();
 
             _mockChargesListApiGateway.Setup(_ => _.GetChargesListByIdAsync(It.IsAny<Guid>()))

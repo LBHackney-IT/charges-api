@@ -164,7 +164,7 @@ namespace ChargesApi.Tests.V1.Controllers
             var response = _fixture.Create<List<ChargesListResponse>>();
             _getAllChargesListUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(response);
 
-            var result = await _chargesListApiController.GetAll("tenants","block").ConfigureAwait(false);
+            var result = await _chargesListApiController.GetAll("tenants", "block").ConfigureAwait(false);
             result.Should().NotBeNull();
 
             var okResult = result as OkObjectResult;
