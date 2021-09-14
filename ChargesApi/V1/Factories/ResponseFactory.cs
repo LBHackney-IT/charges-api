@@ -30,7 +30,24 @@ namespace ChargesApi.V1.Factories
                 NewValue = domain.NewValue
             };
         }
+
+        public static ChargesListResponse ToResponse(this ChargesList domain)
+        {
+            return new ChargesListResponse()
+            {
+                Id = domain.Id,
+                ChargeType = domain.ChargeType,
+                ChargeName = domain.ChargeName,
+                ChargeGroup = domain.ChargeGroup,
+                ChargeCode = domain.ChargeCode
+            };
+        }
+
         public static List<ChargeResponse> ToResponse(this IEnumerable<Charge> domainList)
+        {
+            return domainList.Select(domain => domain.ToResponse()).ToList();
+        }
+        public static List<ChargesListResponse> ToResponse(this IEnumerable<ChargesList> domainList)
         {
             return domainList.Select(domain => domain.ToResponse()).ToList();
         }

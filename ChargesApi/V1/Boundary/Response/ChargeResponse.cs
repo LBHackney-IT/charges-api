@@ -31,6 +31,10 @@ namespace ChargesApi.V1.Boundary.Response
         public TargetType TargetType { get; set; }
 
         /// <summary>
+        /// Charge Group - Tenants/Leaseholders
+        /// </summary>
+        public ChargeGroup ChargeGroup { get; set; }
+        /// <summary>
         /// Information about charges
         /// </summary>
         /// <example>

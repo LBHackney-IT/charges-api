@@ -1,7 +1,10 @@
+using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
+using Amazon.DynamoDBv2.Model;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Factories;
+using ChargesApi.V1.Infrastructure;
 using ChargesApi.V1.Infrastructure.Entities;
 using System;
 using System.Collections.Generic;
@@ -13,13 +16,13 @@ namespace ChargesApi.V1.Gateways
     public class DynamoDbGateway : IChargesApiGateway
     {
         private readonly IDynamoDBContext _dynamoDbContext;
-        private readonly DynamoDbContextWrapper _wrapper;
+        private readonly IAmazonDynamoDB _amazonDynamoDb;
 
         public DynamoDbGateway(IDynamoDBContext dynamoDbContext,
-            DynamoDbContextWrapper wrapper)
+             IAmazonDynamoDB amazonDynamoDb)
         {
             _dynamoDbContext = dynamoDbContext;
-            _wrapper = wrapper;
+            _amazonDynamoDb = amazonDynamoDb;
         }
 
         public void Add(Charge charge)
@@ -50,31 +53,30 @@ namespace ChargesApi.V1.Gateways
 
         public async Task<List<Charge>> GetAllChargesAsync(string type, Guid targetId)
         {
-            List<ScanCondition> scanConditions = new List<ScanCondition>
+            var request = new QueryRequest
             {
-                new ScanCondition("TargetType", ScanOperator.Equal, Enum.Parse(typeof(TargetType), type)),
+                TableName = "Charges",
+                IndexName = "target_type_dx",
+                KeyConditionExpression = "target_type = :V_target_type",
+                FilterExpression = "target_id = :V_target_id",
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                    {":V_target_type",new AttributeValue{S = type.ToString()}},
+                    {":V_target_id",new AttributeValue{S = targetId.ToString()}}
+                },
+                ScanIndexForward = true
             };
 
-            if (targetId != Guid.Empty)
-            {
-                scanConditions.Add(new ScanCondition("TargetId", ScanOperator.Equal, targetId));
-            }
+            var chargesLists = await _amazonDynamoDb.QueryAsync(request).ConfigureAwait(false);
 
-            List<ChargeDbEntity> data = await _wrapper.ScanAsync(_dynamoDbContext, scanConditions).ConfigureAwait(false);
-
-            return data.Select(p => p.ToDomain()).ToList();
+            return chargesLists?.ToChargeDomain();
         }
 
         public async Task<Charge> GetChargeByIdAsync(Guid id)
         {
-            List<ScanCondition> scanConditions = new List<ScanCondition>
-            {
-                new ScanCondition("Id", ScanOperator.Equal, id)
-            };
+            var result = await _dynamoDbContext.LoadAsync<ChargeDbEntity>(id).ConfigureAwait(false);
 
-            var result = await _wrapper.ScanAsync(_dynamoDbContext, scanConditions).ConfigureAwait(false);
-
-            return result.FirstOrDefault()?.ToDomain();
+            return result?.ToDomain();
         }
 
         public void Remove(Charge charge)

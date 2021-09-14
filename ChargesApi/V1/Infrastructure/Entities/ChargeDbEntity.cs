@@ -18,7 +18,22 @@ namespace ChargesApi.V1.Infrastructure.Entities
         [DynamoDBProperty(AttributeName = "target_type", Converter = typeof(DynamoDbEnumConverter<TargetType>))]
         public TargetType TargetType { get; set; }
 
+        [DynamoDBProperty(AttributeName = "charge_group", Converter = typeof(DynamoDbEnumConverter<ChargeGroup>))]
+        public ChargeGroup ChargeGroup { get; set; }
+
         [DynamoDBProperty(AttributeName = "detailed_charges", Converter = (typeof(DynamoDbObjectListConverter<DetailedCharges>)))]
         public IEnumerable<DetailedCharges> DetailedCharges { get; set; }
+
+        [DynamoDBProperty(AttributeName = "created_by")]
+        public string CreatedBy { get; set; }
+
+        [DynamoDBProperty(AttributeName = "last_updated_by")]
+        public string LastUpdatedBy { get; set; }
+
+        [DynamoDBProperty(AttributeName = "created_date", Converter = typeof(DynamoDbDateTimeConverter))]
+        public DateTime CreatedDate { get; set; }
+
+        [DynamoDBProperty(AttributeName = "last_updated_date", Converter = typeof(DynamoDbDateTimeConverter))]
+        public DateTime LastUpdatedDate { get; set; }
     }
 }

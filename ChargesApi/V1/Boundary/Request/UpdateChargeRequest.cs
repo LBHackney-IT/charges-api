@@ -2,7 +2,6 @@ using ChargesApi.V1.Domain;
 using ChargesApi.V1.Infrastructure;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace ChargesApi.V1.Boundary.Request
 {
@@ -14,8 +13,11 @@ namespace ChargesApi.V1.Boundary.Request
         [NonEmptyGuid]
         public Guid TargetId { get; set; }
 
-        [AllowedValues(TargetType.Asset, TargetType.Tenure)]
+        [AllowedValues(typeof(TargetType))]
         public TargetType TargetType { get; set; }
+
+        [AllowedValues(typeof(ChargeGroup))]
+        public ChargeGroup ChargeGroup { get; set; }
 
         public IEnumerable<DetailedCharges> DetailedCharges { get; set; }
     }

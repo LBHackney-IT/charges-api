@@ -23,6 +23,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using ChargesApi.V1;
+using ChargesApi.V1.Factories;
+using Amazon.SimpleNotificationService;
 
 namespace ChargesApi
 {
@@ -117,6 +119,8 @@ namespace ChargesApi
             //ConfigureDbContext(services);
             //TODO: For DynamoDb, remove the line above and uncomment the line below.
             services.ConfigureDynamoDB();
+            services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+            services.AddAWSService<IAmazonSimpleNotificationService>();
 
             RegisterGateways(services);
             RegisterUseCases(services);
@@ -159,7 +163,8 @@ namespace ChargesApi
         {
             services.AddScoped<IChargesApiGateway, DynamoDbGateway>();
             services.AddScoped<IChargeMaintenanceApiGateway, ChargeMaintenanceGateway>();
-            services.AddSingleton<DynamoDbContextWrapper>();
+            services.AddScoped<IChargesListApiGateway, ChargesListApiGateway>();
+            services.AddScoped<ISnsGateway, ChargesSnsGateway>();
         }
 
         private static void RegisterUseCases(IServiceCollection services)
@@ -171,6 +176,12 @@ namespace ChargesApi
             services.AddScoped<IUpdateUseCase, UpdateUseCase>();
             services.AddScoped<IAddChargeMaintenanceUseCase, AddChargeMaintenanceUseCase>();
             services.AddScoped<IGetByIdChargeMaintenanceUseCase, GetByIdChargeMaintenanceUseCase>();
+            services.AddScoped<IAddChargesListUseCase, AddChargesListUseCase>();
+            services.AddScoped<IGetAllChargesListUseCase, GetAllChargesListUseCase>();
+            services.AddScoped<IGetByIdChargesListUseCase, GetByIdChargesListUseCase>();
+            services.AddScoped<ISnsFactory, ChargesSnsFactory>();
+            services.AddScoped<IAddChargesUpdateUseCase, AddChargesUpdateUseCase>();
+            services.AddScoped<IGetChargesSummaryUseCase, GetChargesSummaryUseCase>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

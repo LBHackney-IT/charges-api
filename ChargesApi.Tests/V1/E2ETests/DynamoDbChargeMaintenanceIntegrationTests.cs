@@ -47,7 +47,7 @@ namespace ChargesApi.Tests.V1.E2ETests
                         }
                     },
                 StartDate = new DateTime(2021, 07, 10, 00, 00, 0, DateTimeKind.Utc),
-                Status = ChargeMaintenanceStatus.Pending
+                Status = ChargeMaintenanceStatus.pending
             };
 
             return entity;

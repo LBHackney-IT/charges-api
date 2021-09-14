@@ -1,6 +1,4 @@
-using ChargesApi.V1.Domain;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -8,37 +6,31 @@ namespace ChargesApi.V1.Infrastructure
 {
     public class AllowedValuesAttribute : ValidationAttribute
     {
-        private readonly List<TargetType> _allowedEnumItems;
+        private readonly Type _type;
 
-        public AllowedValuesAttribute(params TargetType[] allowedEnumItems)
+        public AllowedValuesAttribute(Type enumType)
         {
-            _allowedEnumItems = allowedEnumItems.ToList();
+            _type = enumType;
         }
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             if (value == null)
-            {
-                return new ValidationResult($"{validationContext.MemberName} is required.");
-            }
+                return new ValidationResult($"{validationContext.MemberName} field should not be null");
 
             var valueType = value.GetType();
 
-            if (!valueType.IsEnum || !Enum.IsDefined(typeof(TargetType), value))
+            if (!valueType.IsEnum)
             {
-                return new ValidationResult($"{validationContext.MemberName} should be a type of TargetType enum.");
+                return new ValidationResult($"{validationContext.MemberName} field should be a type of enum.");
+            }
+            else if (!Enum.IsDefined(_type, value))
+            {
+                var values = Enum.GetNames(_type);
+                return new ValidationResult($"{validationContext.MemberName} field should be a type of {_type.Name} enum. Values: {string.Join(", ", values.Select(a => a))}");
             }
 
-            var isValid = _allowedEnumItems.Contains((TargetType) value);
-
-            if (isValid)
-            {
-                return ValidationResult.Success;
-            }
-            else
-            {
-                return new ValidationResult($"{validationContext.MemberName} should be in a range: [{string.Join(", ", _allowedEnumItems.Select(a => $"{(int) a}({a})"))}].");
-            }
+            return ValidationResult.Success;
         }
     }
 }

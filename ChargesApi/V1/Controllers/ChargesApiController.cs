@@ -80,7 +80,7 @@ namespace ChargesApi.V1.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync([FromQuery] string type, [FromQuery] Guid targetId)
         {
-            var charges = await _getAllUseCase.ExecuteAsync(type, targetId).ConfigureAwait(false);
+            var charges = await _getAllUseCase.ExecuteAsync(targetId, type).ConfigureAwait(false);
 
             if (charges == null)
             {

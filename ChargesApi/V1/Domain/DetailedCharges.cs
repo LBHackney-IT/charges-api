@@ -12,6 +12,10 @@ namespace ChargesApi.V1.Domain
         [Required]
         public string SubType { get; set; }
 
+        public ChargeType ChargeType { get; set; }
+
+        public string ChargeCode { get; set; }
+
         [Required]
         public string Frequency { get; set; }
 

@@ -18,6 +18,7 @@ namespace ChargesApi.V1.Factories
                 Id = chargeEntity.Id,
                 TargetId = chargeEntity.TargetId,
                 TargetType = chargeEntity.TargetType,
+                ChargeGroup = chargeEntity.ChargeGroup,
                 DetailedCharges = chargeEntity.DetailedCharges
             };
         }
@@ -34,6 +35,7 @@ namespace ChargesApi.V1.Factories
                 Id = charge.Id,
                 TargetId = charge.TargetId,
                 TargetType = charge.TargetType,
+                ChargeGroup = charge.ChargeGroup,
                 DetailedCharges = charge.DetailedCharges
             };
         }
@@ -49,6 +51,7 @@ namespace ChargesApi.V1.Factories
             {
                 TargetId = chargeRequest.TargetId,
                 TargetType = chargeRequest.TargetType,
+                ChargeGroup = chargeRequest.ChargeGroup,
                 DetailedCharges = chargeRequest.DetailedCharges
             };
         }
@@ -65,6 +68,7 @@ namespace ChargesApi.V1.Factories
                 Id = chargeRequest.Id,
                 TargetId = chargeRequest.TargetId,
                 TargetType = chargeRequest.TargetType,
+                ChargeGroup = chargeRequest.ChargeGroup,
                 DetailedCharges = chargeRequest.DetailedCharges
             };
         }

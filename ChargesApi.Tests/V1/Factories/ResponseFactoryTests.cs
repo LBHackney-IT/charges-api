@@ -17,7 +17,7 @@ namespace ChargesApi.Tests.V1.Factories
             {
                 Id = new Guid("0f668265-1501-4722-8e37-77c7116dae2f"),
                 TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
-                TargetType = TargetType.Asset,
+                TargetType = TargetType.asset,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges
@@ -36,7 +36,7 @@ namespace ChargesApi.Tests.V1.Factories
 
             response.Id.Should().Be(new Guid("0f668265-1501-4722-8e37-77c7116dae2f"));
             response.TargetId.Should().Be(new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"));
-            response.TargetType.Should().Be(TargetType.Asset);
+            response.TargetType.Should().Be(TargetType.asset);
             response.DetailedCharges.Should().NotBeNull();
             response.DetailedCharges.Should().HaveCount(1);
 
@@ -82,14 +82,14 @@ namespace ChargesApi.Tests.V1.Factories
                         }
                     },
                 StartDate = new DateTime(2021, 7, 2),
-                Status = ChargeMaintenanceStatus.Pending
+                Status = ChargeMaintenanceStatus.pending
             };
 
             var response = domain.ToResponse();
 
             response.Id.Should().Be(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"));
             response.ChargesId.Should().Be(new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"));
-            response.Status.Should().Be(ChargeMaintenanceStatus.Pending);
+            response.Status.Should().Be(ChargeMaintenanceStatus.pending);
             response.Reason.Should().Be("Uplift");
             response.StartDate.Should().Be(new DateTime(2021, 7, 2));
             response.ExistingValue.Should().HaveCount(1);
@@ -120,7 +120,7 @@ namespace ChargesApi.Tests.V1.Factories
             {
                 Id = new Guid("0f668265-1501-4722-8e37-77c7116dae2f"),
                 TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
-                TargetType = TargetType.Asset,
+                TargetType = TargetType.asset,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges
@@ -139,7 +139,7 @@ namespace ChargesApi.Tests.V1.Factories
             {
                 Id = new Guid("762cdddf-659a-4438-b67e-ee78c702a8d9"),
                 TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
-                TargetType = TargetType.Asset,
+                TargetType = TargetType.asset,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges
@@ -164,7 +164,7 @@ namespace ChargesApi.Tests.V1.Factories
 
             response[0].Id.Should().Be(new Guid("0f668265-1501-4722-8e37-77c7116dae2f"));
             response[0].TargetId.Should().Be(new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"));
-            response[0].TargetType.Should().Be(TargetType.Asset);
+            response[0].TargetType.Should().Be(TargetType.asset);
             response[0].DetailedCharges.Should().NotBeNull();
             response[0].DetailedCharges.Should().HaveCount(1);
 
@@ -179,7 +179,7 @@ namespace ChargesApi.Tests.V1.Factories
 
             response[1].Id.Should().Be(new Guid("762cdddf-659a-4438-b67e-ee78c702a8d9"));
             response[1].TargetId.Should().Be(new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"));
-            response[1].TargetType.Should().Be(TargetType.Asset);
+            response[1].TargetType.Should().Be(TargetType.asset);
             response[1].DetailedCharges.Should().NotBeNull();
             response[1].DetailedCharges.Should().HaveCount(1);
 

@@ -32,14 +32,14 @@ namespace ChargesApi.Tests.V1.UseCase
                         {
                             Id = new Guid("271b9a38-e78f-4a3f-81c0-4541bc5acc2c"),
                             TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
-                            TargetType = TargetType.Asset,
+                            TargetType = TargetType.asset,
                             DetailedCharges = new List<DetailedCharges>()
                         },
                         new Charge
                         {
                             Id = new Guid("0f668265-1501-4722-8e37-77c7116dae2f"),
                             TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
-                            TargetType = TargetType.Asset,
+                            TargetType = TargetType.asset,
                             DetailedCharges = new List<DetailedCharges>()
                             {
                                 new DetailedCharges
@@ -60,7 +60,7 @@ namespace ChargesApi.Tests.V1.UseCase
 
             var expectedResult = entities.ToResponse();
 
-            var result = await _getAllUseCase.ExecuteAsync("Asset", new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"))
+            var result = await _getAllUseCase.ExecuteAsync(new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"), "Asset")
                 .ConfigureAwait(false);
 
             result.Should().NotBeNullOrEmpty();

@@ -17,7 +17,8 @@ namespace ChargesApi.Tests
         private readonly List<TableDef> _tables = new List<TableDef>
         {
             new TableDef { Name = "Charges", KeyName = "id", KeyType = ScalarAttributeType.S },
-            new TableDef { Name = "ChargesMaintenance", KeyName = "id", KeyType = ScalarAttributeType.S }
+            new TableDef { Name = "ChargesMaintenance", KeyName = "id", KeyType = ScalarAttributeType.S },
+            new TableDef { Name = "ChargesList", KeyName = "id", KeyType = ScalarAttributeType.S }
         };
 
         private static void EnsureEnvVarConfigured(string name, string defaultValue)

@@ -54,7 +54,7 @@ namespace ChargesApi.Tests.V1.UseCase
                         }
                     },
                 StartDate = new DateTime(2021, 7, 2),
-                Status = ChargeMaintenanceStatus.Pending
+                Status = ChargeMaintenanceStatus.pending
             };
 
             var expectedResult = domain.ToResponse();

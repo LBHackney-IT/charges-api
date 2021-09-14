@@ -10,8 +10,11 @@ namespace ChargesApi.V1.Boundary.Request
         [NonEmptyGuid]
         public Guid TargetId { get; set; }
 
-        [AllowedValues(TargetType.Asset, TargetType.Tenure)]
+        [AllowedValues(typeof(TargetType))]
         public TargetType TargetType { get; set; }
+
+        [AllowedValues(typeof(ChargeGroup))]
+        public ChargeGroup ChargeGroup { get; set; }
 
         public IEnumerable<DetailedCharges> DetailedCharges { get; set; }
     }

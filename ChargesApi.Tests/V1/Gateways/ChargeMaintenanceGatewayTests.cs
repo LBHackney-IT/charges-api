@@ -16,13 +16,11 @@ namespace ChargesApi.Tests.V1.Gateways
     public class ChargeMaintenanceGatewayTests
     {
         private readonly Mock<IDynamoDBContext> _dynamoDb;
-        private readonly Mock<DynamoDbContextWrapper> _wrapper;
         private readonly ChargeMaintenanceGateway _gateway;
         public ChargeMaintenanceGatewayTests()
         {
             _dynamoDb = new Mock<IDynamoDBContext>();
-            _wrapper = new Mock<DynamoDbContextWrapper>();
-            _gateway = new ChargeMaintenanceGateway(_dynamoDb.Object, _wrapper.Object);
+            _gateway = new ChargeMaintenanceGateway(_dynamoDb.Object);
         }
         [Fact]
         public async Task AddChargeMaintenanceWithValidModel()
@@ -60,7 +58,7 @@ namespace ChargesApi.Tests.V1.Gateways
                         }
                     },
                 StartDate = new DateTime(2021, 7, 2),
-                Status = ChargeMaintenanceStatus.Pending
+                Status = ChargeMaintenanceStatus.pending
             };
 
             await _gateway.AddAsync(domain).ConfigureAwait(false);
@@ -81,8 +79,8 @@ namespace ChargesApi.Tests.V1.Gateways
         [Fact]
         public async Task GetChargeMaintenanceByIdReturnsNullIfEntityDoesntExist()
         {
-            _wrapper.Setup(_ => _.LoadAsync(It.IsAny<IDynamoDBContext>(), It.IsAny<Guid>(), It.IsAny<DynamoDBOperationConfig>()))
-               .Returns(Task.FromResult(new ChargesMaintenanceDbEntity()));
+            _dynamoDb.Setup(_ => _.LoadAsync<ChargesMaintenanceDbEntity>(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(new ChargesMaintenanceDbEntity());
 
             var charge = await _gateway.GetChargeMaintenanceByIdAsync(new Guid("40e69b91-9f2a-4d4c-b0f8-c61250d88c89"))
                 .ConfigureAwait(false);
@@ -124,10 +122,10 @@ namespace ChargesApi.Tests.V1.Gateways
                         }
                     },
                 StartDate = new DateTime(2021, 7, 2),
-                Status = ChargeMaintenanceStatus.Pending
+                Status = ChargeMaintenanceStatus.pending
             };
 
-            _wrapper.Setup(_ => _.LoadAsync(It.IsAny<IDynamoDBContext>(), It.IsAny<Guid>(), It.IsAny<DynamoDBOperationConfig>()))
+            _dynamoDb.Setup(_ => _.LoadAsync<ChargesMaintenanceDbEntity>(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
               .Returns(Task.FromResult(entiy));
             var chargeMaintenance = await _gateway.GetChargeMaintenanceByIdAsync(new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"))
                 .ConfigureAwait(false);
@@ -136,7 +134,7 @@ namespace ChargesApi.Tests.V1.Gateways
 
             chargeMaintenance.Id.Should().Be(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"));
             chargeMaintenance.ChargesId.Should().Be(new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"));
-            chargeMaintenance.Status.Should().Be(ChargeMaintenanceStatus.Pending);
+            chargeMaintenance.Status.Should().Be(ChargeMaintenanceStatus.pending);
             chargeMaintenance.StartDate.Should().Be(new DateTime(2021, 7, 2));
             chargeMaintenance.Reason.Should().Be("Uplift");
 

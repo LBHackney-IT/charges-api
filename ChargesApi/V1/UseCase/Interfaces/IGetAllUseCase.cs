@@ -7,7 +7,7 @@ namespace ChargesApi.V1.UseCase.Interfaces
 {
     public interface IGetAllUseCase
     {
-        public Task<List<ChargeResponse>> ExecuteAsync(string type, Guid targetid);
+        public Task<List<ChargeResponse>> ExecuteAsync(Guid targetId, string targetType);
     }
 }
 

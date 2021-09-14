@@ -27,7 +27,7 @@ namespace ChargesApi.Tests.V1.E2ETests
             {
                 Id = Guid.NewGuid(),
                 TargetId = Guid.NewGuid(),
-                TargetType = TargetType.Asset,
+                TargetType = TargetType.asset,
                 DetailedCharges = new List<DetailedCharges>()
             };
 
@@ -129,7 +129,7 @@ namespace ChargesApi.Tests.V1.E2ETests
 
             CleanupActions.Add(async () => await DynamoDbContext.DeleteAsync<ChargeDbEntity>(apiEntity.Id).ConfigureAwait(false));
 
-            apiEntity.TargetType = TargetType.Tenure;
+            apiEntity.TargetType = TargetType.tenure;
 
             var updateUri = new Uri($"api/v1/charges/{apiEntity.Id}", UriKind.Relative);
             string updateCharge = JsonConvert.SerializeObject(apiEntity);
@@ -145,7 +145,7 @@ namespace ChargesApi.Tests.V1.E2ETests
             var updateApiEntity = JsonConvert.DeserializeObject<ChargeResponse>(updateResponseContent);
 
             updateApiEntity.Should().NotBeNull();
-            updateApiEntity.TargetType.Should().Be(TargetType.Tenure);
+            updateApiEntity.TargetType.Should().Be(TargetType.tenure);
         }
 
         [Fact]
