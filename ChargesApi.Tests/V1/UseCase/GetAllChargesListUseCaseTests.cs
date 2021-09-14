@@ -16,7 +16,6 @@ namespace ChargesApi.Tests.V1.UseCase
         private readonly Fixture _fixture = new Fixture();
         private readonly Mock<IChargesListApiGateway> _mockChargesListGateway;
         private readonly GetAllChargesListUseCase _getAllChargesListUseCase;
-
         public GetAllChargesListUseCaseTests()
         {
             _mockChargesListGateway = new Mock<IChargesListApiGateway>();
@@ -32,8 +31,7 @@ namespace ChargesApi.Tests.V1.UseCase
 
             var expectedResult = entities.ToResponse();
 
-            var result = await _getAllChargesListUseCase.ExecuteAsync("tenants", "estate")
-                .ConfigureAwait(false);
+            var result = await _getAllChargesListUseCase.ExecuteAsync("tenants", "estate").ConfigureAwait(false);
 
             result.Should().NotBeNullOrEmpty();
             result.Should().HaveCount(entities.Count);
@@ -50,12 +48,10 @@ namespace ChargesApi.Tests.V1.UseCase
 
             var expectedResult = entities.ToResponse();
             expectedResult.AddRange(entities.ToResponse());
-            var result = await _getAllChargesListUseCase.ExecuteAsync("tenants", "block")
-                .ConfigureAwait(false);
+            var result = await _getAllChargesListUseCase.ExecuteAsync("tenants", "block").ConfigureAwait(false);
 
             result.Should().NotBeNullOrEmpty();
-            result.Should().HaveCount(entities.Count*2);
-
+            result.Should().HaveCount(entities.Count * 2);
             result.Should().BeEquivalentTo(expectedResult);
         }
         [Fact]

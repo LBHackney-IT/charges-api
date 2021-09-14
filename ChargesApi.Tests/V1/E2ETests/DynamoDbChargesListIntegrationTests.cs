@@ -18,12 +18,11 @@ namespace ChargesApi.Tests.V1.E2ETests
         {
             var entity = new AddChargesListRequest
             {
-               ChargeCode = "LCT",
-               ChargeGroup = ChargesApi.V1.Domain.ChargeGroup.tenants,
-               ChargeName = "Lighting",
-               ChargeType = ChargesApi.V1.Domain.ChargeType.block
+                ChargeCode = "LCT",
+                ChargeGroup = ChargesApi.V1.Domain.ChargeGroup.tenants,
+                ChargeName = "Lighting",
+                ChargeType = ChargesApi.V1.Domain.ChargeType.block
             };
-
             return entity;
         }
         [Fact]

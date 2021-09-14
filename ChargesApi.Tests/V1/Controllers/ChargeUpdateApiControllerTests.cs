@@ -19,9 +19,7 @@ namespace ChargesApi.Tests.V1.Controllers
         private readonly ChargeUpdateApiController _chargeUpdateApiController;
         private readonly ControllerContext _controllerContext;
         private readonly HttpContext _httpContext;
-
         private readonly Mock<IAddChargesUpdateUseCase> _addChargesUpdateUseCase;
-
         private readonly Fixture _fixture = new Fixture();
         public ChargeUpdateApiControllerTests()
         {
@@ -40,8 +38,6 @@ namespace ChargesApi.Tests.V1.Controllers
             var response = _fixture.Create<ChargesUpdateResponse>();
             _addChargesUpdateUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<AddChargesUpdateRequest>())).ReturnsAsync(response);
 
-           
-
             var request = _fixture.Create<AddChargesUpdateRequest>();
             var result = await _chargeUpdateApiController.Post(request).ConfigureAwait(false);
 
@@ -56,7 +52,6 @@ namespace ChargesApi.Tests.V1.Controllers
             var chargeResponse = chargesUpdateResponse.Value as ChargesUpdateResponse;
 
             chargeResponse.Should().NotBeNull();
-
         }
         [Fact]
         public async Task AddChargeUpdateWithNullReturns400()

@@ -21,26 +21,17 @@ namespace ChargesApi.Tests.V1.Gateways
         private readonly Mock<IDynamoDBContext> _dynamoDb;
         private readonly Mock<IAmazonDynamoDB> _amazonDynamoDb;
         private readonly DynamoDbGateway _gateway;
-
         public DynamoDbGatewayTests()
         {
             _dynamoDb = new Mock<IDynamoDBContext>();
             _amazonDynamoDb = new Mock<IAmazonDynamoDB>();
             _gateway = new DynamoDbGateway(_dynamoDb.Object, _amazonDynamoDb.Object);
         }
-
         [Fact]
         public async Task GetChargeByIdReturnsNullIfEntityDoesntExist()
         {
-            //_wrapper.Setup(_ => _.ScanAsync(
-            //    It.IsAny<IDynamoDBContext>(),
-            //    It.IsAny<IEnumerable<ScanCondition>>(),
-            //    It.IsAny<DynamoDBOperationConfig>()))
-            //    .ReturnsAsync(new List<ChargeDbEntity>());
-            //QueryResponse response = FakeDataHelper.MockQueryResponse<Charge>();
-
             _dynamoDb.Setup(p => p.LoadAsync<ChargeDbEntity>(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((ChargeDbEntity)null);
+                .ReturnsAsync((ChargeDbEntity) null);
 
             var charge = await _gateway.GetChargeByIdAsync(new Guid("40e69b91-9f2a-4d4c-b0f8-c61250d88c89"))
                 .ConfigureAwait(false);
@@ -69,10 +60,10 @@ namespace ChargesApi.Tests.V1.Gateways
                             }
                         }
             };
-                
+
             _dynamoDb.Setup(p => p.LoadAsync<ChargeDbEntity>(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(chargeObj);
-            
+
             var charge = await _gateway.GetChargeByIdAsync(new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"))
                 .ConfigureAwait(false);
 
@@ -96,7 +87,6 @@ namespace ChargesApi.Tests.V1.Gateways
         [Fact]
         public async Task GetAllChargesByTypeAndTargetIdReturnsList()
         {
-
             QueryResponse response = FakeDataHelper.MockQueryResponse<Charge>();
             _amazonDynamoDb.Setup(p => p.QueryAsync(It.IsAny<QueryRequest>(), It.IsAny<CancellationToken>()))
                .ReturnsAsync(response);
@@ -164,7 +154,6 @@ namespace ChargesApi.Tests.V1.Gateways
         {
             _dynamoDb.Setup(_ => _.SaveAsync(It.IsAny<ChargeDbEntity>(), It.IsAny<CancellationToken>()))
                .Returns(Task.CompletedTask);
-
             var domain = new Charge
             {
                 Id = new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"),
@@ -205,7 +194,6 @@ namespace ChargesApi.Tests.V1.Gateways
         {
             _dynamoDb.Setup(_ => _.DeleteAsync(It.IsAny<ChargeDbEntity>(), default))
                 .Returns(Task.CompletedTask);
-
             var domain = new Charge
             {
                 Id = new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"),

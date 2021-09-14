@@ -82,10 +82,10 @@ namespace ChargesApi.Tests.V1.Helper
             var entity = new ChargesList
             {
                 Id = ID,
-               ChargeCode = CHARGECODE,
-               ChargeGroup = CHARGEGROUP,
-               ChargeName = CHARGENAME,
-               ChargeType = CHARGETYPE
+                ChargeCode = CHARGECODE,
+                ChargeGroup = CHARGEGROUP,
+                ChargeName = CHARGENAME,
+                ChargeType = CHARGETYPE
             };
             return entity;
         }

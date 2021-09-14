@@ -50,7 +50,6 @@ namespace ChargesApi.Tests.V1.Controllers
 
             var addResponse = _fixture.Create<ChargesListResponse>();
             _addChargesListUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<AddChargesListRequest>())).ReturnsAsync(addResponse);
-           
             var request = _fixture.Create<AddChargesListRequest>();
             var result = await _chargesListApiController.Post(request).ConfigureAwait(false);
 
@@ -165,9 +164,7 @@ namespace ChargesApi.Tests.V1.Controllers
             var response = _fixture.Create<List<ChargesListResponse>>();
             _getAllChargesListUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(response);
 
-            var result = await _chargesListApiController.GetAll("tenants","block")
-                .ConfigureAwait(false);
-
+            var result = await _chargesListApiController.GetAll("tenants","block").ConfigureAwait(false);
             result.Should().NotBeNull();
 
             var okResult = result as OkObjectResult;

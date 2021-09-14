@@ -21,8 +21,7 @@ namespace ChargesApi.V1.UseCase
         public async Task<List<ChargesListResponse>> ExecuteAsync(string chargeGroup, string chargeType)
         {
             var result = new List<ChargesListResponse>();
-           
-            if ( Enum.TryParse(chargeType, out ChargeType chargeTypeVal))
+            if (Enum.TryParse(chargeType, out ChargeType chargeTypeVal))
             {
                 result = chargeTypeVal switch
                 {
@@ -34,7 +33,7 @@ namespace ChargesApi.V1.UseCase
             }
             return result;
         }
-       
+
         private async Task<List<ChargesListResponse>> GetBlockCharges(string chargeGroup)
         {
             var blockChargesResult = new List<ChargesListResponse>();
@@ -48,7 +47,7 @@ namespace ChargesApi.V1.UseCase
         private async Task<List<ChargesListResponse>> GetPropertyCharges(string chargeGroup)
         {
             var result = new List<ChargesListResponse>();
-            result.AddRange( await GetBlockCharges(chargeGroup).ConfigureAwait(false));
+            result.AddRange(await GetBlockCharges(chargeGroup).ConfigureAwait(false));
 
             var propertyCharges = (await _gateway.GetAllChargesListAsync(chargeGroup.ToLower(), ChargeType.property.ToString()).ConfigureAwait(false)).ToResponse();
             result.AddRange(propertyCharges);

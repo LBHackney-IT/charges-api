@@ -36,7 +36,6 @@ namespace ChargesApi.Tests.V1.E2ETests
                          Frequency = "weekly",
                          ChargeCode = "TST",
                          ChargeType = ChargeType.estate
-                         
                     },
                      new DetailedCharges
                     {
@@ -48,14 +47,12 @@ namespace ChargesApi.Tests.V1.E2ETests
                          Frequency = "weekly",
                          ChargeCode = "TST",
                          ChargeType = ChargeType.block
-
                     }
                 }
             };
-
             return entity;
         }
-        
+
         [Fact]
         public async Task GetEstateChargesSummaryByIdAndValidateResponse()
         {

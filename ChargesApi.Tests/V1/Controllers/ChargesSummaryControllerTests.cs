@@ -19,14 +19,11 @@ namespace ChargesApi.Tests.V1.Controllers
         private readonly ChargesSummaryController _chargesSummaryController;
         private readonly ControllerContext _controllerContext;
         private readonly HttpContext _httpContext;
-
         private readonly Mock<IGetChargesSummaryUseCase> _getChargesSummaryUseCase;
-       
         private readonly Fixture _fixture = new Fixture();
         public ChargesSummaryControllerTests()
         {
             _getChargesSummaryUseCase = new Mock<IGetChargesSummaryUseCase>();
-           
             _httpContext = new DefaultHttpContext();
             _controllerContext = new ControllerContext(new ActionContext(_httpContext, new RouteData(), new ControllerActionDescriptor()));
             _chargesSummaryController = new ChargesSummaryController(_getChargesSummaryUseCase.Object)
