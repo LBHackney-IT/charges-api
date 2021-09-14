@@ -120,6 +120,17 @@ resources:
                           - 'table/Charges'
                 - Effect: Allow
                   Action:
+                    - dynamodb:Query
+                    - dynamodb:Scan
+                  Resource:
+                    - 'Fn::Join':
+                        - ':'
+                        - - 'arn:aws:dynamodb'
+                          - Ref: 'AWS::Region'
+                          - Ref: 'AWS::AccountId'
+                          - 'table/Charges/index/target_type_dx'
+                - Effect: Allow
+                  Action:
                     - "dynamodb:BatchGet*"
                     - "dynamodb:BatchWrite"
                     - "dynamodb:DeleteItem"
