@@ -9,7 +9,7 @@ provider:
   vpc: ${self:custom.vpc.${opt:stage}}
   stage: ${opt:stage}
   # TODO: Enable this line if DynamoDb is in use
-  #account: ${opt:account}
+  account: ${opt:account}
   region: eu-west-2
   apiKeys:
     - secureAccess:
