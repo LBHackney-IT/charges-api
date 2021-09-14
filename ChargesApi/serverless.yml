@@ -118,8 +118,6 @@ resources:
                           - Ref: 'AWS::Region'
                           - Ref: 'AWS::AccountId'
                           - 'table/Charges'
-                          - 'table/ChargesMaintenance'
-                          - 'table/ChargesList'
 
 custom:
   vpc:
