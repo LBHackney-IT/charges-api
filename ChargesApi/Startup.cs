@@ -54,7 +54,6 @@ namespace ChargesApi
                 o.AssumeDefaultVersionWhenUnspecified = true; // assume that the caller wants the default version if they don't specify
                 o.ApiVersionReader = new UrlSegmentApiVersionReader(); // read the version number from the url segment header)
             });
-            services.AddCors();
             services.AddSingleton<IApiVersionDescriptionProvider, DefaultApiVersionDescriptionProvider>();
 
             services.AddSwaggerGen(c =>
@@ -124,7 +123,10 @@ namespace ChargesApi
 
             RegisterGateways(services);
             RegisterUseCases(services);
-
+            services.AddCors(opt => opt.AddPolicy("corsPolicy", builder =>
+                builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()));
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
@@ -187,6 +189,7 @@ namespace ChargesApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors("corsPolicy");
             app.UseCorrelation();
 
             if (env.IsDevelopment())
@@ -220,12 +223,6 @@ namespace ChargesApi
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseSwagger();
             app.UseRouting();
-            app.UseCors(x => x
-               .AllowAnyMethod()
-               .AllowAnyHeader()
-               .AllowCredentials()
-               .WithOrigins(Environment.GetEnvironmentVariable("ALLOWED_ORIGINS") == null ? "localhost".Split()
-                   : Environment.GetEnvironmentVariable("ALLOWED_ORIGINS").Split(',')));
             app.UseEndpoints(endpoints =>
             {
                 // SwaggerGen won't find controllers that are routed via this technique.
