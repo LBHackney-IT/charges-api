@@ -23,7 +23,8 @@ namespace ChargesApi.V1.Boundary.Request
         [RequiredDateTime]
         public DateTime StartDate { get; set; }
 
-        [AllowedMaintenanceStatus(ChargeMaintenanceStatus.applied, ChargeMaintenanceStatus.pending)]
+        [Required]
+        [AllowedValues(typeof(ChargeMaintenanceStatus))]
         public ChargeMaintenanceStatus Status { get; set; }
     }
 }

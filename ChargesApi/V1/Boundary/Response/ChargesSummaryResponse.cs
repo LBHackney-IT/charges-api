@@ -8,13 +8,11 @@ namespace ChargesApi.V1.Boundary.Response
     {
         public ChargesSummaryResponse()
         {
-            TenantsCharges = new List<ChargeDetail>();
-            LeaseholdersCharges = new List<ChargeDetail>();
+            ChargesList = new List<ChargeDetail>();
         }
 
         public Guid TargetId { get; set; }
         public TargetType TargetType { get; set; }
-        public IEnumerable<ChargeDetail> TenantsCharges { get; set; }
-        public IEnumerable<ChargeDetail> LeaseholdersCharges { get; set; }
+        public IEnumerable<ChargeDetail> ChargesList { get; set; }
     }
 }

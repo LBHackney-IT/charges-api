@@ -22,41 +22,41 @@ namespace ChargesApi.V1.UseCase
         public async Task<ChargesSummaryResponse> ExecuteAsync(Guid targetId, string targetType)
         {
             var charges = await _chargesApiGateway.GetAllChargesAsync(targetType, targetId).ConfigureAwait(false);
+            var result = new ChargesSummaryResponse();
             if (charges.Any())
             {
-                var result = new ChargesSummaryResponse();
-                var tenantChargesList = charges.Where(x => x.ChargeGroup == ChargeGroup.tenants).ToList();
-                if (tenantChargesList.Any())
+                result.TargetId = charges.First().TargetId;
+                result.TargetType = charges.First().TargetType;
+                var chargesList = new List<ChargeDetail>();
+                charges.ForEach(chargeItem =>
                 {
-                    result.TargetId = tenantChargesList.First().TargetId;
-                    result.TargetType = tenantChargesList.First().TargetType;
-                    var tenantsCharges = new List<ChargeDetail>();
-                    tenantChargesList.ForEach(chargeItem =>
+                    var chargesListResult = GetChargesList(chargeItem.DetailedCharges, chargeItem.ChargeGroup);
+                    if (chargesListResult.Any())
                     {
-                        tenantsCharges.AddRange(GetChargesList(chargeItem.DetailedCharges));
-                    });
-                    result.TenantsCharges = tenantsCharges;
-                }
-                var leaseholdersChargesList = charges.Where(x => x.ChargeGroup == ChargeGroup.leaseholders).ToList();
-                if (leaseholdersChargesList.Any())
-                {
-                    var leaseholdersCharges = new List<ChargeDetail>();
-                    leaseholdersChargesList.ForEach(chargeItem =>
-                    {
-                        leaseholdersCharges.AddRange(GetChargesList(chargeItem.DetailedCharges));
-                    });
-                    result.LeaseholdersCharges = leaseholdersCharges;
-                }
+                        chargesList.AddRange(chargesListResult);
+                    }
+                });
+                result.ChargesList = chargesList;
                 return result;
             }
             else return null;
         }
-        private static List<ChargeDetail> GetChargesList(IEnumerable<DetailedCharges> chargeDetails)
+        private static List<ChargeDetail> GetChargesList(IEnumerable<DetailedCharges> chargeDetails, ChargeGroup chargeGroup)
         {
             var chargesList = new List<ChargeDetail>();
             if (chargeDetails.Any())
             {
-                chargesList = chargeDetails.Where(x => x.Type == Constants.ServiceChargeType).Select(charge => charge.ToResponse()).ToList();
+                var serviceChargesList = chargeDetails.Where(x => x.Type == Constants.ServiceChargeType).ToList();
+
+                if (serviceChargesList.Any())
+                {
+                    serviceChargesList.ForEach(chargeDetailItem =>
+                    {
+                        var chargeDetail = chargeDetailItem.ToResponse();
+                        chargeDetail.ChargeGroup = chargeGroup;
+                        chargesList.Add(chargeDetail);
+                    });
+                }
             }
             return chargesList;
         }
