@@ -71,10 +71,8 @@ namespace ChargesApi.Tests.V1.E2ETests
 
             apiEntity.TargetId.Should().Be(chargeresponse.TargetId);
             apiEntity.TargetType.Should().Be(TargetType.estate);
-            apiEntity.LeaseholdersCharges.Should().BeEmpty();
-            apiEntity.TenantsCharges.Should().NotBeNullOrEmpty();
-            apiEntity.LeaseholdersCharges.Should().HaveCount(0);
-            apiEntity.TenantsCharges.Should().HaveCount(2);
+            apiEntity.ChargesList.Should().NotBeNullOrEmpty();
+            apiEntity.ChargesList.Should().HaveCount(2);
 
         }
         [Fact]
@@ -95,10 +93,8 @@ namespace ChargesApi.Tests.V1.E2ETests
 
             apiEntity.TargetId.Should().Be(chargeresponse.TargetId);
             apiEntity.TargetType.Should().Be(TargetType.block);
-            apiEntity.LeaseholdersCharges.Should().BeEmpty();
-            apiEntity.TenantsCharges.Should().NotBeNullOrEmpty();
-            apiEntity.LeaseholdersCharges.Should().HaveCount(0);
-            apiEntity.TenantsCharges.Should().HaveCount(2);
+            apiEntity.ChargesList.Should().NotBeNullOrEmpty();
+            apiEntity.ChargesList.Should().HaveCount(2);
 
         }
 

@@ -99,8 +99,7 @@ namespace ChargesApi.Tests.V1.UseCase
 
             result.TargetId.Should().Be(new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"));
             result.TargetType.Should().Be(TargetType.block);
-            result.TenantsCharges.Should().HaveCount(2);
-            result.LeaseholdersCharges.Should().HaveCount(2);
+            result.ChargesList.Should().HaveCount(4);
         }
     }
 }

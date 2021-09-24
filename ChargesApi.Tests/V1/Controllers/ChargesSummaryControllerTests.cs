@@ -52,8 +52,7 @@ namespace ChargesApi.Tests.V1.Controllers
 
             chargeSummaryResponse.TargetId.Should().Be(response.TargetId);
             chargeSummaryResponse.TargetType.Should().Be(response.TargetType);
-            chargeSummaryResponse.TenantsCharges.Should().BeEquivalentTo(response.TenantsCharges);
-            chargeSummaryResponse.LeaseholdersCharges.Should().BeEquivalentTo(response.LeaseholdersCharges);
+            chargeSummaryResponse.ChargesList.Should().BeEquivalentTo(response.ChargesList);
 
         }
         [Fact]
