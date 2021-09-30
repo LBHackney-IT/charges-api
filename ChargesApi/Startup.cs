@@ -167,6 +167,8 @@ namespace ChargesApi
             services.AddScoped<IChargeMaintenanceApiGateway, ChargeMaintenanceGateway>();
             services.AddScoped<IChargesListApiGateway, ChargesListApiGateway>();
             services.AddScoped<ISnsGateway, ChargesSnsGateway>();
+            services.AddScoped<IEstimatesApiGateway, EstimatesApiGateway>();
+            services.AddScoped<IActualsApiGateway, ActualsApiGateway>();
         }
 
         private static void RegisterUseCases(IServiceCollection services)
@@ -184,6 +186,8 @@ namespace ChargesApi
             services.AddScoped<ISnsFactory, ChargesSnsFactory>();
             services.AddScoped<IAddChargesUpdateUseCase, AddChargesUpdateUseCase>();
             services.AddScoped<IGetChargesSummaryUseCase, GetChargesSummaryUseCase>();
+            services.AddScoped<IAddEstimatesUseCase, AddEstimatesUseCase>();
+            services.AddScoped<IAddActualsUseCase, AddActualsUseCase>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
