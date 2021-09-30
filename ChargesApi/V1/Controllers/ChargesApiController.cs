@@ -68,7 +68,6 @@ namespace ChargesApi.V1.Controllers
         /// Get a list of charge models by provided type and targetId
         /// </summary>
         /// <param name="type">Type of charge</param>
-        /// <param name="targetId">Id of the appropriate tenure</param>
         /// <response code="200">Success. Charge models was received successfully</response>
         /// <response code="400">Bad Request</response>
         /// <response code="404">Charges with provided id cannot be found</response>
@@ -78,9 +77,9 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync([FromQuery] string type, [FromQuery] Guid targetId)
+        public async Task<IActionResult> GetAllAsync([FromQuery] string type)
         {
-            var charges = await _getAllUseCase.ExecuteAsync(targetId, type).ConfigureAwait(false);
+            var charges = await _getAllUseCase.ExecuteAsync(type).ConfigureAwait(false);
 
             if (charges == null)
             {
@@ -134,8 +133,8 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [Route("{id}")]
-        [HttpPut]
-        public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] UpdateChargeRequest charge)
+        [HttpPatch]
+        public async Task<IActionResult> Patch([FromRoute] Guid id, [FromBody] UpdateChargeRequest charge)
         {
             if (charge == null)
             {
@@ -156,7 +155,7 @@ namespace ChargesApi.V1.Controllers
 
             await _updateUseCase.ExecuteAsync(charge).ConfigureAwait(false);
 
-            return RedirectToAction("Get", new { id = charge.Id });
+            return CreatedAtAction(nameof(Get), new { id = charge.Id }, charge);
         }
 
         /// <summary>

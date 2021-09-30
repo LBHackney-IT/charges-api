@@ -12,7 +12,7 @@
     "base_api": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/v1/healthcheck/ping",
+      "launchUrl": "swagger/index.html",
       "environmentVariables": {
         "DynamoDb_LocalServiceUrl": "http://localhost:8000",
         "DynamoDb_LocalAccessKey": "2cl9i",
@@ -20,7 +20,7 @@
         "DynamoDb_LocalMode": "true",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:5000"
+      "applicationUrl": "http://localhost:5001"
     }
   }
 }

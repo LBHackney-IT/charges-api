@@ -10,6 +10,11 @@ namespace ChargesApi.V1.Domain
         public TargetType TargetType { get; set; }
         public ChargeGroup ChargeGroup { get; set; }
         public IEnumerable<DetailedCharges> DetailedCharges { get; set; }
+        public string CreatedBy { get; set; }
+        public string LastUpdatedBy { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime LastUpdatedDate { get; set; }
+
     }
 }
 

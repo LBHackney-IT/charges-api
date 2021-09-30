@@ -19,7 +19,11 @@ namespace ChargesApi.V1.Factories
                 TargetId = chargeEntity.TargetId,
                 TargetType = chargeEntity.TargetType,
                 ChargeGroup = chargeEntity.ChargeGroup,
-                DetailedCharges = chargeEntity.DetailedCharges
+                DetailedCharges = chargeEntity.DetailedCharges,
+                CreatedBy = chargeEntity.CreatedBy,
+                CreatedDate = chargeEntity.CreatedDate,
+                LastUpdatedBy = chargeEntity.LastUpdatedBy,
+                LastUpdatedDate = chargeEntity.LastUpdatedDate
             };
         }
 
@@ -36,7 +40,11 @@ namespace ChargesApi.V1.Factories
                 TargetId = charge.TargetId,
                 TargetType = charge.TargetType,
                 ChargeGroup = charge.ChargeGroup,
-                DetailedCharges = charge.DetailedCharges
+                DetailedCharges = charge.DetailedCharges,
+                CreatedBy = charge.CreatedBy,
+                CreatedDate = charge.CreatedDate,
+                LastUpdatedBy = charge.LastUpdatedBy,
+                LastUpdatedDate = charge.LastUpdatedDate
             };
         }
 

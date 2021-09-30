@@ -32,7 +32,9 @@ namespace ChargesApi.V1.Gateways
 
         public async Task AddAsync(Charge charge)
         {
-            await _dynamoDbContext.SaveAsync(charge.ToDatabase()).ConfigureAwait(false);
+            var newCharge = charge.ToDatabase();
+            newCharge.CreatedDate = DateTime.UtcNow;
+            await _dynamoDbContext.SaveAsync(newCharge).ConfigureAwait(false);
         }
 
         public void AddRange(List<Charge> charges)
@@ -51,18 +53,18 @@ namespace ChargesApi.V1.Gateways
             }
         }
 
-        public async Task<List<Charge>> GetAllChargesAsync(string type, Guid targetId)
+        public async Task<List<Charge>> GetAllChargesAsync(string type)
         {
             var request = new QueryRequest
             {
                 TableName = "Charges",
                 IndexName = "target_type_dx",
                 KeyConditionExpression = "target_type = :V_target_type",
-                FilterExpression = "target_id = :V_target_id",
+                //FilterExpression = "target_id = :V_target_id",
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
-                    {":V_target_type",new AttributeValue{S = type.ToString()}},
-                    {":V_target_id",new AttributeValue{S = targetId.ToString()}}
+                    {":V_target_type",new AttributeValue{S = type.ToString()}}
+                    //{":V_target_id",new AttributeValue{S = targetId.ToString()}}
                 },
                 ScanIndexForward = true
             };
@@ -112,7 +114,9 @@ namespace ChargesApi.V1.Gateways
 
         public async Task UpdateAsync(Charge charge)
         {
-            await _dynamoDbContext.SaveAsync(charge.ToDatabase()).ConfigureAwait(false);
+            var updatedCharge = charge.ToDatabase();
+            updatedCharge.LastUpdatedDate = DateTime.UtcNow;
+            await _dynamoDbContext.SaveAsync(updatedCharge).ConfigureAwait(false);
         }
     }
 }

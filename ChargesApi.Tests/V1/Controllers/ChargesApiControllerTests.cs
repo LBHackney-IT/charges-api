@@ -415,7 +415,7 @@ namespace ChargesApi.Tests.V1.Controllers
                     }
                 });
 
-            var result = await _chargeController.Put(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"), charge)
+            var result = await _chargeController.Patch(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"), charge)
                 .ConfigureAwait(false);
 
             var redirectToActionResult = result as RedirectToActionResult;
@@ -432,7 +432,7 @@ namespace ChargesApi.Tests.V1.Controllers
         [Fact]
         public async Task PutChargeWithNullReturns400()
         {
-            var result = await _chargeController.Put(Guid.NewGuid(), null)
+            var result = await _chargeController.Patch(Guid.NewGuid(), null)
                 .ConfigureAwait(false);
 
             var badRequest = result as BadRequestObjectResult;
@@ -472,7 +472,7 @@ namespace ChargesApi.Tests.V1.Controllers
                 }
             };
 
-            var result = await _chargeController.Put(Guid.NewGuid(), charge).ConfigureAwait(false);
+            var result = await _chargeController.Patch(Guid.NewGuid(), charge).ConfigureAwait(false);
 
             var badRequest = result as BadRequestObjectResult;
 
@@ -497,7 +497,7 @@ namespace ChargesApi.Tests.V1.Controllers
 
             var guid = Guid.NewGuid();
 
-            var result = await _chargeController.Put(guid, new UpdateChargeRequest() { Id = guid })
+            var result = await _chargeController.Patch(guid, new UpdateChargeRequest() { Id = guid })
                 .ConfigureAwait(false);
 
             var notFoundResult = result as NotFoundObjectResult;

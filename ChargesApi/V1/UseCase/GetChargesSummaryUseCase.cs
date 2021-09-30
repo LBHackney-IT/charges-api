@@ -21,7 +21,7 @@ namespace ChargesApi.V1.UseCase
 
         public async Task<ChargesSummaryResponse> ExecuteAsync(Guid targetId, string targetType)
         {
-            var charges = await _chargesApiGateway.GetAllChargesAsync(targetType, targetId).ConfigureAwait(false);
+            var charges = await _chargesApiGateway.GetAllChargesAsync(targetType).ConfigureAwait(false);
             var result = new ChargesSummaryResponse();
             if (charges.Any())
             {
