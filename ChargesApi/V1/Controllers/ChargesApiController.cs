@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using ChargesApi.V1.Infrastructure;
@@ -22,13 +23,15 @@ namespace ChargesApi.V1.Controllers
         private readonly IAddUseCase _addUseCase;
         private readonly IRemoveUseCase _removeUseCase;
         private readonly IUpdateUseCase _updateUseCase;
+        private readonly IAddBatchUseCase _addBatchUseCase;
 
         public ChargesApiController(
             IGetAllUseCase getAllUseCase,
             IGetByIdUseCase getByIdUseCase,
             IAddUseCase addUseCase,
             IRemoveUseCase removeUseCase,
-            IUpdateUseCase updateUseCase
+            IUpdateUseCase updateUseCase,
+            IAddBatchUseCase addBatchUseCase
         )
         {
             _getAllUseCase = getAllUseCase;
@@ -36,6 +39,7 @@ namespace ChargesApi.V1.Controllers
             _addUseCase = addUseCase;
             _removeUseCase = removeUseCase;
             _updateUseCase = updateUseCase;
+            _addBatchUseCase = addBatchUseCase;
         }
 
         /// <summary>
@@ -118,6 +122,43 @@ namespace ChargesApi.V1.Controllers
             {
                 return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, ModelState.GetErrorMessages()));
             }
+        }
+
+        /// <summary>
+        /// Create a list of new charges records
+        /// </summary>
+        /// <param name="correlationId">The value that is used to combine several requests into a common group</param>
+        /// <param name="token">The jwt token value</param>
+        /// <param name="charges">List of Charges model for create</param>
+        /// <response code="201">Created. Charges model was created successfully</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="500">Internal Server Error</response>
+        [ProducesResponseType(typeof(ChargeResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
+        [HttpPost]
+        [Route("process-batch")]
+        public async Task<IActionResult> AddBatch([FromHeader(Name = "x-correlation-id")] string correlationId,
+                                                  [FromHeader(Name = "Authorization")] string token,
+                                                  [FromBody] IEnumerable<AddChargeRequest> charges)
+        {
+            if (charges == null)
+            {
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Charges models cannot be null!"));
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, GetErrorMessage(ModelState)));
+            }
+
+           
+            var transactionResponse = await _addBatchUseCase.ExecuteAsync(charges).ConfigureAwait(false);
+
+            if (transactionResponse == charges.Count())
+                return Ok($"Total {transactionResponse} number of Transactions processed successfully");
+
+            return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Transaction entries processing failed!"));
         }
 
         /// <summary>
