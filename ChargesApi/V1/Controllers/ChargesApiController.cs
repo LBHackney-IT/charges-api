@@ -152,7 +152,6 @@ namespace ChargesApi.V1.Controllers
                 return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, GetErrorMessage(ModelState)));
             }
 
-           
             var batchResponse = await _addBatchUseCase.ExecuteAsync(charges).ConfigureAwait(false);
 
             if (batchResponse == charges.Count())
