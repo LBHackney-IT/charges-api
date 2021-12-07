@@ -153,12 +153,12 @@ namespace ChargesApi.V1.Controllers
             }
 
            
-            var transactionResponse = await _addBatchUseCase.ExecuteAsync(charges).ConfigureAwait(false);
+            var batchResponse = await _addBatchUseCase.ExecuteAsync(charges).ConfigureAwait(false);
 
-            if (transactionResponse == charges.Count())
-                return Ok($"Total {transactionResponse} number of Transactions processed successfully");
+            if (batchResponse == charges.Count())
+                return Ok($"Total {batchResponse} number of Charges processed successfully");
 
-            return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Transaction entries processing failed!"));
+            return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Charges entries processing failed!"));
         }
 
         /// <summary>

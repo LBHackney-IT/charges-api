@@ -119,7 +119,7 @@ namespace ChargesApi.V1.Gateways
 
         public async Task<bool> AddBatchAsync(List<Charge> charges)
         {
-            var transactionBatch = _dynamoDbContext.CreateBatchWrite<ChargeDbEntity>();
+            var chargesBatch = _dynamoDbContext.CreateBatchWrite<ChargeDbEntity>();
 
             var items = charges.ToDatabaseList();
             var maxBatchCount = _configuration.GetValue<int>("BatchProcessing:PerBatchCount");
@@ -129,14 +129,14 @@ namespace ChargesApi.V1.Gateways
                 for (var start = 0; start < loopCount; start++)
                 {
                     var itemsToWrite = items.Skip(start * maxBatchCount).Take(maxBatchCount);
-                    transactionBatch.AddPutItems(itemsToWrite);
-                    await transactionBatch.ExecuteAsync().ConfigureAwait(false);
+                    chargesBatch.AddPutItems(itemsToWrite);
+                    await chargesBatch.ExecuteAsync().ConfigureAwait(false);
                 }
             }
             else
             {
-                transactionBatch.AddPutItems(items);
-                await transactionBatch.ExecuteAsync().ConfigureAwait(false);
+                chargesBatch.AddPutItems(items);
+                await chargesBatch.ExecuteAsync().ConfigureAwait(false);
             }
 
             return true;
