@@ -21,13 +21,10 @@ namespace ChargesApi.V1.UseCase
 
         public async Task<int> ExecuteAsync(IEnumerable<AddChargeRequest> charges)
         {
-            var chargesList = new List<Charge>();
-
-            charges.ToList().ToDomainList().ForEach(item =>
+            var chargesList = charges.ToList().ToDomainList();
+            chargesList.ForEach(item =>
             {
                 item.Id = Guid.NewGuid();
-
-                chargesList.Add(item);
             });
 
             var response = await _gateway.AddBatchAsync(chargesList).ConfigureAwait(false);
