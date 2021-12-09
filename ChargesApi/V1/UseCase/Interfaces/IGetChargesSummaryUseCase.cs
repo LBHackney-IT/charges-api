@@ -6,6 +6,6 @@ namespace ChargesApi.V1.UseCase.Interfaces
 {
     public interface IGetChargesSummaryUseCase
     {
-        public Task<ChargesSummaryResponse> ExecuteAsync(Guid targetId, string targetType);
+        public Task<ChargesSummaryResponse> ExecuteAsync(Guid targetId);
     }
 }

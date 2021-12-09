@@ -25,7 +25,6 @@ namespace ChargesApi.V1.Controllers
         /// Get All Charges Summary model by provided estate or block Id
         /// </summary>
         /// <param name="targetId">The value by which we are looking for charges summary</param>
-        /// <param name="targetType">The type by which we are looking for charges summary</param>
         /// <response code="200">Success. Charges Summary model was received successfully</response>
         /// <response code="400">Bad Request</response>
         /// <response code="404">Charges Summary with provided id cannot be found</response>
@@ -35,9 +34,9 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] Guid targetId, string targetType)
+        public async Task<IActionResult> GetAll([FromQuery] Guid targetId)
         {
-            var chargesList = await _getChargesSummaryUseCase.ExecuteAsync(targetId, targetType).ConfigureAwait(false);
+            var chargesList = await _getChargesSummaryUseCase.ExecuteAsync(targetId).ConfigureAwait(false);
 
             if (chargesList == null)
             {

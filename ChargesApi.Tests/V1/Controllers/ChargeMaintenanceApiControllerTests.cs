@@ -48,7 +48,7 @@ namespace ChargesApi.Tests.V1.Controllers
             {
                 Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
                 TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
-                TargetType = TargetType.asset,
+                TargetType = TargetType.Asset,
                 DetailedCharges = new List<DetailedCharges>()
                     {
                         new DetailedCharges
@@ -93,7 +93,7 @@ namespace ChargesApi.Tests.V1.Controllers
                         }
                     },
                     StartDate = new DateTime(2021, 7, 2),
-                    Status = ChargeMaintenanceStatus.pending
+                    Status = ChargeMaintenanceStatus.Pending
                 });
 
             var chargeMaintenance = new AddChargeMaintenanceRequest
@@ -125,7 +125,7 @@ namespace ChargesApi.Tests.V1.Controllers
                         }
                     },
                 StartDate = new DateTime(2021, 7, 2),
-                Status = ChargeMaintenanceStatus.pending
+                Status = ChargeMaintenanceStatus.Pending
             };
 
 
@@ -206,7 +206,7 @@ namespace ChargesApi.Tests.V1.Controllers
                         }
                     },
                     StartDate = new DateTime(2021, 7, 2),
-                    Status = ChargeMaintenanceStatus.pending
+                    Status = ChargeMaintenanceStatus.Pending
                 });
 
             var result = await _chargeMaintenanceApiController.Get(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"))
@@ -224,7 +224,7 @@ namespace ChargesApi.Tests.V1.Controllers
 
             chargeMaintenance.Id.Should().Be(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"));
             chargeMaintenance.ChargesId.Should().Be(new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"));
-            chargeMaintenance.Status.Should().Be(ChargeMaintenanceStatus.pending);
+            chargeMaintenance.Status.Should().Be(ChargeMaintenanceStatus.Pending);
             chargeMaintenance.Reason.Should().Be("Uplift");
             chargeMaintenance.StartDate.Should().Be(new DateTime(2021, 7, 2));
 

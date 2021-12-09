@@ -23,7 +23,7 @@ namespace ChargesApi.Tests.V1.E2ETests
                 Id = Guid.NewGuid(),
                 TargetId = targetId,
                 TargetType = val,
-                ChargeGroup = ChargeGroup.tenants,
+                ChargeGroup = ChargeGroup.Tenants,
                 DetailedCharges = new List<DetailedCharges>
                 {
                     new DetailedCharges
@@ -35,7 +35,7 @@ namespace ChargesApi.Tests.V1.E2ETests
                          Amount = 150,
                          Frequency = "weekly",
                          ChargeCode = "TST",
-                         ChargeType = ChargeType.estate
+                         ChargeType = ChargeType.Estate
                     },
                      new DetailedCharges
                     {
@@ -46,7 +46,7 @@ namespace ChargesApi.Tests.V1.E2ETests
                          Amount = 150,
                          Frequency = "weekly",
                          ChargeCode = "TST",
-                         ChargeType = ChargeType.block
+                         ChargeType = ChargeType.Block
                     }
                 }
             };
@@ -57,8 +57,8 @@ namespace ChargesApi.Tests.V1.E2ETests
         public async Task GetEstateChargesSummaryByIdAndValidateResponse()
         {
             Guid id = Guid.NewGuid();
-            var targetType = TargetType.estate.ToString();
-            var chargeRequest = ConstructCharge(id, TargetType.estate);
+            var targetType = TargetType.Estate.ToString();
+            var chargeRequest = ConstructCharge(id, TargetType.Estate);
             var chargeresponse = await CreateChargeAndValidateResponse(chargeRequest).ConfigureAwait(false);
 
             var uri = new Uri($"api/v1/charges-summary?targetId={id}&targetType={targetType}", UriKind.Relative);
@@ -70,7 +70,7 @@ namespace ChargesApi.Tests.V1.E2ETests
             var apiEntity = JsonConvert.DeserializeObject<ChargesSummaryResponse>(responseContent);
 
             apiEntity.TargetId.Should().Be(chargeresponse.TargetId);
-            apiEntity.TargetType.Should().Be(TargetType.estate);
+            apiEntity.TargetType.Should().Be(TargetType.Estate);
             apiEntity.ChargesList.Should().NotBeNullOrEmpty();
             apiEntity.ChargesList.Should().HaveCount(2);
 
@@ -79,8 +79,8 @@ namespace ChargesApi.Tests.V1.E2ETests
         public async Task GetBlockChargesSummaryByIdAndValidateResponse()
         {
             Guid id = Guid.NewGuid();
-            var targetType = TargetType.block.ToString();
-            var chargeRequest = ConstructCharge(id, TargetType.block);
+            var targetType = TargetType.Block.ToString();
+            var chargeRequest = ConstructCharge(id, TargetType.Block);
             var chargeresponse = await CreateChargeAndValidateResponse(chargeRequest).ConfigureAwait(false);
 
             var uri = new Uri($"api/v1/charges-summary?targetId={id}&targetType={targetType}", UriKind.Relative);
@@ -92,7 +92,7 @@ namespace ChargesApi.Tests.V1.E2ETests
             var apiEntity = JsonConvert.DeserializeObject<ChargesSummaryResponse>(responseContent);
 
             apiEntity.TargetId.Should().Be(chargeresponse.TargetId);
-            apiEntity.TargetType.Should().Be(TargetType.block);
+            apiEntity.TargetType.Should().Be(TargetType.Block);
             apiEntity.ChargesList.Should().NotBeNullOrEmpty();
             apiEntity.ChargesList.Should().HaveCount(2);
 

@@ -57,14 +57,14 @@ namespace ChargesApi.Tests.V1.Controllers
                         {
                             Id = new Guid("271b9a38-e78f-4a3f-81c0-4541bc5acc2c"),
                             TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
-                            TargetType = TargetType.asset,
+                            TargetType = TargetType.Asset,
                             DetailedCharges = new List<DetailedCharges>()
                         },
                         new ChargeResponse
                         {
                             Id = new Guid("0f668265-1501-4722-8e37-77c7116dae2f"),
                             TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
-                            TargetType = TargetType.asset,
+                            TargetType = TargetType.Asset,
                             DetailedCharges = new List<DetailedCharges>()
                             {
                                 new DetailedCharges
@@ -97,13 +97,13 @@ namespace ChargesApi.Tests.V1.Controllers
 
             charges[0].Id.Should().Be(new Guid("271b9a38-e78f-4a3f-81c0-4541bc5acc2c"));
             charges[0].TargetId.Should().Be(new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"));
-            charges[0].TargetType.Should().Be(TargetType.asset);
+            charges[0].TargetType.Should().Be(TargetType.Asset);
             charges[0].DetailedCharges.Should().NotBeNull();
             charges[0].DetailedCharges.Should().BeEmpty();
 
             charges[1].Id.Should().Be(new Guid("0f668265-1501-4722-8e37-77c7116dae2f"));
             charges[1].TargetId.Should().Be(new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"));
-            charges[1].TargetType.Should().Be(TargetType.asset);
+            charges[1].TargetType.Should().Be(TargetType.Asset);
             charges[1].DetailedCharges.Should().NotBeNull();
             charges[1].DetailedCharges.Should().HaveCount(1);
 
@@ -126,7 +126,7 @@ namespace ChargesApi.Tests.V1.Controllers
                         {
                             Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
                             TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
-                            TargetType = TargetType.asset,
+                            TargetType = TargetType.Asset,
                             DetailedCharges = new List<DetailedCharges>()
                             {
                                 new DetailedCharges
@@ -159,7 +159,7 @@ namespace ChargesApi.Tests.V1.Controllers
 
             charges[0].Id.Should().Be(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"));
             charges[0].TargetId.Should().Be(new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"));
-            charges[0].TargetType.Should().Be(TargetType.asset);
+            charges[0].TargetType.Should().Be(TargetType.Asset);
             charges[0].DetailedCharges.Should().NotBeNull();
             charges[0].DetailedCharges.Should().HaveCount(1);
 
@@ -199,7 +199,7 @@ namespace ChargesApi.Tests.V1.Controllers
                 {
                     Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
                     TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
-                    TargetType = TargetType.asset,
+                    TargetType = TargetType.Asset,
                     DetailedCharges = new List<DetailedCharges>()
                     {
                         new DetailedCharges
@@ -229,7 +229,7 @@ namespace ChargesApi.Tests.V1.Controllers
 
             charge.Id.Should().Be(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"));
             charge.TargetId.Should().Be(new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"));
-            charge.TargetType.Should().Be(TargetType.asset);
+            charge.TargetType.Should().Be(TargetType.Asset);
             charge.DetailedCharges.Should().NotBeNull();
             charge.DetailedCharges.Should().HaveCount(1);
 
@@ -293,7 +293,7 @@ namespace ChargesApi.Tests.V1.Controllers
                 {
                     Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
                     TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
-                    TargetType = TargetType.asset,
+                    TargetType = TargetType.Asset,
                     DetailedCharges = new List<DetailedCharges>()
                     {
                         new DetailedCharges
@@ -311,7 +311,7 @@ namespace ChargesApi.Tests.V1.Controllers
             var charge = new AddChargeRequest
             {
                 TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
-                TargetType = TargetType.asset,
+                TargetType = TargetType.Asset,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges
@@ -377,7 +377,7 @@ namespace ChargesApi.Tests.V1.Controllers
             {
                 Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
                 TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
-                TargetType = TargetType.asset,
+                TargetType = TargetType.Asset,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges
@@ -400,7 +400,7 @@ namespace ChargesApi.Tests.V1.Controllers
                 {
                     Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
                     TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
-                    TargetType = TargetType.asset,
+                    TargetType = TargetType.Asset,
                     DetailedCharges = new List<DetailedCharges>()
                     {
                         new DetailedCharges
@@ -457,7 +457,7 @@ namespace ChargesApi.Tests.V1.Controllers
             {
                 Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
                 TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
-                TargetType = TargetType.asset,
+                TargetType = TargetType.Asset,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges

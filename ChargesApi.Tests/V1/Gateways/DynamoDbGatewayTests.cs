@@ -46,7 +46,7 @@ namespace ChargesApi.Tests.V1.Gateways
             {
                 Id = new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"),
                 TargetId = new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"),
-                TargetType = TargetType.asset,
+                TargetType = TargetType.Asset,
                 DetailedCharges = new List<DetailedCharges>
                         {
                             new DetailedCharges
@@ -71,7 +71,7 @@ namespace ChargesApi.Tests.V1.Gateways
 
             charge.Id.Should().Be(new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"));
             charge.TargetId.Should().Be(new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"));
-            charge.TargetType.Should().Be(TargetType.asset);
+            charge.TargetType.Should().Be(TargetType.Asset);
             charge.DetailedCharges.Should().NotBeNull();
             charge.DetailedCharges.Should().HaveCount(1);
 
@@ -91,13 +91,13 @@ namespace ChargesApi.Tests.V1.Gateways
             _amazonDynamoDb.Setup(p => p.QueryAsync(It.IsAny<QueryRequest>(), It.IsAny<CancellationToken>()))
                .ReturnsAsync(response);
 
-            var charges = await _gateway.GetAllChargesAsync("Asset", new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"))
+            var charges = await _gateway.GetAllChargesAsync(new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"))
                 .ConfigureAwait(false);
 
             charges.Should().NotBeNull();
             charges.Should().HaveCount(1);
 
-            charges[0].TargetType.Should().Be(TargetType.asset);
+            charges[0].TargetType.Should().Be(TargetType.Asset);
             charges[0].DetailedCharges.Should().NotBeNull();
             charges[0].DetailedCharges.Should().HaveCount(9);
 
@@ -118,7 +118,7 @@ namespace ChargesApi.Tests.V1.Gateways
             {
                 Id = new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"),
                 TargetId = new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"),
-                TargetType = TargetType.asset,
+                TargetType = TargetType.Asset,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges
@@ -158,7 +158,7 @@ namespace ChargesApi.Tests.V1.Gateways
             {
                 Id = new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"),
                 TargetId = new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"),
-                TargetType = TargetType.asset,
+                TargetType = TargetType.Asset,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges
@@ -198,7 +198,7 @@ namespace ChargesApi.Tests.V1.Gateways
             {
                 Id = new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"),
                 TargetId = new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"),
-                TargetType = TargetType.asset,
+                TargetType = TargetType.Asset,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges

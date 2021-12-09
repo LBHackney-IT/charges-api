@@ -27,7 +27,7 @@ namespace ChargesApi.Tests.V1.E2ETests
             {
                 Id = Guid.NewGuid(),
                 TargetId = Guid.NewGuid(),
-                TargetType = TargetType.asset,
+                TargetType = TargetType.Asset,
                 DetailedCharges = new List<DetailedCharges>()
             };
 
@@ -127,17 +127,16 @@ namespace ChargesApi.Tests.V1.E2ETests
 
             apiEntity.Should().BeEquivalentTo(charge, options => options.Excluding(a => a.Id));
 
-            CleanupActions.Add(async () => await DynamoDbContext.DeleteAsync<ChargeDbEntity>(apiEntity.Id).ConfigureAwait(false));
+            CleanupActions.Add(() => DynamoDbContext.DeleteAsync<ChargeDbEntity>(apiEntity.Id).ConfigureAwait(false));
 
-            apiEntity.TargetType = TargetType.tenure;
+            apiEntity.TargetType = TargetType.Block;
 
             var updateUri = new Uri($"api/v1/charges/{apiEntity.Id}", UriKind.Relative);
             string updateCharge = JsonConvert.SerializeObject(apiEntity);
 
-            HttpResponseMessage updateResponse;
             using var updateStringContent = new StringContent(updateCharge);
             updateStringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            updateResponse = await Client.PutAsync(updateUri, updateStringContent).ConfigureAwait(false);
+            var updateResponse = await Client.PutAsync(updateUri, updateStringContent).ConfigureAwait(false);
 
             updateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -145,7 +144,7 @@ namespace ChargesApi.Tests.V1.E2ETests
             var updateApiEntity = JsonConvert.DeserializeObject<ChargeResponse>(updateResponseContent);
 
             updateApiEntity.Should().NotBeNull();
-            updateApiEntity.TargetType.Should().Be(TargetType.tenure);
+            updateApiEntity.TargetType.Should().Be(TargetType.Block);
         }
 
         [Fact]

@@ -44,7 +44,7 @@ namespace ChargesApi.Tests.V1.Factories
                         }
                     },
                 StartDate = new DateTime(2021, 7, 2),
-                Status = ChargeMaintenanceStatus.pending
+                Status = ChargeMaintenanceStatus.Pending
             };
 
             var domain = databaseEntity.ToDomain();
@@ -113,7 +113,7 @@ namespace ChargesApi.Tests.V1.Factories
                         }
                     },
                 StartDate = new DateTime(2021, 7, 2),
-                Status = ChargeMaintenanceStatus.pending
+                Status = ChargeMaintenanceStatus.Pending
             };
 
             var databaseEntity = domain.ToDatabase();

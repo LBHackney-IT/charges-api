@@ -58,7 +58,7 @@ namespace ChargesApi.Tests.V1.Gateways
                         }
                     },
                 StartDate = new DateTime(2021, 7, 2),
-                Status = ChargeMaintenanceStatus.pending
+                Status = ChargeMaintenanceStatus.Pending
             };
 
             await _gateway.AddAsync(domain).ConfigureAwait(false);
@@ -122,7 +122,7 @@ namespace ChargesApi.Tests.V1.Gateways
                         }
                     },
                 StartDate = new DateTime(2021, 7, 2),
-                Status = ChargeMaintenanceStatus.pending
+                Status = ChargeMaintenanceStatus.Pending
             };
 
             _dynamoDb.Setup(_ => _.LoadAsync<ChargesMaintenanceDbEntity>(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
@@ -134,7 +134,7 @@ namespace ChargesApi.Tests.V1.Gateways
 
             chargeMaintenance.Id.Should().Be(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"));
             chargeMaintenance.ChargesId.Should().Be(new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"));
-            chargeMaintenance.Status.Should().Be(ChargeMaintenanceStatus.pending);
+            chargeMaintenance.Status.Should().Be(ChargeMaintenanceStatus.Pending);
             chargeMaintenance.StartDate.Should().Be(new DateTime(2021, 7, 2));
             chargeMaintenance.Reason.Should().Be("Uplift");
 
