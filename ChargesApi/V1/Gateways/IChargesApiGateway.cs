@@ -23,5 +23,7 @@ namespace ChargesApi.V1.Gateways
 
         public void Update(Charge charge);
         public Task UpdateAsync(Charge charge);
+
+        public Task<bool> AddBatchAsync(List<Charge> charges);
     }
 }

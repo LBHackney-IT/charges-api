@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Xunit;
 
 namespace ChargesApi.Tests.V1.Gateways
@@ -20,12 +21,15 @@ namespace ChargesApi.Tests.V1.Gateways
     {
         private readonly Mock<IDynamoDBContext> _dynamoDb;
         private readonly Mock<IAmazonDynamoDB> _amazonDynamoDb;
+        private readonly Mock<IConfiguration> _mockConfig;
         private readonly DynamoDbGateway _gateway;
+
         public DynamoDbGatewayTests()
         {
             _dynamoDb = new Mock<IDynamoDBContext>();
             _amazonDynamoDb = new Mock<IAmazonDynamoDB>();
-            _gateway = new DynamoDbGateway(_dynamoDb.Object, _amazonDynamoDb.Object);
+            _mockConfig = new Mock<IConfiguration>();
+            _gateway = new DynamoDbGateway(_dynamoDb.Object, _amazonDynamoDb.Object, _mockConfig.Object);
         }
         [Fact]
         public async Task GetChargeByIdReturnsNullIfEntityDoesntExist()

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using ChargesApi.V1.Boundary.Request;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Infrastructure.Entities;
@@ -71,6 +73,14 @@ namespace ChargesApi.V1.Factories
                 ChargeGroup = chargeRequest.ChargeGroup,
                 DetailedCharges = chargeRequest.DetailedCharges
             };
+        }
+        public static List<ChargeDbEntity> ToDatabaseList(this List<Charge> charges)
+        {
+            return charges.Select(item => item.ToDatabase()).ToList();
+        }
+        public static List<Charge> ToDomainList(this List<AddChargeRequest> charges)
+        {
+            return charges.Select(item => item.ToDomain()).ToList();
         }
     }
 }

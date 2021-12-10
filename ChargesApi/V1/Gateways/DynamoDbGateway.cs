@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace ChargesApi.V1.Gateways
 {
@@ -17,12 +18,13 @@ namespace ChargesApi.V1.Gateways
     {
         private readonly IDynamoDBContext _dynamoDbContext;
         private readonly IAmazonDynamoDB _amazonDynamoDb;
+        private readonly IConfiguration _configuration;
 
-        public DynamoDbGateway(IDynamoDBContext dynamoDbContext,
-             IAmazonDynamoDB amazonDynamoDb)
+        public DynamoDbGateway(IDynamoDBContext dynamoDbContext, IAmazonDynamoDB amazonDynamoDb, IConfiguration configuration)
         {
             _dynamoDbContext = dynamoDbContext;
             _amazonDynamoDb = amazonDynamoDb;
+            _configuration = configuration;
         }
 
         public void Add(Charge charge)
@@ -113,6 +115,31 @@ namespace ChargesApi.V1.Gateways
         public async Task UpdateAsync(Charge charge)
         {
             await _dynamoDbContext.SaveAsync(charge.ToDatabase()).ConfigureAwait(false);
+        }
+
+        public async Task<bool> AddBatchAsync(List<Charge> charges)
+        {
+            var chargesBatch = _dynamoDbContext.CreateBatchWrite<ChargeDbEntity>();
+
+            var items = charges.ToDatabaseList();
+            var maxBatchCount = _configuration.GetValue<int>("BatchProcessing:PerBatchCount");
+            if (items.Count > maxBatchCount)
+            {
+                var loopCount = (items.Count / maxBatchCount) + 1;
+                for (var start = 0; start < loopCount; start++)
+                {
+                    var itemsToWrite = items.Skip(start * maxBatchCount).Take(maxBatchCount);
+                    chargesBatch.AddPutItems(itemsToWrite);
+                    await chargesBatch.ExecuteAsync().ConfigureAwait(false);
+                }
+            }
+            else
+            {
+                chargesBatch.AddPutItems(items);
+                await chargesBatch.ExecuteAsync().ConfigureAwait(false);
+            }
+
+            return true;
         }
     }
 }

@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using AutoFixture;
 using Xunit;
 
 namespace ChargesApi.Tests.V1.Controllers
@@ -29,6 +30,7 @@ namespace ChargesApi.Tests.V1.Controllers
         private readonly Mock<IAddUseCase> _addUseCase;
         private readonly Mock<IRemoveUseCase> _removeUseCase;
         private readonly Mock<IUpdateUseCase> _updateUseCase;
+        private readonly Mock<IAddBatchUseCase> _batchUseCase;
 
         public ChargesApiControllerTests()
         {
@@ -37,11 +39,12 @@ namespace ChargesApi.Tests.V1.Controllers
             _addUseCase = new Mock<IAddUseCase>();
             _removeUseCase = new Mock<IRemoveUseCase>();
             _updateUseCase = new Mock<IUpdateUseCase>();
+            _batchUseCase = new Mock<IAddBatchUseCase>();
 
             _httpContext = new DefaultHttpContext();
             _controllerContext = new ControllerContext(new ActionContext(_httpContext, new RouteData(), new ControllerActionDescriptor()));
             _chargeController = new ChargesApiController(_getAllUseCase.Object, _getByIdUseCase.Object, _addUseCase.Object,
-                                                        _removeUseCase.Object, _updateUseCase.Object)
+                                                        _removeUseCase.Object, _updateUseCase.Object, _batchUseCase.Object)
             {
                 ControllerContext = _controllerContext
             };
