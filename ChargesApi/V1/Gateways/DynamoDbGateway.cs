@@ -56,7 +56,6 @@ namespace ChargesApi.V1.Gateways
             var request = new QueryRequest
             {
                 TableName = "Charges",
-                IndexName = "target_type_dx",
                 KeyConditionExpression = "target_id = :V_target_id",
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
