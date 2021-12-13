@@ -59,7 +59,7 @@ namespace ChargesApi.Tests.V1.Controllers
         public async Task GetAllInvalidIdReturns404()
         {
             _getChargesSummaryUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>()))
-                .ReturnsAsync((ChargesSummaryResponse)null);
+                .ReturnsAsync((ChargesSummaryResponse) null);
 
             var result = await _chargesSummaryController.GetAll(new Guid("84613e2b-b10d-4c09-910b-8375ba2d6aa7"))
                 .ConfigureAwait(false);
