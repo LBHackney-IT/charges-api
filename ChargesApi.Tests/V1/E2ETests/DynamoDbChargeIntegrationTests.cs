@@ -72,11 +72,20 @@ namespace ChargesApi.Tests.V1.E2ETests
         [Fact]
         public async Task CreateChargeAndThenGetByIdReturns201()
         {
-            var charge = ConstructCharge();
+            try
+            {
+                var charge = ConstructCharge();
 
-            var response = await CreateChargeAndValidateResponse(charge).ConfigureAwait(false);
+                var response = await CreateChargeAndValidateResponse(charge).ConfigureAwait(false);
 
-            await GetChargeByIdAndValidateResponse(response.Id, response).ConfigureAwait(false);
+                await GetChargeByIdAndValidateResponse(response.Id, response).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
         }
 
         [Fact]
