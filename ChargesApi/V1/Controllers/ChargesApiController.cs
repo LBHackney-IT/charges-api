@@ -112,7 +112,7 @@ namespace ChargesApi.V1.Controllers
             {
                 var chargeResponse = await _addUseCase.ExecuteAsync(charge).ConfigureAwait(false);
 
-                return CreatedAtAction($"Get", new { id = chargeResponse.Id , targetId = chargeResponse.TargetId }, chargeResponse);
+                return CreatedAtAction($"Get", new { id = chargeResponse.Id, targetId = chargeResponse.TargetId }, chargeResponse);
             }
             else
             {
