@@ -21,20 +21,11 @@ namespace ChargesApi.Tests
                 TableName = "Charges",
                 PartitionKey = new AttributeDef()
                 {
-                    KeyName = "id",
+                    KeyName = "target_id",
                     KeyType = KeyType.HASH,
                     KeyScalarType = ScalarAttributeType.S
-                },
-                Indices = new List<GlobalIndexDef>{
-                    new GlobalIndexDef()
-                    {
-                        KeyName = "target_type",
-                        KeyType = KeyType.HASH,
-                        KeyScalarType = ScalarAttributeType.S,
-                        IndexName = "target_type_dx",
-                        ProjectionType = "ALL"
-                    }
                 }
+
             },
             new TableDef()
             {
