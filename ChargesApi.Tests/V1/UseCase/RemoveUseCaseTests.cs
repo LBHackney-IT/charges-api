@@ -23,13 +23,13 @@ namespace ChargesApi.Tests.V1.UseCase
         [Fact]
         public async Task RemoveChargeValidId()
         {
-            _mockChargeGateway.Setup(_ => _.GetChargeByIdAsync(It.IsAny<Guid>()))
+            _mockChargeGateway.Setup(_ => _.GetChargeByIdAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync(new Charge());
 
             _mockChargeGateway.Setup(_ => _.RemoveAsync(It.IsAny<Charge>()))
                 .Returns(Task.CompletedTask);
 
-            await _removeUseCase.ExecuteAsync(new Guid("43f50ead-ff80-4ea3-bdd3-6db654c7fc88"))
+            await _removeUseCase.ExecuteAsync(new Guid("43f50ead-ff80-4ea3-bdd3-6db654c7fc88"), Guid.NewGuid())
                 .ConfigureAwait(false);
 
             _mockChargeGateway.Verify(_ => _.RemoveAsync(It.IsAny<Charge>()), Times.Once);
@@ -38,7 +38,7 @@ namespace ChargesApi.Tests.V1.UseCase
         [Fact]
         public async Task RemoveChargeInvalidId()
         {
-            _mockChargeGateway.Setup(_ => _.GetChargeByIdAsync(It.IsAny<Guid>()))
+            _mockChargeGateway.Setup(_ => _.GetChargeByIdAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync((Charge) null);
 
             _mockChargeGateway.Setup(_ => _.RemoveAsync(It.IsAny<Charge>()))
@@ -48,10 +48,10 @@ namespace ChargesApi.Tests.V1.UseCase
 
             try
             {
-                await _removeUseCase.ExecuteAsync(guid)
+                var response = await _removeUseCase.ExecuteAsync(guid, Guid.NewGuid())
                     .ConfigureAwait(false);
 
-                Assert.True(false, "Exception should be thrown!");
+                Assert.False(response);
             }
             catch (Exception ex)
             {

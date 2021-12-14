@@ -127,18 +127,18 @@ namespace ChargesApi.Tests.V1.E2ETests
 
             apiEntity.Should().BeEquivalentTo(charge, options => options.Excluding(a => a.Id));
 
-            CleanupActions.Add(() => DynamoDbContext.DeleteAsync<ChargeDbEntity>(apiEntity.Id).ConfigureAwait(false));
+            CleanupActions.Add(() => DynamoDbContext.DeleteAsync<ChargeDbEntity>(apiEntity.TargetId, apiEntity.Id).ConfigureAwait(false));
 
             apiEntity.TargetType = TargetType.Block;
 
-            var updateUri = new Uri($"api/v1/charges/{apiEntity.Id}", UriKind.Relative);
+            var updateUri = new Uri($"api/v1/charges/{apiEntity.Id}?targetId={apiEntity.TargetId}", UriKind.Relative);
             string updateCharge = JsonConvert.SerializeObject(apiEntity);
 
             using var updateStringContent = new StringContent(updateCharge);
             updateStringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             var updateResponse = await Client.PutAsync(updateUri, updateStringContent).ConfigureAwait(false);
 
-            updateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            updateResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
             var updateResponseContent = await updateResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
             var updateApiEntity = JsonConvert.DeserializeObject<ChargeResponse>(updateResponseContent);
@@ -171,7 +171,7 @@ namespace ChargesApi.Tests.V1.E2ETests
 
             apiEntity.Should().BeEquivalentTo(charge, options => options.Excluding(a => a.Id));
 
-            var deleteUri = new Uri($"api/v1/charges/{apiEntity.Id}", UriKind.Relative);
+            var deleteUri = new Uri($"api/v1/charges/{apiEntity.Id}?targetId={apiEntity.TargetId}", UriKind.Relative);
 
             using var deleteResponse = await Client.DeleteAsync(deleteUri).ConfigureAwait(false);
 
@@ -255,7 +255,7 @@ namespace ChargesApi.Tests.V1.E2ETests
             var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var apiEntity = JsonConvert.DeserializeObject<ChargeResponse>(responseContent);
 
-            CleanupActions.Add(async () => await DynamoDbContext.DeleteAsync<ChargeDbEntity>(apiEntity.Id).ConfigureAwait(false));
+            CleanupActions.Add(async () => await DynamoDbContext.DeleteAsync<ChargeDbEntity>(apiEntity.TargetId, apiEntity.Id).ConfigureAwait(false));
 
             apiEntity.Should().NotBeNull();
 
@@ -266,7 +266,7 @@ namespace ChargesApi.Tests.V1.E2ETests
 
         private async Task GetChargeByIdAndValidateResponse(Guid id, ChargeResponse charge = null)
         {
-            var uri = new Uri($"api/v1/charges/{id}", UriKind.Relative);
+            var uri = new Uri($"api/v1/charges/{id}?targetId={charge.TargetId}", UriKind.Relative);
             using var response = await Client.GetAsync(uri).ConfigureAwait(false);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);

@@ -33,14 +33,14 @@ namespace ChargesApi.Tests.V1.Gateways
             _dynamoDb.Setup(p => p.LoadAsync<ChargeDbEntity>(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((ChargeDbEntity) null);
 
-            var charge = await _gateway.GetChargeByIdAsync(new Guid("40e69b91-9f2a-4d4c-b0f8-c61250d88c89"))
+            var charge = await _gateway.GetChargeByIdAsync(new Guid("40e69b91-9f2a-4d4c-b0f8-c61250d88c89"), Guid.NewGuid())
                 .ConfigureAwait(false);
 
             charge.Should().BeNull();
         }
 
         [Fact]
-        public async Task GetChargeByIdReturnsAssetSummaryIfItExists()
+        public async Task GetChargeByIdReturnsChargesIfItExists()
         {
             var chargeObj = new ChargeDbEntity
             {
@@ -61,10 +61,10 @@ namespace ChargesApi.Tests.V1.Gateways
                         }
             };
 
-            _dynamoDb.Setup(p => p.LoadAsync<ChargeDbEntity>(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            _dynamoDb.Setup(p => p.LoadAsync<ChargeDbEntity>(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(chargeObj);
 
-            var charge = await _gateway.GetChargeByIdAsync(new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"))
+            var charge = await _gateway.GetChargeByIdAsync(new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"), new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"))
                 .ConfigureAwait(false);
 
             charge.Should().NotBeNull();

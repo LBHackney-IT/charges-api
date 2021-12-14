@@ -5,6 +5,6 @@ namespace ChargesApi.V1.UseCase.Interfaces
 {
     public interface IRemoveUseCase
     {
-        public Task ExecuteAsync(Guid id);
+        public Task<bool> ExecuteAsync(Guid id, Guid targetId);
     }
 }

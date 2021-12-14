@@ -69,9 +69,9 @@ namespace ChargesApi.V1.Gateways
             return chargesLists?.ToChargeDomain();
         }
 
-        public async Task<Charge> GetChargeByIdAsync(Guid id)
+        public async Task<Charge> GetChargeByIdAsync(Guid id, Guid targetId)
         {
-            var result = await _dynamoDbContext.LoadAsync<ChargeDbEntity>(id).ConfigureAwait(false);
+            var result = await _dynamoDbContext.LoadAsync<ChargeDbEntity>(targetId, id).ConfigureAwait(false);
 
             return result?.ToDomain();
         }

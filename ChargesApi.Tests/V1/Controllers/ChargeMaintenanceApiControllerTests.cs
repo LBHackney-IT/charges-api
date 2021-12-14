@@ -44,7 +44,7 @@ namespace ChargesApi.Tests.V1.Controllers
         [Fact]
         public async Task AddChargeMaintenanceWithValidDataReturns201()
         {
-            _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>())).ReturnsAsync(new ChargeResponse
+            _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<Guid>())).ReturnsAsync(new ChargeResponse
             {
                 Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
                 TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
@@ -99,6 +99,7 @@ namespace ChargesApi.Tests.V1.Controllers
             var chargeMaintenance = new AddChargeMaintenanceRequest
             {
                 ChargesId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
+                TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
                 Reason = "Uplift",
                 NewValue = new List<DetailedCharges>()
                     {
@@ -149,7 +150,7 @@ namespace ChargesApi.Tests.V1.Controllers
 
             chargeResponse.Should().NotBeNull();
 
-            chargeResponse.Should().BeEquivalentTo(chargeMaintenance);
+            chargeResponse.Should().BeEquivalentTo(chargeMaintenance, opt => opt.Excluding(x => x.TargetId));
         }
 
         [Fact]

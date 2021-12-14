@@ -11,6 +11,9 @@ namespace ChargesApi.V1.Boundary.Request
         [NonEmptyGuid]
         public Guid ChargesId { get; set; }
 
+        [NonEmptyGuid]
+        public Guid TargetId { get; set; }
+
         [Required]
         public IEnumerable<DetailedCharges> ExistingValue { get; set; }
 

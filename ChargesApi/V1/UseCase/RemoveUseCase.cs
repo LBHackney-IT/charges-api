@@ -15,16 +15,17 @@ namespace ChargesApi.V1.UseCase
             _gateway = gateway;
         }
 
-        public async Task ExecuteAsync(Guid id)
+        public async Task<bool> ExecuteAsync(Guid id, Guid targetId)
         {
-            Charge charge = await _gateway.GetChargeByIdAsync(id).ConfigureAwait(false);
+            Charge charge = await _gateway.GetChargeByIdAsync(id, targetId).ConfigureAwait(false);
 
             if (charge == null)
             {
-                throw new Exception($"Cannot find charge with provided id: {id}");
+                return false;
             }
 
             await _gateway.RemoveAsync(charge).ConfigureAwait(false);
+            return true;
         }
     }
 }

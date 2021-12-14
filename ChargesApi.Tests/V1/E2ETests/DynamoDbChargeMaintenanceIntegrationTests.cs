@@ -79,6 +79,7 @@ namespace ChargesApi.Tests.V1.E2ETests
 
             var chargeMaintenance = ConstructChargeMaintenance();
             chargeMaintenance.ChargesId = chargeResponse.Id;
+            chargeMaintenance.TargetId = chargeResponse.TargetId;
 
             var response = await CreateChargeMaintenanceAndValidateResponse(chargeMaintenance).ConfigureAwait(false);
 
@@ -149,7 +150,7 @@ namespace ChargesApi.Tests.V1.E2ETests
             var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var apiEntity = JsonConvert.DeserializeObject<ChargeResponse>(responseContent);
 
-            CleanupActions.Add(async () => await DynamoDbContext.DeleteAsync<ChargeDbEntity>(apiEntity.Id).ConfigureAwait(false));
+            CleanupActions.Add(async () => await DynamoDbContext.DeleteAsync<ChargeDbEntity>(apiEntity.TargetId, apiEntity.Id).ConfigureAwait(false));
 
             apiEntity.Should().NotBeNull();
 

@@ -50,7 +50,7 @@ namespace ChargesApi.Tests.V1.Controllers
         [Fact]
         public async Task GetAllByTypeAndTargetIdReturns200()
         {
-            _getAllUseCase.Setup(x => x.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<string>()))
+            _getAllUseCase.Setup(x => x.ExecuteAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(new List<ChargeResponse>()
                     {
                         new ChargeResponse
@@ -80,7 +80,7 @@ namespace ChargesApi.Tests.V1.Controllers
                         }
                     });
 
-            var result = await _chargeController.GetAllAsync("Asset", new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"))
+            var result = await _chargeController.GetAllAsync(new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"))
                 .ConfigureAwait(false);
 
             result.Should().NotBeNull();
@@ -119,7 +119,7 @@ namespace ChargesApi.Tests.V1.Controllers
         [Fact]
         public async Task GetAllByTypeAndAnotherTargetIdReturns200()
         {
-            _getAllUseCase.Setup(x => x.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<string>()))
+            _getAllUseCase.Setup(x => x.ExecuteAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(new List<ChargeResponse>()
                     {
                         new ChargeResponse
@@ -142,7 +142,7 @@ namespace ChargesApi.Tests.V1.Controllers
                         }
                     });
 
-            var result = await _chargeController.GetAllAsync("Asset", new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"))
+            var result = await _chargeController.GetAllAsync(new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"))
                 .ConfigureAwait(false);
 
             result.Should().NotBeNull();
@@ -175,12 +175,12 @@ namespace ChargesApi.Tests.V1.Controllers
         [Fact]
         public async Task GetAllByTypeAndTargetIdReturns500()
         {
-            _getAllUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<string>()))
+            _getAllUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>()))
                 .ThrowsAsync(new Exception("Test exception"));
 
             try
             {
-                var result = await _chargeController.GetAllAsync("Asset", new Guid("3687f3b1-0c50-4d5b-ad4d-bf2668cf5a11"))
+                var result = await _chargeController.GetAllAsync(new Guid("3687f3b1-0c50-4d5b-ad4d-bf2668cf5a11"))
                     .ConfigureAwait(false);
                 Assert.True(false, "It should return exception, not come this");
             }
@@ -194,7 +194,7 @@ namespace ChargesApi.Tests.V1.Controllers
         [Fact]
         public async Task GetByIdValidIdReturns200()
         {
-            _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>()))
+            _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync(new ChargeResponse
                 {
                     Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
@@ -214,7 +214,7 @@ namespace ChargesApi.Tests.V1.Controllers
                     }
                 });
 
-            var result = await _chargeController.Get(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"))
+            var result = await _chargeController.Get(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"), new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"))
                 .ConfigureAwait(false);
 
             result.Should().NotBeNull();
@@ -245,10 +245,10 @@ namespace ChargesApi.Tests.V1.Controllers
         [Fact]
         public async Task GetByIdInvalidIdReturns404()
         {
-            _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>()))
+            _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync((ChargeResponse) null);
 
-            var result = await _chargeController.Get(new Guid("a93e7d88-5074-4c50-b51a-b35292545ffb"))
+            var result = await _chargeController.Get(new Guid("a93e7d88-5074-4c50-b51a-b35292545ffb"), new Guid("a93e7d88-5074-4c50-b51a-b35292545ffb"))
                 .ConfigureAwait(false);
 
             result.Should().NotBeNull();
@@ -269,12 +269,12 @@ namespace ChargesApi.Tests.V1.Controllers
         [Fact]
         public async Task GetByIdReturns500()
         {
-            _getByIdUseCase.Setup(x => x.ExecuteAsync(It.IsAny<Guid>()))
+            _getByIdUseCase.Setup(x => x.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ThrowsAsync(new Exception("Test exception"));
 
             try
             {
-                var result = await _chargeController.Get(new Guid("b45d2bbf-abec-454c-a843-4667786177a1"))
+                var result = await _chargeController.Get(new Guid("b45d2bbf-abec-454c-a843-4667786177a1"), new Guid("b45d2bbf-abec-454c-a843-4667786177a1"))
                     .ConfigureAwait(false);
                 Assert.True(false, "It should return exception, not come this");
             }
@@ -392,7 +392,7 @@ namespace ChargesApi.Tests.V1.Controllers
                 }
             };
 
-            _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>()))
+            _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync(new ChargeResponse());
 
             _updateUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<UpdateChargeRequest>()))
@@ -418,7 +418,7 @@ namespace ChargesApi.Tests.V1.Controllers
             var result = await _chargeController.Put(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"), charge)
                 .ConfigureAwait(false);
 
-            var redirectToActionResult = result as RedirectToActionResult;
+            var redirectToActionResult = result as CreatedAtActionResult;
 
             redirectToActionResult.Should().NotBeNull();
 
@@ -492,7 +492,7 @@ namespace ChargesApi.Tests.V1.Controllers
         [Fact]
         public async Task PutChargeWithInvalidIdReturns404()
         {
-            _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>()))
+            _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync((ChargeResponse) null);
 
             var guid = Guid.NewGuid();
@@ -518,13 +518,13 @@ namespace ChargesApi.Tests.V1.Controllers
         [Fact]
         public async Task RemoveChargeWithValidIdReturns204()
         {
-            _removeUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>()))
-                .Returns(Task.CompletedTask);
+            _removeUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .Returns(Task.FromResult(true));
 
-            _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>()))
+            _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync(new ChargeResponse());
 
-            var result = await _chargeController.Delete(Guid.NewGuid()).ConfigureAwait(false);
+            var result = await _chargeController.Delete(Guid.NewGuid(), Guid.NewGuid()).ConfigureAwait(false);
 
             var noContent = result as NoContentResult;
 
@@ -534,10 +534,10 @@ namespace ChargesApi.Tests.V1.Controllers
         [Fact]
         public async Task RemoveChargeWithInvalidIdReturns404()
         {
-            _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>()))
+            _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync((ChargeResponse) null);
 
-            var result = await _chargeController.Delete(Guid.NewGuid()).ConfigureAwait(false);
+            var result = await _chargeController.Delete(Guid.NewGuid(), Guid.NewGuid()).ConfigureAwait(false);
 
             var notFoundResult = result as NotFoundObjectResult;
 

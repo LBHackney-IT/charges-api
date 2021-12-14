@@ -60,7 +60,7 @@ namespace ChargesApi.Tests.V1.UseCase
 
             var expectedResult = entities.ToResponse();
 
-            var result = await _getAllUseCase.ExecuteAsync(new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"), "Asset")
+            var result = await _getAllUseCase.ExecuteAsync(new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"))
                 .ConfigureAwait(false);
 
             result.Should().NotBeNullOrEmpty();

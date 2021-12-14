@@ -31,7 +31,7 @@ namespace ChargesApi.Tests.V1.UseCase
 
             var expectedResult = entities.ToResponse();
 
-            var result = await _getAllChargesListUseCase.ExecuteAsync("tenants", "estate").ConfigureAwait(false);
+            var result = await _getAllChargesListUseCase.ExecuteAsync("tenants", "Estate").ConfigureAwait(false);
 
             result.Should().NotBeNullOrEmpty();
             result.Should().HaveCount(entities.Count);
@@ -48,7 +48,7 @@ namespace ChargesApi.Tests.V1.UseCase
 
             var expectedResult = entities.ToResponse();
             expectedResult.AddRange(entities.ToResponse());
-            var result = await _getAllChargesListUseCase.ExecuteAsync("tenants", "block").ConfigureAwait(false);
+            var result = await _getAllChargesListUseCase.ExecuteAsync("tenants", "Block").ConfigureAwait(false);
 
             result.Should().NotBeNullOrEmpty();
             result.Should().HaveCount(entities.Count * 2);
@@ -66,7 +66,7 @@ namespace ChargesApi.Tests.V1.UseCase
             expectedResult.AddRange(entities.ToResponse());
             expectedResult.AddRange(entities.ToResponse());
 
-            var result = await _getAllChargesListUseCase.ExecuteAsync("tenants", "property")
+            var result = await _getAllChargesListUseCase.ExecuteAsync("tenants", "Property")
                 .ConfigureAwait(false);
 
             result.Should().NotBeNullOrEmpty();

@@ -46,10 +46,10 @@ namespace ChargesApi.Tests.V1.UseCase
 
             var expectedResult = domain.ToResponse();
 
-            _mockGateway.Setup(_ => _.GetChargeByIdAsync(It.IsAny<Guid>()))
+            _mockGateway.Setup(_ => _.GetChargeByIdAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync(domain);
 
-            var result = await _getByIdUseCase.ExecuteAsync(Guid.NewGuid())
+            var result = await _getByIdUseCase.ExecuteAsync(Guid.NewGuid(), new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"))
                 .ConfigureAwait(false);
 
             result.Should().NotBeNull();
@@ -59,10 +59,10 @@ namespace ChargesApi.Tests.V1.UseCase
         [Fact]
         public async Task GetByIdInvalidIdReturnsCharge()
         {
-            _mockGateway.Setup(_ => _.GetChargeByIdAsync(It.IsAny<Guid>()))
+            _mockGateway.Setup(_ => _.GetChargeByIdAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync((Charge) null);
 
-            var result = await _getByIdUseCase.ExecuteAsync(Guid.NewGuid())
+            var result = await _getByIdUseCase.ExecuteAsync(Guid.NewGuid(), Guid.NewGuid())
                 .ConfigureAwait(false);
 
             result.Should().BeNull();
