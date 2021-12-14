@@ -85,7 +85,7 @@ namespace ChargesApi.Tests.V1.E2ETests
                 Console.WriteLine(e);
                 throw;
             }
-            
+
         }
 
         [Fact]
