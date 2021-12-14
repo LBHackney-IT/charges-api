@@ -6,6 +6,6 @@ namespace ChargesApi.V1.UseCase.Interfaces
 {
     public interface IGetByIdUseCase
     {
-        Task<ChargeResponse> ExecuteAsync(Guid id);
+        Task<ChargeResponse> ExecuteAsync(Guid id, Guid targetId);
     }
 }

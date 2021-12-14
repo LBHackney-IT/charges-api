@@ -32,14 +32,14 @@ namespace ChargesApi.Tests.V1.UseCase
                         {
                             Id = new Guid("271b9a38-e78f-4a3f-81c0-4541bc5acc2c"),
                             TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
-                            TargetType = TargetType.asset,
+                            TargetType = TargetType.Asset,
                             DetailedCharges = new List<DetailedCharges>()
                         },
                         new Charge
                         {
                             Id = new Guid("0f668265-1501-4722-8e37-77c7116dae2f"),
                             TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
-                            TargetType = TargetType.asset,
+                            TargetType = TargetType.Asset,
                             DetailedCharges = new List<DetailedCharges>()
                             {
                                 new DetailedCharges
@@ -55,12 +55,12 @@ namespace ChargesApi.Tests.V1.UseCase
                         }
                     };
 
-            _mockChargeGateway.Setup(x => x.GetAllChargesAsync(It.IsAny<string>(), It.IsAny<Guid>()))
+            _mockChargeGateway.Setup(x => x.GetAllChargesAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(entities);
 
             var expectedResult = entities.ToResponse();
 
-            var result = await _getAllUseCase.ExecuteAsync(new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"), "Asset")
+            var result = await _getAllUseCase.ExecuteAsync(new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"))
                 .ConfigureAwait(false);
 
             result.Should().NotBeNullOrEmpty();

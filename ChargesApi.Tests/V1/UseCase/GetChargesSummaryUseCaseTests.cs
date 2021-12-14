@@ -29,8 +29,8 @@ namespace ChargesApi.Tests.V1.UseCase
                         {
                             Id = new Guid("271b9a38-e78f-4a3f-81c0-4541bc5acc2c"),
                             TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
-                            TargetType = TargetType.block,
-                            ChargeGroup = ChargeGroup.tenants,
+                            TargetType = TargetType.Block,
+                            ChargeGroup = ChargeGroup.Tenants,
                             DetailedCharges = new List<DetailedCharges>()
                             {
                                 new DetailedCharges
@@ -38,7 +38,7 @@ namespace ChargesApi.Tests.V1.UseCase
                                     Type = "service",
                                     SubType = "Block Cleaning",
                                     ChargeCode = "DCB",
-                                    ChargeType = ChargeType.estate,
+                                    ChargeType = ChargeType.Estate,
                                     StartDate = new DateTime(2021, 7, 2),
                                     EndDate = new DateTime(2021, 7, 4),
                                     Amount = 150,
@@ -49,7 +49,7 @@ namespace ChargesApi.Tests.V1.UseCase
                                     Type = "service",
                                     SubType = "Heating",
                                     ChargeCode = "DCT",
-                                    ChargeType = ChargeType.block,
+                                    ChargeType = ChargeType.Block,
                                     StartDate = new DateTime(2021, 7, 2),
                                     EndDate = new DateTime(2021, 7, 4),
                                     Amount = 120,
@@ -61,8 +61,8 @@ namespace ChargesApi.Tests.V1.UseCase
                         {
                             Id = new Guid("0f668265-1501-4722-8e37-77c7116dae2f"),
                             TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
-                            TargetType = TargetType.block,
-                            ChargeGroup = ChargeGroup.leaseholders,
+                            TargetType = TargetType.Block,
+                            ChargeGroup = ChargeGroup.Leaseholders,
                             DetailedCharges = new List<DetailedCharges>()
                             {
                                  new DetailedCharges
@@ -70,7 +70,7 @@ namespace ChargesApi.Tests.V1.UseCase
                                     Type = "service",
                                     SubType = "Block Cleaning",
                                     ChargeCode = "DCB",
-                                    ChargeType = ChargeType.estate,
+                                    ChargeType = ChargeType.Estate,
                                     StartDate = new DateTime(2021, 7, 2),
                                     EndDate = new DateTime(2021, 7, 4),
                                     Amount = 150,
@@ -81,7 +81,7 @@ namespace ChargesApi.Tests.V1.UseCase
                                     Type = "service",
                                     SubType = "Heating",
                                     ChargeCode = "DCT",
-                                    ChargeType = ChargeType.block,
+                                    ChargeType = ChargeType.Block,
                                     StartDate = new DateTime(2021, 7, 2),
                                     EndDate = new DateTime(2021, 7, 4),
                                     Amount = 120,
@@ -91,14 +91,14 @@ namespace ChargesApi.Tests.V1.UseCase
                         }
                     };
 
-            _mockChargesApiGateway.Setup(x => x.GetAllChargesAsync(It.IsAny<string>(), It.IsAny<Guid>()))
+            _mockChargesApiGateway.Setup(x => x.GetAllChargesAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(entities);
 
-            var result = await _getChargesSummaryUseCase.ExecuteAsync(new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"), "block")
+            var result = await _getChargesSummaryUseCase.ExecuteAsync(new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"))
                 .ConfigureAwait(false);
 
             result.TargetId.Should().Be(new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"));
-            result.TargetType.Should().Be(TargetType.block);
+            result.TargetType.Should().Be(TargetType.Block);
             result.ChargesList.Should().HaveCount(4);
         }
     }

@@ -10,14 +10,14 @@ namespace ChargesApi.Tests.V1.Helper
         public const string TYPE = "Service";
         public const string SUBTYPE = "Water";
         public const string FREQUENCY = "Weekly";
-        public const TargetType TARGETTYPE = TargetType.asset;
+        public const TargetType TARGETTYPE = TargetType.Asset;
         public const decimal AMOUNT = 125;
         public const string STARTDATE = "2021-05-22";
         public const string ENDDATE = "2021-06-22";
         public const string CHARGECODE = "DCB";
         public const string CHARGENAME = "Block Cleaning";
-        public const ChargeGroup CHARGEGROUP = ChargeGroup.tenants;
-        public const ChargeType CHARGETYPE = ChargeType.block;
+        public const ChargeGroup CHARGEGROUP = ChargeGroup.Tenants;
+        public const ChargeType CHARGETYPE = ChargeType.Block;
 
         public static Charge ConstructChargeFromConstants()
         {
@@ -73,7 +73,7 @@ namespace ChargesApi.Tests.V1.Helper
                         }
                 },
                 StartDate = new DateTime(2021, 7, 2),
-                Status = ChargeMaintenanceStatus.pending
+                Status = ChargeMaintenanceStatus.Pending
             };
             return entity;
         }

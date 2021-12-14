@@ -20,7 +20,7 @@ namespace ChargesApi.Tests.V1.Factories
                 Amount = 150,
                 Frequency = "Frequency",
                 ChargeCode = "DCB",
-                ChargeType = ChargeType.block
+                ChargeType = ChargeType.Block
             };
 
             var response = domainEntity.ToResponse();

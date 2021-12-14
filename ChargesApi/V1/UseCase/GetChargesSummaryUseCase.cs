@@ -19,9 +19,9 @@ namespace ChargesApi.V1.UseCase
             _chargesApiGateway = chargesApiGateway;
         }
 
-        public async Task<ChargesSummaryResponse> ExecuteAsync(Guid targetId, string targetType)
+        public async Task<ChargesSummaryResponse> ExecuteAsync(Guid targetId)
         {
-            var charges = await _chargesApiGateway.GetAllChargesAsync(targetType, targetId).ConfigureAwait(false);
+            var charges = await _chargesApiGateway.GetAllChargesAsync(targetId).ConfigureAwait(false);
             var result = new ChargesSummaryResponse();
             if (charges.Any())
             {
@@ -44,9 +44,10 @@ namespace ChargesApi.V1.UseCase
         private static List<ChargeDetail> GetChargesList(IEnumerable<DetailedCharges> chargeDetails, ChargeGroup chargeGroup)
         {
             var chargesList = new List<ChargeDetail>();
-            if (chargeDetails.Any())
+            var detailedChargesEnumerable = chargeDetails.ToList();
+            if (detailedChargesEnumerable.Any())
             {
-                var serviceChargesList = chargeDetails.Where(x => x.Type == Constants.ServiceChargeType).ToList();
+                var serviceChargesList = detailedChargesEnumerable.Where(x => x.Type == Constants.ServiceChargeType).ToList();
 
                 if (serviceChargesList.Any())
                 {

@@ -35,9 +35,9 @@ namespace ChargesApi.Tests.V1.Controllers
         public async Task GetAllChargesListReturns200()
         {
             var response = _fixture.Create<ChargesSummaryResponse>();
-            _getChargesSummaryUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<string>())).ReturnsAsync(response);
+            _getChargesSummaryUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>())).ReturnsAsync(response);
 
-            var result = await _chargesSummaryController.GetAll(new Guid("84613e2b-b10d-4c09-910b-8375ba2d6aa7"), "block")
+            var result = await _chargesSummaryController.GetAll(new Guid("84613e2b-b10d-4c09-910b-8375ba2d6aa7"))
                 .ConfigureAwait(false);
 
             result.Should().NotBeNull();
@@ -46,23 +46,22 @@ namespace ChargesApi.Tests.V1.Controllers
 
             okResult.Should().NotBeNull();
 
-            var chargeSummaryResponse = okResult.Value as ChargesSummaryResponse;
+            var chargeSummaryResponse = okResult?.Value as ChargesSummaryResponse;
 
             chargeSummaryResponse.Should().NotBeNull();
 
-            chargeSummaryResponse.TargetId.Should().Be(response.TargetId);
-            chargeSummaryResponse.TargetType.Should().Be(response.TargetType);
-            chargeSummaryResponse.ChargesList.Should().BeEquivalentTo(response.ChargesList);
+            chargeSummaryResponse?.TargetId.Should().Be(response.TargetId);
+            chargeSummaryResponse?.TargetType.Should().Be(response.TargetType);
+            chargeSummaryResponse?.ChargesList.Should().BeEquivalentTo(response.ChargesList);
 
         }
         [Fact]
         public async Task GetAllInvalidIdReturns404()
         {
-            ChargesSummaryResponse expectedResponse = null;
-            _getChargesSummaryUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<string>()))
-                .ReturnsAsync(expectedResponse);
+            _getChargesSummaryUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>()))
+                .ReturnsAsync((ChargesSummaryResponse) null);
 
-            var result = await _chargesSummaryController.GetAll(new Guid("84613e2b-b10d-4c09-910b-8375ba2d6aa7"), "block")
+            var result = await _chargesSummaryController.GetAll(new Guid("84613e2b-b10d-4c09-910b-8375ba2d6aa7"))
                 .ConfigureAwait(false);
 
             result.Should().NotBeNull();
@@ -71,23 +70,23 @@ namespace ChargesApi.Tests.V1.Controllers
 
             notFoundResult.Should().NotBeNull();
 
-            var response = notFoundResult.Value as BaseErrorResponse;
+            var response = notFoundResult?.Value as BaseErrorResponse;
 
             response.Should().NotBeNull();
 
-            response.StatusCode.Should().Be(404);
-            response.Message.Should().BeEquivalentTo("No ChargesSummary by provided Id cannot be found!");
-            response.Details.Should().BeEquivalentTo("");
+            response?.StatusCode.Should().Be(404);
+            response?.Message.Should().BeEquivalentTo("No ChargesSummary by provided Id cannot be found!");
+            response?.Details.Should().BeEquivalentTo("");
         }
         [Fact]
         public async Task GetAllReturns500()
         {
-            _getChargesSummaryUseCase.Setup(x => x.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<string>()))
+            _getChargesSummaryUseCase.Setup(x => x.ExecuteAsync(It.IsAny<Guid>()))
                 .ThrowsAsync(new Exception("Test exception"));
 
             try
             {
-                var result = await _chargesSummaryController.GetAll(new Guid("84613e2b-b10d-4c09-910b-8375ba2d6aa7"), "block")
+                var result = await _chargesSummaryController.GetAll(new Guid("84613e2b-b10d-4c09-910b-8375ba2d6aa7"))
                     .ConfigureAwait(false);
                 Assert.True(false, "It should return exception, not come this");
             }

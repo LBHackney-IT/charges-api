@@ -77,7 +77,7 @@ namespace ChargesApi.Tests.V1.Gateways
             _dynamoDb.Setup(p => p.QueryAsync(It.IsAny<QueryRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new QueryResponse());
 
-            var result = await _gateway.GetAllChargesListAsync(ChargeGroup.tenants.ToString(), ChargeType.estate.ToString()).ConfigureAwait(false);
+            var result = await _gateway.GetAllChargesListAsync(ChargeGroup.Tenants.ToString(), ChargeType.Estate.ToString()).ConfigureAwait(false);
             result.Should().NotBeNull();
             result.Should().HaveCount(0);
         }
@@ -90,7 +90,7 @@ namespace ChargesApi.Tests.V1.Gateways
             _dynamoDb.Setup(p => p.QueryAsync(It.IsAny<QueryRequest>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
 
-            var result = await _gateway.GetAllChargesListAsync(ChargeGroup.tenants.ToString(), ChargeType.estate.ToString()).ConfigureAwait(false);
+            var result = await _gateway.GetAllChargesListAsync(ChargeGroup.Tenants.ToString(), ChargeType.Estate.ToString()).ConfigureAwait(false);
             _dynamoDb.Verify(x => x.QueryAsync(It.IsAny<QueryRequest>(), It.IsAny<CancellationToken>()), Times.Once);
             result.Should().NotBeNull();
             result.Should().BeEquivalentTo(response.ToChargesListDomain());

@@ -46,6 +46,7 @@ namespace ChargesApi.V1.Controllers
         /// Get Charge model by provided id
         /// </summary>
         /// <param name="id">The value by which we are looking for charge</param>
+        /// <param name="targetId">The value by which we are looking for charge</param>
         /// <response code="200">Success. Charge model was received successfully</response>
         /// <response code="400">Bad Request</response>
         /// <response code="404">Charge with provided id cannot be found</response>
@@ -56,9 +57,9 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> Get([FromRoute] Guid id)
+        public async Task<IActionResult> Get([FromRoute] Guid id, [FromQuery] Guid targetId)
         {
-            var charge = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
+            var charge = await _getByIdUseCase.ExecuteAsync(id, targetId).ConfigureAwait(false);
 
             if (charge == null)
             {
@@ -71,7 +72,6 @@ namespace ChargesApi.V1.Controllers
         /// <summary>
         /// Get a list of charge models by provided type and targetId
         /// </summary>
-        /// <param name="type">Type of charge</param>
         /// <param name="targetId">Id of the appropriate tenure</param>
         /// <response code="200">Success. Charge models was received successfully</response>
         /// <response code="400">Bad Request</response>
@@ -82,9 +82,9 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync([FromQuery] string type, [FromQuery] Guid targetId)
+        public async Task<IActionResult> GetAllAsync([FromQuery] Guid targetId)
         {
-            var charges = await _getAllUseCase.ExecuteAsync(targetId, type).ConfigureAwait(false);
+            var charges = await _getAllUseCase.ExecuteAsync(targetId).ConfigureAwait(false);
 
             if (charges == null)
             {
@@ -116,7 +116,7 @@ namespace ChargesApi.V1.Controllers
             {
                 var chargeResponse = await _addUseCase.ExecuteAsync(charge).ConfigureAwait(false);
 
-                return CreatedAtAction($"Get", new { id = chargeResponse.Id }, chargeResponse);
+                return CreatedAtAction($"Get", new { id = chargeResponse.Id, targetId = chargeResponse.TargetId }, chargeResponse);
             }
             else
             {
@@ -187,7 +187,7 @@ namespace ChargesApi.V1.Controllers
                 return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Ids in route and model are different"));
             }
 
-            ChargeResponse chargeResponseObject = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
+            ChargeResponse chargeResponseObject = await _getByIdUseCase.ExecuteAsync(id, charge.TargetId).ConfigureAwait(false);
 
             if (chargeResponseObject == null)
             {
@@ -196,13 +196,14 @@ namespace ChargesApi.V1.Controllers
 
             await _updateUseCase.ExecuteAsync(charge).ConfigureAwait(false);
 
-            return RedirectToAction("Get", new { id = charge.Id });
+            return CreatedAtAction("Get", new { id = charge.Id, targetId = charge.TargetId }, charge);
         }
 
         /// <summary>
         /// Delete existing charge model
         /// </summary>
         /// <param name="id">The value by which we are looking for charge</param>
+        /// <param name="targetId">The value by which we are looking for charge</param>
         /// <response code="204">Success. Charge models was deleted successfully</response>
         /// <response code="400">Bad Request</response>
         /// <response code="404">Charge with provided id cannot be found</response>
@@ -213,16 +214,13 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [Route("{id}")]
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        public async Task<IActionResult> Delete([FromRoute] Guid id, [FromQuery] Guid targetId)
         {
-            ChargeResponse charge = await _getByIdUseCase.ExecuteAsync(id).ConfigureAwait(false);
-
-            if (charge == null)
+            var response = await _removeUseCase.ExecuteAsync(id, targetId).ConfigureAwait(false);
+            if (!response)
             {
                 return NotFound(new BaseErrorResponse((int) HttpStatusCode.NotFound, "No Charge by Id cannot be found!"));
             }
-
-            await _removeUseCase.ExecuteAsync(id).ConfigureAwait(false);
 
             return NoContent();
         }

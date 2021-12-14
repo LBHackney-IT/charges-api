@@ -9,11 +9,11 @@ namespace ChargesApi.V1.Infrastructure.Entities
     [DynamoDBTable("Charges", LowerCamelCaseProperties = true)]
     public class ChargeDbEntity
     {
-        [DynamoDBHashKey]
-        public Guid Id { get; set; }
-
-        [DynamoDBProperty(AttributeName = "target_id")]
+        [DynamoDBHashKey(AttributeName = "target_id")]
         public Guid TargetId { get; set; }
+
+        [DynamoDBRangeKey(AttributeName = "id")]
+        public Guid Id { get; set; }
 
         [DynamoDBProperty(AttributeName = "target_type", Converter = typeof(DynamoDbEnumConverter<TargetType>))]
         public TargetType TargetType { get; set; }

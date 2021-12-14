@@ -76,7 +76,7 @@ namespace ChargesApi.V1.Controllers
 
             if (ModelState.IsValid)
             {
-                var checkChargeResult = await _getByIdUseCase.ExecuteAsync(chargeMaintenance.ChargesId).ConfigureAwait(false);
+                var checkChargeResult = await _getByIdUseCase.ExecuteAsync(chargeMaintenance.ChargesId, chargeMaintenance.TargetId).ConfigureAwait(false);
                 if (checkChargeResult == null)
                 {
                     return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "No Charge by provided ChargeId cannot be found!"));

@@ -53,17 +53,14 @@ namespace ChargesApi.V1.Gateways
             }
         }
 
-        public async Task<List<Charge>> GetAllChargesAsync(string type, Guid targetId)
+        public async Task<List<Charge>> GetAllChargesAsync(Guid targetId)
         {
             var request = new QueryRequest
             {
                 TableName = "Charges",
-                IndexName = "target_type_dx",
-                KeyConditionExpression = "target_type = :V_target_type",
-                FilterExpression = "target_id = :V_target_id",
+                KeyConditionExpression = "target_id = :V_target_id",
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
-                    {":V_target_type",new AttributeValue{S = type.ToString()}},
                     {":V_target_id",new AttributeValue{S = targetId.ToString()}}
                 },
                 ScanIndexForward = true
@@ -74,9 +71,9 @@ namespace ChargesApi.V1.Gateways
             return chargesLists?.ToChargeDomain();
         }
 
-        public async Task<Charge> GetChargeByIdAsync(Guid id)
+        public async Task<Charge> GetChargeByIdAsync(Guid id, Guid targetId)
         {
-            var result = await _dynamoDbContext.LoadAsync<ChargeDbEntity>(id).ConfigureAwait(false);
+            var result = await _dynamoDbContext.LoadAsync<ChargeDbEntity>(targetId, id).ConfigureAwait(false);
 
             return result?.ToDomain();
         }
