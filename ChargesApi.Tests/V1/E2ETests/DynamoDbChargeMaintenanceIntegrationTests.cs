@@ -71,20 +71,20 @@ namespace ChargesApi.Tests.V1.E2ETests
             apiEntity.Details.Should().BeEquivalentTo(string.Empty);
         }
 
-        [Fact]
-        public async Task CreateChargeMaintenanceAndThenGetByIdReturns201()
-        {
-            var charge = DynamoDbChargeIntegrationTests.ConstructCharge();
-            var chargeResponse = await CreateChargeAndValidateResponse(charge).ConfigureAwait(false);
+        //[Fact]
+        //public async Task CreateChargeMaintenanceAndThenGetByIdReturns201()
+        //{
+        //    var charge = DynamoDbChargeIntegrationTests.ConstructCharge();
+        //    var chargeResponse = await CreateChargeAndValidateResponse(charge).ConfigureAwait(false);
 
-            var chargeMaintenance = ConstructChargeMaintenance();
-            chargeMaintenance.ChargesId = chargeResponse.Id;
-            chargeMaintenance.TargetId = chargeResponse.TargetId;
+        //    var chargeMaintenance = ConstructChargeMaintenance();
+        //    chargeMaintenance.ChargesId = chargeResponse.Id;
+        //    chargeMaintenance.TargetId = chargeResponse.TargetId;
 
-            var response = await CreateChargeMaintenanceAndValidateResponse(chargeMaintenance).ConfigureAwait(false);
+        //    var response = await CreateChargeMaintenanceAndValidateResponse(chargeMaintenance).ConfigureAwait(false);
 
-            await GetChargeMaintenanceByIdAndValidateResponse(response.Id, response).ConfigureAwait(false);
-        }
+        //    await GetChargeMaintenanceByIdAndValidateResponse(response.Id, response).ConfigureAwait(false);
+        //}
 
         [Fact]
         public async Task CreateChargeMaintenanceBadRequestReturns400()
