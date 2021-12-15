@@ -4,11 +4,13 @@ using Xunit;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace ChargesApi.Tests
 {
     public class DynamoDbIntegrationTests<TStartup> : IDisposable where TStartup : class
     {
+        private const string Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTIyNDE2MjU4ODQ1MjgxMDQxNDAiLCJlbWFpbCI6ImRlbmlzZS5udWRnZUBoYWNrbmV5Lmdvdi51ayIsImlzcyI6IkhhY2tuZXkiLCJuYW1lIjoiRGVuaXNlIE51ZGdlIiwiZ3JvdXBzIjpbInNvbWUtdmFsaWQtZ29vZ2xlLWdyb3VwIl0sImlhdCI6MTYzOTQxNzE4OX0.Rai_olTwhVugBY8L8bpyhSGxX3lLB-ZLqxlSDQh96nE";
         protected HttpClient Client { get; private set; }
         private readonly DynamoDbMockWebApplicationFactory<TStartup> _factory;
         protected IDynamoDBContext DynamoDbContext => _factory?.DynamoDbContext;
@@ -76,6 +78,7 @@ namespace ChargesApi.Tests
             _factory = new DynamoDbMockWebApplicationFactory<TStartup>(_tables);
 
             Client = _factory.CreateClient();
+            Client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(Token);
             CleanupActions = new List<Action>();
         }
 

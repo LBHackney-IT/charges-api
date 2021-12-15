@@ -25,6 +25,8 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using ChargesApi.V1;
 using ChargesApi.V1.Factories;
 using Amazon.SimpleNotificationService;
+using Hackney.Core.Authorization;
+using Hackney.Core.JWT;
 
 namespace ChargesApi
 {
@@ -115,7 +117,7 @@ namespace ChargesApi
             });
 
             ConfigureLogging(services, Configuration);
-
+            services.AddTokenFactory();
             //ConfigureDbContext(services);
             //TODO: For DynamoDb, remove the line above and uncomment the line below.
             services.ConfigureDynamoDB();
@@ -222,6 +224,7 @@ namespace ChargesApi
                         $"{ApiName}-api {apiVersionDescription.GetFormattedApiVersion()}");
                 }
             });
+            app.UseGoogleGroupAuthorization();
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseSwagger();
             app.UseRouting();
