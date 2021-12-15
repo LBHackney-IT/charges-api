@@ -3,10 +3,16 @@ resource "aws_dynamodb_table" "chargesapi_dynamodb_table" {
     billing_mode          = "PROVISIONED"
     read_capacity         = 10
     write_capacity        = 10
-    hash_key              = "id"
+    hash_key              = "target_id"
+    range_key             = "id"
 
     attribute {
         name              = "id"
+        type              = "S"
+    }
+	
+    attribute {
+        name              = "target_id"
         type              = "S"
     }
 
