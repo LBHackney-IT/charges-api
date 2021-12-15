@@ -75,6 +75,7 @@ namespace ChargesApi.Tests
             EnsureEnvVarConfigured("DynamoDb_LocalServiceUrl", "http://localhost:8000");
             EnsureEnvVarConfigured("DynamoDb_LocalSecretKey", "2cl9i");
             EnsureEnvVarConfigured("DynamoDb_LocalAccessKey", "vymxp");
+            EnsureEnvVarConfigured("REQUIRED_GOOGL_GROUPS", "some-valid-google-group");
             _factory = new DynamoDbMockWebApplicationFactory<TStartup>(_tables);
 
             Client = _factory.CreateClient();
