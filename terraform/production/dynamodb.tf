@@ -4,7 +4,8 @@ resource "aws_dynamodb_table" "chargesapi_dynamodb_table" {
     read_capacity         = 10
     write_capacity        = 10
     hash_key              = "target_id"
-    sort_key              = "id" 
+    range_key             = "id"
+
     attribute {
         name              = "id"
         type              = "S"
