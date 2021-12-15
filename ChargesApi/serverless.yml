@@ -22,6 +22,7 @@ functions:
     handler: ChargesApi::ChargesApi.LambdaEntryPoint::FunctionHandlerAsync
     role: lambdaExecutionRole
     environment:
+      REQUIRED_GOOGL_GROUPS: ${ssm:/housing-finance/${self:provider.stage}/authorization/required-google-groups}
       ALLOWED_ORIGINS: ${ssm:/charges-api/${self:provider.stage}/allowed-origins}
       CHARGES_SNS_ARN: ${ssm:/sns-topic/${self:provider.stage}/charges/arn}
 # TODO: Create ssm variables for this API's postgres mirror then rename base-api below to match api name
