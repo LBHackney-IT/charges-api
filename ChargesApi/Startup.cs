@@ -25,6 +25,8 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using ChargesApi.V1;
 using ChargesApi.V1.Factories;
 using Amazon.SimpleNotificationService;
+using Hackney.Core.Authorization;
+using Hackney.Core.JWT;
 
 namespace ChargesApi
 {
@@ -58,13 +60,14 @@ namespace ChargesApi
 
             services.AddSwaggerGen(c =>
             {
-                c.AddSecurityDefinition("Token",
+                c.AddSecurityDefinition("Bearer",
                     new OpenApiSecurityScheme
                     {
                         In = ParameterLocation.Header,
-                        Description = "Your Hackney API Key",
-                        Name = "X-Api-Key",
-                        Type = SecuritySchemeType.ApiKey
+                        Description = "Your Hackney Token. Example: \"Authorization: Bearer {token}\"",
+                        Name = "Authorization",
+                        Type = SecuritySchemeType.Http,
+                        Scheme = "bearer"
                     });
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -72,7 +75,7 @@ namespace ChargesApi
                     {
                         new OpenApiSecurityScheme
                         {
-                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Token" }
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
                         },
                         new List<string>()
                     }
@@ -114,7 +117,7 @@ namespace ChargesApi
             });
 
             ConfigureLogging(services, Configuration);
-
+            services.AddTokenFactory();
             //ConfigureDbContext(services);
             //TODO: For DynamoDb, remove the line above and uncomment the line below.
             services.ConfigureDynamoDB();
@@ -221,6 +224,7 @@ namespace ChargesApi
                         $"{ApiName}-api {apiVersionDescription.GetFormattedApiVersion()}");
                 }
             });
+            app.UseGoogleGroupAuthorization();
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseSwagger();
             app.UseRouting();
