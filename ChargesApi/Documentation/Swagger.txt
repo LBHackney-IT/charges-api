@@ -1,0 +1,200 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: 'Charge Api'
+  description: 'To identify all information to be captured with regards to the Rent charges domain'
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /hamidjolany/ChargesApi/1.0.0
+schemes:
+ - https
+paths:
+  '/charges':
+    get:
+      description: 'Retrieve all data related to the query string parameters'
+      parameters:
+        - in: query 
+          name: type
+          type: string
+          description: 'type of charge [Asset, Tenure]'
+        - in: query
+          name: targetid
+          type: string
+          description: 'the id of the target based on the target type'
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/charge'
+        400:
+          description: 'Bad request'
+        404:
+          description: 'Not found'
+        500:
+          description: 'Internal Server Error'
+    post:
+      description: 'Create a new charge'
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: createcharge
+        schema:
+          $ref: '#/definitions/charge'
+      responses:
+        201:
+          description: 'Charge has been created successfully'
+          schema:
+            $ref: '#/definitions/charge'
+        400:
+          description: 'Bad request'
+        404:
+          description: 'Not found'
+        500:
+          description: 'Internal Server Error'
+  '/charges/{id}':
+    get:
+      description: 'get single record related to the id'
+      parameters:
+        - in: path
+          name: 'id'
+          required: true
+          type: string
+          format: Guid
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/charge'
+        400:
+          description: 'Bad request'
+        404:
+          description: 'Not found'
+        500:
+          description: 'Internal Server Error'
+    put:
+      description: 'Upadte the charge related to the id'
+      parameters:
+        - in: path
+          name: 'id'
+          required: true
+          type: string
+          format: Guid
+        - in: body
+          name: createcharge
+          schema:
+            $ref: '#/definitions/charge'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/charge'
+        400:
+          description: 'Bad request'
+        404:
+          description: 'Not found'
+        500:
+          description: 'Internal Server Error'
+    delete:
+      description: 'delete the charge related to the id'
+      parameters:
+        - in: path
+          name: id
+          type: string
+          format: Guid
+          required: true
+      responses:
+        204: 
+          description: 'No Content'
+        400:
+          description: 'Bad request'
+        404:
+          description: 'Not found'
+        500:
+          description: 'Internal Server Error'
+      
+definitions:
+  charge:
+    type: object
+    properties:
+      id:
+        type: string
+        format: Guid
+      ChargeType:
+        type: string
+        items:
+          $ref: '#/definitions/ChargeType'
+      TargetId:
+        type: string
+        format: Guid
+      TargetType:
+        type: string
+        enum: [Asset, Tenure]
+      DebitCode:
+        type: string
+      DebitCodeDescription:
+        type: string
+      EffectiveStartDate:
+        type: string
+        format: date
+      TerminationDate:
+        type: string
+        format: date
+      PeriodCode:
+        type: string
+      DebitNextDue:
+        type: string
+        format: date
+      DebitLastCharged:
+        type: string
+        format: date
+      DebitActive:
+        type: boolean
+      DebitValue:
+        type: number
+        format: decimal
+      PropertyDebit:
+        type: boolean
+      DebitSource:
+        type: string
+      TimeStamp:
+        type: string
+        format: datetime
+      ServiceChargeSchedule:
+        type: string
+      DataImportSource:
+        type: string
+      ChargeDetails:
+        type: array
+        items:
+          $ref: '#/definitions/ChargeDetails'
+    description: "**charge Api**"
+  ChargeType:
+    type: object
+    properties:
+      TypeCode:
+        type: string
+      TypeSource:
+        type: string
+    description: Charge Type
+  ChargeDetails:
+    type: object
+    properties:
+      Type:
+        type: string
+      SubType:
+        type: string
+      Frequency:
+        type: string
+      Amount:
+        type: number
+        format: decimal
+      StartDate:
+        type: string
+        format: date
+      EndDate:
+        type: string
+        format: date
+    description: Charge Details

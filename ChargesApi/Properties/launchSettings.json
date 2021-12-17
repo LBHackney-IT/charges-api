@@ -1,0 +1,26 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:62900",
+      "sslPort": 44394
+    }
+  },
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "base_api": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "api/v1/healthcheck/ping",
+      "environmentVariables": {
+        "DynamoDb_LocalServiceUrl": "http://localhost:8000",
+        "DynamoDb_LocalAccessKey": "2cl9i",
+        "DynamoDb_LocalSecretKey": "vymxp",
+        "DynamoDb_LocalMode": "true",
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:5000"
+    }
+  }
+}
