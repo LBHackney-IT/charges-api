@@ -224,9 +224,9 @@ namespace ChargesApi
                         $"{ApiName}-api {apiVersionDescription.GetFormattedApiVersion()}");
                 }
             });
+            app.UseSwagger();
             app.UseGoogleGroupAuthorization();
             app.UseMiddleware<ExceptionMiddleware>();
-            app.UseSwagger();
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
