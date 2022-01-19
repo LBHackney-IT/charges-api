@@ -5,9 +5,27 @@ namespace ChargesApi.V1.Domain
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum TargetType
     {
-        Asset,
         Block,
-        Estate
+        Concierge,
+        Dwelling,
+        LettableNonDwelling,
+        MediumRiseBlock,
+        NA,
+        TravellerSite,
+        AdministrativeBuilding,
+        BoilerHouse,
+        BoosterPump,
+        CleanersFacilities,
+        CombinedHeatAndPowerUnit,
+        CommunityHall,
+        Estate,
+        HighRiseBlock,
+        Lift,
+        LowRiseBlock,
+        NBD,
+        OutBuilding,
+        TerracedBlock,
+        WalkUpBlock
     }
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ChargeMaintenanceStatus

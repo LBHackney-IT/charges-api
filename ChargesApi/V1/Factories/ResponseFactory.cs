@@ -14,7 +14,8 @@ namespace ChargesApi.V1.Factories
                 Id = domain.Id,
                 TargetId = domain.TargetId,
                 DetailedCharges = domain.DetailedCharges,
-                TargetType = domain.TargetType
+                TargetType = domain.TargetType,
+                ChargeGroup = domain.ChargeGroup
             };
         }
         public static ChargeMaintenanceResponse ToResponse(this ChargeMaintenance domain)

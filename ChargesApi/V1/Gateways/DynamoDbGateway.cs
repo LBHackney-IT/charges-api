@@ -34,7 +34,10 @@ namespace ChargesApi.V1.Gateways
 
         public async Task AddAsync(Charge charge)
         {
-            await _dynamoDbContext.SaveAsync(charge.ToDatabase()).ConfigureAwait(false);
+            var databaseModel = charge.ToDatabase();
+            databaseModel.CreatedAt = DateTime.UtcNow;
+            databaseModel.CreatedBy = "test";
+            await _dynamoDbContext.SaveAsync(databaseModel).ConfigureAwait(false);
         }
 
         public void AddRange(List<Charge> charges)

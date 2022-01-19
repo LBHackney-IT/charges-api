@@ -30,10 +30,10 @@ namespace ChargesApi.V1.Infrastructure.Entities
         [DynamoDBProperty(AttributeName = "last_updated_by")]
         public string LastUpdatedBy { get; set; }
 
-        [DynamoDBProperty(AttributeName = "created_date", Converter = typeof(DynamoDbDateTimeConverter))]
-        public DateTime CreatedDate { get; set; }
+        [DynamoDBProperty(AttributeName = "created_at", Converter = typeof(DynamoDbDateTimeConverter))]
+        public DateTime CreatedAt { get; set; }
 
-        [DynamoDBProperty(AttributeName = "last_updated_date", Converter = typeof(DynamoDbDateTimeConverter))]
-        public DateTime LastUpdatedDate { get; set; }
+        [DynamoDBProperty(AttributeName = "last_updated_at", Converter = typeof(DynamoDbDateTimeConverter))]
+        public DateTime? LastUpdatedAt { get; set; }
     }
 }

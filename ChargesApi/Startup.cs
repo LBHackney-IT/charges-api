@@ -215,6 +215,7 @@ namespace ChargesApi
             _apiVersions = api.ApiVersionDescriptions.ToList();
 
             //Swagger ui to view the swagger.json file
+            app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 foreach (var apiVersionDescription in _apiVersions)
@@ -226,7 +227,7 @@ namespace ChargesApi
             });
             app.UseGoogleGroupAuthorization();
             app.UseMiddleware<ExceptionMiddleware>();
-            app.UseSwagger();
+           
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
