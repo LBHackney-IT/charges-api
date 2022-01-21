@@ -15,7 +15,7 @@ namespace ChargesApi.Tests.V1.UseCase
     {
         private readonly Mock<IChargesApiGateway> _mockChargeGateway;
         private readonly UpdateUseCase _updateUseCase;
-       
+
         public UpdateUseCaseTests()
         {
             _mockChargeGateway = new Mock<IChargesApiGateway>();

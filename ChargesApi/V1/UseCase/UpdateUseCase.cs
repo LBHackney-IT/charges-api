@@ -39,7 +39,7 @@ namespace ChargesApi.V1.UseCase
             {
                 throw new ArgumentNullException(nameof(charge));
             }
-           
+
             await _gateway.UpdateAsync(charge.ToDomain(), token).ConfigureAwait(false);
 
             return charge;

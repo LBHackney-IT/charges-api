@@ -229,7 +229,7 @@ namespace ChargesApi
             });
             app.UseGoogleGroupAuthorization();
             app.UseMiddleware<ExceptionMiddleware>();
-           
+
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
