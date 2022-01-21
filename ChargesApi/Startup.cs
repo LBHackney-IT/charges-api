@@ -27,6 +27,7 @@ using ChargesApi.V1.Factories;
 using Amazon.SimpleNotificationService;
 using Hackney.Core.Authorization;
 using Hackney.Core.JWT;
+using Newtonsoft.Json.Converters;
 
 namespace ChargesApi
 {
@@ -42,13 +43,14 @@ namespace ChargesApi
         public IConfiguration Configuration { get; }
         private static List<ApiVersionDescription> _apiVersions { get; set; }
         //TODO update the below to the name of your API
-        private const string ApiName = "charges-api";
+        private const string ApiName = "charges";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services
                 .AddMvc()
+                .AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()))
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddApiVersioning(o =>
             {
@@ -215,6 +217,7 @@ namespace ChargesApi
             _apiVersions = api.ApiVersionDescriptions.ToList();
 
             //Swagger ui to view the swagger.json file
+            app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 foreach (var apiVersionDescription in _apiVersions)

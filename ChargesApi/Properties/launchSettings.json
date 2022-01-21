@@ -18,7 +18,8 @@
         "DynamoDb_LocalAccessKey": "2cl9i",
         "DynamoDb_LocalSecretKey": "vymxp",
         "DynamoDb_LocalMode": "true",
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "REQUIRED_GOOGL_GROUPS": "e2e-testing-development;HackneyAll;saml-mtfh-developer;saml-housingfinance"
       },
       "applicationUrl": "http://localhost:5000"
     }

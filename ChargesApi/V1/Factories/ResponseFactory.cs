@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using ChargesApi.V1.Boundary.Request;
 using ChargesApi.V1.Boundary.Response;
 using ChargesApi.V1.Domain;
 
@@ -14,7 +15,33 @@ namespace ChargesApi.V1.Factories
                 Id = domain.Id,
                 TargetId = domain.TargetId,
                 DetailedCharges = domain.DetailedCharges,
-                TargetType = domain.TargetType
+                TargetType = domain.TargetType,
+                ChargeGroup = domain.ChargeGroup
+            };
+        }
+
+        public static UpdateChargeRequest ToUpdateModel(this ChargeResponse response)
+        {
+            return new UpdateChargeRequest
+            {
+                TargetId = response.TargetId,
+                TargetType = response.TargetType,
+                ChargeGroup = response.ChargeGroup,
+                ChargeYear = response.ChargeYear,
+                Id = response.Id,
+                DetailedCharges = response.DetailedCharges
+            };
+        }
+        public static ChargeResponse ToResponse(this UpdateChargeRequest updateChargeRequest)
+        {
+            return new ChargeResponse
+            {
+                TargetId = updateChargeRequest.TargetId,
+                TargetType = updateChargeRequest.TargetType,
+                ChargeGroup = updateChargeRequest.ChargeGroup,
+                ChargeYear = updateChargeRequest.ChargeYear,
+                Id = updateChargeRequest.Id,
+                DetailedCharges = updateChargeRequest.DetailedCharges
             };
         }
         public static ChargeMaintenanceResponse ToResponse(this ChargeMaintenance domain)

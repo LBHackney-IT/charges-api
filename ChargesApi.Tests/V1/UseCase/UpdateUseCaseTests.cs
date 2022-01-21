@@ -1,4 +1,5 @@
 using ChargesApi.V1.Boundary.Request;
+using ChargesApi.V1.Boundary.Response;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Gateways;
 using ChargesApi.V1.UseCase;
@@ -24,24 +25,24 @@ namespace ChargesApi.Tests.V1.UseCase
         [Fact]
         public async Task UpdateValidModel()
         {
-            _mockChargeGateway.Setup(_ => _.UpdateAsync(It.IsAny<Charge>()))
+            _mockChargeGateway.Setup(_ => _.UpdateAsync(It.IsAny<Charge>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 
-            await _updateUseCase.ExecuteAsync(new UpdateChargeRequest())
+            await _updateUseCase.ExecuteAsync(new ChargeResponse(), string.Empty)
                 .ConfigureAwait(false);
 
-            _mockChargeGateway.Verify(_ => _.UpdateAsync(It.IsAny<Charge>()), Times.Once);
+            _mockChargeGateway.Verify(_ => _.UpdateAsync(It.IsAny<Charge>(), It.IsAny<string>()), Times.Once);
         }
 
         [Fact]
         public async Task UpdateInvalidModel()
         {
-            _mockChargeGateway.Setup(_ => _.AddAsync(It.IsAny<Charge>()))
+            _mockChargeGateway.Setup(_ => _.AddAsync(It.IsAny<Charge>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 
             try
             {
-                await _updateUseCase.ExecuteAsync(null)
+                await _updateUseCase.ExecuteAsync(null, string.Empty)
                     .ConfigureAwait(false);
 
                 Assert.True(false, "ArgumentNullException should be thrown!");
