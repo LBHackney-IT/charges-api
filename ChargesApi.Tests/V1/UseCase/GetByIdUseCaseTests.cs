@@ -29,7 +29,7 @@ namespace ChargesApi.Tests.V1.UseCase
             {
                 Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
                 TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
-                TargetType = TargetType.Asset,
+                TargetType = TargetType.Dwelling,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges

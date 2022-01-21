@@ -26,23 +26,23 @@ namespace ChargesApi.Tests.V1.UseCase
         {
             AddChargeRequest charge = new AddChargeRequest();
 
-            _mockChargeGateway.Setup(_ => _.AddAsync(It.IsAny<Charge>()))
+            _mockChargeGateway.Setup(_ => _.AddAsync(It.IsAny<Charge>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 
-            await _addUseCase.ExecuteAsync(charge).ConfigureAwait(false);
+            await _addUseCase.ExecuteAsync(charge, string.Empty).ConfigureAwait(false);
 
-            _mockChargeGateway.Verify(_ => _.AddAsync(It.IsAny<Charge>()), Times.Once);
+            _mockChargeGateway.Verify(_ => _.AddAsync(It.IsAny<Charge>(), It.IsAny<string>()), Times.Once);
         }
 
         [Fact]
         public async Task AddInvalidModel()
         {
-            _mockChargeGateway.Setup(_ => _.AddAsync(It.IsAny<Charge>()))
+            _mockChargeGateway.Setup(_ => _.AddAsync(It.IsAny<Charge>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 
             try
             {
-                await _addUseCase.ExecuteAsync(null)
+                await _addUseCase.ExecuteAsync(null, string.Empty)
                     .ConfigureAwait(false);
 
                 Assert.True(false, "ArgumentNullException should be thrown!");

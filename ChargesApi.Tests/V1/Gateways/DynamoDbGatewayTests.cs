@@ -23,6 +23,8 @@ namespace ChargesApi.Tests.V1.Gateways
         private readonly Mock<IAmazonDynamoDB> _amazonDynamoDb;
         private readonly Mock<IConfiguration> _mockConfig;
         private readonly DynamoDbGateway _gateway;
+        private const string Token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZXN0IiwiaWF0IjoxNjM5NDIyNzE4LCJleHAiOjE5ODY1Nzc5MTgsImF1ZCI6InRlc3QiLCJzdWIiOiJ0ZXN0IiwiZ3JvdXBzIjpbInNvbWUtdmFsaWQtZ29vZ2xlLWdyb3VwIiwic29tZS1vdGhlci12YWxpZC1nb29nbGUtZ3JvdXAiXSwibmFtZSI6InRlc3RpbmcifQ.IcpQ00PGVgksXkR_HFqWOakgbQ_PwW9dTVQu4w77tmU";
+
 
         public DynamoDbGatewayTests()
         {
@@ -50,7 +52,7 @@ namespace ChargesApi.Tests.V1.Gateways
             {
                 Id = new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"),
                 TargetId = new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"),
-                TargetType = TargetType.Asset,
+                TargetType = TargetType.Dwelling,
                 DetailedCharges = new List<DetailedCharges>
                         {
                             new DetailedCharges
@@ -75,7 +77,7 @@ namespace ChargesApi.Tests.V1.Gateways
 
             charge.Id.Should().Be(new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"));
             charge.TargetId.Should().Be(new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"));
-            charge.TargetType.Should().Be(TargetType.Asset);
+            charge.TargetType.Should().Be(TargetType.Dwelling);
             charge.DetailedCharges.Should().NotBeNull();
             charge.DetailedCharges.Should().HaveCount(1);
 
@@ -101,7 +103,7 @@ namespace ChargesApi.Tests.V1.Gateways
             charges.Should().NotBeNull();
             charges.Should().HaveCount(1);
 
-            charges[0].TargetType.Should().Be(TargetType.Asset);
+            charges[0].TargetType.Should().Be(TargetType.Dwelling);
             charges[0].DetailedCharges.Should().NotBeNull();
             charges[0].DetailedCharges.Should().HaveCount(9);
 
@@ -122,7 +124,7 @@ namespace ChargesApi.Tests.V1.Gateways
             {
                 Id = new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"),
                 TargetId = new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"),
-                TargetType = TargetType.Asset,
+                TargetType = TargetType.Dwelling,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges
@@ -137,18 +139,7 @@ namespace ChargesApi.Tests.V1.Gateways
                 }
             };
 
-            await _gateway.AddAsync(domain).ConfigureAwait(false);
-
-            _dynamoDb.Verify(_ => _.SaveAsync(It.IsAny<ChargeDbEntity>(), default), Times.Once);
-        }
-
-        [Fact]
-        public async Task AddChargeWithInvalidModel()
-        {
-            _dynamoDb.Setup(_ => _.SaveAsync(It.IsAny<ChargeDbEntity>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-            await _gateway.AddAsync(null).ConfigureAwait(false);
+            await _gateway.AddAsync(domain, Token).ConfigureAwait(false);
 
             _dynamoDb.Verify(_ => _.SaveAsync(It.IsAny<ChargeDbEntity>(), default), Times.Once);
         }
@@ -162,7 +153,7 @@ namespace ChargesApi.Tests.V1.Gateways
             {
                 Id = new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"),
                 TargetId = new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"),
-                TargetType = TargetType.Asset,
+                TargetType = TargetType.Dwelling,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges
@@ -177,18 +168,7 @@ namespace ChargesApi.Tests.V1.Gateways
                 }
             };
 
-            await _gateway.AddAsync(domain).ConfigureAwait(false);
-
-            _dynamoDb.Verify(_ => _.SaveAsync(It.IsAny<ChargeDbEntity>(), default), Times.Once);
-        }
-
-        [Fact]
-        public async Task UpdateChargeWithInvalidModel()
-        {
-            _dynamoDb.Setup(_ => _.SaveAsync(It.IsAny<ChargeDbEntity>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-            await _gateway.AddAsync(null).ConfigureAwait(false);
+            await _gateway.AddAsync(domain, Token).ConfigureAwait(false);
 
             _dynamoDb.Verify(_ => _.SaveAsync(It.IsAny<ChargeDbEntity>(), default), Times.Once);
         }
@@ -202,7 +182,7 @@ namespace ChargesApi.Tests.V1.Gateways
             {
                 Id = new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"),
                 TargetId = new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"),
-                TargetType = TargetType.Asset,
+                TargetType = TargetType.Dwelling,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges

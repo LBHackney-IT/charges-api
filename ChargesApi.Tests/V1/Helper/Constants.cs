@@ -10,7 +10,7 @@ namespace ChargesApi.Tests.V1.Helper
         public const string TYPE = "Service";
         public const string SUBTYPE = "Water";
         public const string FREQUENCY = "Weekly";
-        public const TargetType TARGETTYPE = TargetType.Asset;
+        public const TargetType TARGETTYPE = TargetType.Dwelling;
         public const decimal AMOUNT = 125;
         public const string STARTDATE = "2021-05-22";
         public const string ENDDATE = "2021-06-22";

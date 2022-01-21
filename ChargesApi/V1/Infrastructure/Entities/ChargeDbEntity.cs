@@ -21,6 +21,9 @@ namespace ChargesApi.V1.Infrastructure.Entities
         [DynamoDBProperty(AttributeName = "charge_group", Converter = typeof(DynamoDbEnumConverter<ChargeGroup>))]
         public ChargeGroup ChargeGroup { get; set; }
 
+        [DynamoDBProperty(AttributeName = "charge_year")]
+        public short ChargeYear { get; set; }
+
         [DynamoDBProperty(AttributeName = "detailed_charges", Converter = (typeof(DynamoDbObjectListConverter<DetailedCharges>)))]
         public IEnumerable<DetailedCharges> DetailedCharges { get; set; }
 

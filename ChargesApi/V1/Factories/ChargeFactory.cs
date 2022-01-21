@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ChargesApi.V1.Boundary.Request;
+using ChargesApi.V1.Boundary.Response;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Infrastructure.Entities;
 
@@ -20,6 +21,7 @@ namespace ChargesApi.V1.Factories
                 Id = chargeEntity.Id,
                 TargetId = chargeEntity.TargetId,
                 TargetType = chargeEntity.TargetType,
+                ChargeYear = chargeEntity.ChargeYear,
                 ChargeGroup = chargeEntity.ChargeGroup,
                 DetailedCharges = chargeEntity.DetailedCharges
             };
@@ -38,6 +40,7 @@ namespace ChargesApi.V1.Factories
                 TargetId = charge.TargetId,
                 TargetType = charge.TargetType,
                 ChargeGroup = charge.ChargeGroup,
+                ChargeYear = charge.ChargeYear,
                 DetailedCharges = charge.DetailedCharges
             };
         }
@@ -54,10 +57,22 @@ namespace ChargesApi.V1.Factories
                 TargetId = chargeRequest.TargetId,
                 TargetType = chargeRequest.TargetType,
                 ChargeGroup = chargeRequest.ChargeGroup,
+                ChargeYear = chargeRequest.ChargeYear,
                 DetailedCharges = chargeRequest.DetailedCharges
             };
         }
-
+        public static Charge ToDomain(this ChargeResponse chargeResponse)
+        {
+            return new Charge
+            {
+                TargetId = chargeResponse.TargetId,
+                TargetType = chargeResponse.TargetType,
+                ChargeGroup = chargeResponse.ChargeGroup,
+                ChargeYear = chargeResponse.ChargeYear,
+                Id = chargeResponse.Id,
+                DetailedCharges = chargeResponse.DetailedCharges
+            };
+        }
         public static Charge ToDomain(this UpdateChargeRequest chargeRequest)
         {
             if (chargeRequest == null)
@@ -71,6 +86,7 @@ namespace ChargesApi.V1.Factories
                 TargetId = chargeRequest.TargetId,
                 TargetType = chargeRequest.TargetType,
                 ChargeGroup = chargeRequest.ChargeGroup,
+                ChargeYear = chargeRequest.ChargeYear,
                 DetailedCharges = chargeRequest.DetailedCharges
             };
         }

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using ChargesApi.V1.Infrastructure.JWT;
 
 namespace ChargesApi.V1.Gateways
 {
@@ -32,11 +33,11 @@ namespace ChargesApi.V1.Gateways
             _dynamoDbContext.SaveAsync(charge.ToDatabase());
         }
 
-        public async Task AddAsync(Charge charge)
+        public async Task AddAsync(Charge charge, string token)
         {
             var databaseModel = charge.ToDatabase();
             databaseModel.CreatedAt = DateTime.UtcNow;
-            databaseModel.CreatedBy = "test";
+            databaseModel.CreatedBy = Helper.GetUserName(token);
             await _dynamoDbContext.SaveAsync(databaseModel).ConfigureAwait(false);
         }
 
@@ -112,9 +113,12 @@ namespace ChargesApi.V1.Gateways
             _dynamoDbContext.SaveAsync(charge.ToDatabase());
         }
 
-        public async Task UpdateAsync(Charge charge)
+        public async Task UpdateAsync(Charge charge, string token)
         {
-            await _dynamoDbContext.SaveAsync(charge.ToDatabase()).ConfigureAwait(false);
+            var databaseModel = charge.ToDatabase();
+            databaseModel.LastUpdatedAt = DateTime.UtcNow;
+            databaseModel.LastUpdatedBy = Helper.GetUserName(token);
+            await _dynamoDbContext.SaveAsync(databaseModel).ConfigureAwait(false);
         }
 
         public async Task<bool> AddBatchAsync(List<Charge> charges)

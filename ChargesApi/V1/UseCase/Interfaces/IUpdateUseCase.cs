@@ -7,6 +7,6 @@ namespace ChargesApi.V1.UseCase.Interfaces
     public interface IUpdateUseCase
     {
         public ChargeResponse Execute(UpdateChargeRequest charge);
-        public Task<ChargeResponse> ExecuteAsync(UpdateChargeRequest charge);
+        public Task<ChargeResponse> ExecuteAsync(ChargeResponse charge, string token);
     }
 }

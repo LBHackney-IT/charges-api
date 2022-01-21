@@ -23,6 +23,8 @@
     <PackageReference Include="AWSXRayRecorder.Handlers.EntityFramework" Version="1.1.0" />
     <PackageReference Include="Hackney.Core.Authorization" Version="1.64.0" />
     <PackageReference Include="Microsoft.AspNetCore.HealthChecks" Version="1.0.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.18" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="3.1.18" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="4.1.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0" />

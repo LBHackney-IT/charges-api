@@ -17,7 +17,7 @@ namespace ChargesApi.V1.UseCase
             _gateway = gateway;
         }
 
-        public async Task<ChargeResponse> ExecuteAsync(AddChargeRequest charge)
+        public async Task<ChargeResponse> ExecuteAsync(AddChargeRequest charge, string token)
         {
             if (charge == null)
             {
@@ -28,7 +28,7 @@ namespace ChargesApi.V1.UseCase
 
             domainModel.Id = Guid.NewGuid();
 
-            await _gateway.AddAsync(domainModel).ConfigureAwait(false);
+            await _gateway.AddAsync(domainModel, token).ConfigureAwait(false);
             return domainModel.ToResponse();
         }
     }
