@@ -7,10 +7,10 @@ namespace ChargesApi.V1.Gateways
 {
     public interface IChargesListApiGateway
     {
-        public Task<ChargesList> GetChargesListByIdAsync(Guid id);
+        public Task<ChargesList> GetChargesListByIdAsync(Guid id, string chargeCode);
 
-        public Task<List<ChargesList>> GetAllChargesListAsync(string chargeGroup, string chargeType);
+        public Task<List<ChargesList>> GetAllChargesListAsync(string chargeCode);
 
-        public Task AddAsync(ChargesList chargesList);
+        public Task AddAsync(ChargesList chargesList, string token);
     }
 }

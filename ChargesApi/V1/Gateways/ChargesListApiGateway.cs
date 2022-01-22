@@ -5,6 +5,7 @@ using ChargesApi.V1.Domain;
 using ChargesApi.V1.Factories;
 using ChargesApi.V1.Infrastructure;
 using ChargesApi.V1.Infrastructure.Entities;
+using ChargesApi.V1.Infrastructure.JWT;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,36 +23,36 @@ namespace ChargesApi.V1.Gateways
             _amazonDynamoDb = amazonDynamoDb;
         }
 
-        public async Task AddAsync(ChargesList chargesList)
+        public async Task AddAsync(ChargesList chargesList, string token)
         {
+            var databaseModel = chargesList.ToDatabase();
+            databaseModel.CreatedAt = DateTime.UtcNow;
+            databaseModel.CreatedBy = Helper.GetUserName(token); ;
             await _dynamoDbContext.SaveAsync(chargesList.ToDatabase()).ConfigureAwait(false);
         }
 
-        public async Task<List<ChargesList>> GetAllChargesListAsync(string chargeGroup, string chargeType)
+        public async Task<List<ChargesList>> GetAllChargesListAsync(string chargeCode)
         {
             var request = new QueryRequest
             {
                 TableName = "ChargesList",
-                IndexName = "charge_type_dx",
-                KeyConditionExpression = "charge_type = :V_charge_type",
-                FilterExpression = "charge_group = :V_charge_group",
+                KeyConditionExpression = "charge_code = :V_charge_code",
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
-                    {":V_charge_type",new AttributeValue{S = chargeType.ToString()}},
-                    {":V_charge_group",new AttributeValue{S = chargeGroup.ToString()}}
+                    {":V_charge_code",new AttributeValue{S = chargeCode.ToString()}},
                 },
                 ScanIndexForward = true
             };
 
             var chargesLists = await _amazonDynamoDb.QueryAsync(request).ConfigureAwait(false);
 
-            return chargesLists.ToChargesListDomain();
+            return chargesLists?.ToChargesListDomain();
 
         }
 
-        public async Task<ChargesList> GetChargesListByIdAsync(Guid id)
+        public async Task<ChargesList> GetChargesListByIdAsync(Guid id, string chargeCode)
         {
-            var chargesList = await _dynamoDbContext.LoadAsync<ChargesListDbEntity>(id).ConfigureAwait(false);
+            var chargesList = await _dynamoDbContext.LoadAsync<ChargesListDbEntity>(chargeCode, id).ConfigureAwait(false);
             return chargesList?.ToDomain();
         }
     }

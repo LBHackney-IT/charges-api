@@ -27,6 +27,8 @@ namespace ChargesApi.Tests.V1.Controllers
         private readonly Mock<IGetAllChargesListUseCase> _getAllChargesListUseCase;
         private readonly Mock<IGetByIdChargesListUseCase> _getByIdChargesListUseCase;
         private readonly Fixture _fixture = new Fixture();
+        private const string Token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZXN0IiwiaWF0IjoxNjM5NDIyNzE4LCJleHAiOjE5ODY1Nzc5MTgsImF1ZCI6InRlc3QiLCJzdWIiOiJ0ZXN0IiwiZ3JvdXBzIjpbInNvbWUtdmFsaWQtZ29vZ2xlLWdyb3VwIiwic29tZS1vdGhlci12YWxpZC1nb29nbGUtZ3JvdXAiXSwibmFtZSI6InRlc3RpbmcifQ.IcpQ00PGVgksXkR_HFqWOakgbQ_PwW9dTVQu4w77tmU";
+
 
         public ChargesListApiControllerTests()
         {
@@ -46,12 +48,12 @@ namespace ChargesApi.Tests.V1.Controllers
         public async Task AddChargeListWithValidDataReturns201()
         {
             var response = _fixture.Create<List<ChargesListResponse>>();
-            _getAllChargesListUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(response);
+            _getAllChargesListUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<string>())).ReturnsAsync(response);
 
             var addResponse = _fixture.Create<ChargesListResponse>();
-            _addChargesListUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<AddChargesListRequest>())).ReturnsAsync(addResponse);
+            _addChargesListUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<AddChargesListRequest>(), It.IsAny<string>())).ReturnsAsync(addResponse);
             var request = _fixture.Create<AddChargesListRequest>();
-            var result = await _chargesListApiController.Post(request).ConfigureAwait(false);
+            var result = await _chargesListApiController.Post(Guid.NewGuid().ToString(), Token, request).ConfigureAwait(false);
 
             result.Should().NotBeNull();
 
@@ -75,7 +77,7 @@ namespace ChargesApi.Tests.V1.Controllers
         [Fact]
         public async Task AddChargeListWithNullReturns400()
         {
-            var result = await _chargesListApiController.Post(null).ConfigureAwait(false);
+            var result = await _chargesListApiController.Post(Guid.NewGuid().ToString(), Token, null).ConfigureAwait(false);
 
             var badRequest = result as BadRequestObjectResult;
 
@@ -95,9 +97,10 @@ namespace ChargesApi.Tests.V1.Controllers
         public async Task GetByIdValidIdReturns200()
         {
             var addResponse = _fixture.Create<ChargesListResponse>();
-            _getByIdChargesListUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>())).ReturnsAsync(addResponse);
+            _getByIdChargesListUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<string>())).ReturnsAsync(addResponse);
 
-            var result = await _chargesListApiController.Get(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"))
+            var result = await _chargesListApiController.Get(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
+                "DCB")
                 .ConfigureAwait(false);
 
             result.Should().NotBeNull();
@@ -120,10 +123,11 @@ namespace ChargesApi.Tests.V1.Controllers
         [Fact]
         public async Task GetByIdInvalidIdReturns404()
         {
-            _getByIdChargesListUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>()))
+            _getByIdChargesListUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<string>()))
                 .ReturnsAsync((ChargesListResponse) null);
 
-            var result = await _chargesListApiController.Get(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"))
+            var result = await _chargesListApiController.Get(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
+                "DCB")
                 .ConfigureAwait(false);
 
             result.Should().NotBeNull();
@@ -143,12 +147,13 @@ namespace ChargesApi.Tests.V1.Controllers
         [Fact]
         public async Task GetByIdReturns500()
         {
-            _getByIdChargesListUseCase.Setup(x => x.ExecuteAsync(It.IsAny<Guid>()))
+            _getByIdChargesListUseCase.Setup(x => x.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<string>()))
                 .ThrowsAsync(new Exception("Test exception"));
 
             try
             {
-                var result = await _chargesListApiController.Get(new Guid("b45d2bbf-abec-454c-a843-4667786177a1"))
+                var result = await _chargesListApiController.Get(new Guid("b45d2bbf-abec-454c-a843-4667786177a1"),
+                    "DCB")
                     .ConfigureAwait(false);
                 Assert.True(false, "It should return exception, not come this");
             }
@@ -162,9 +167,9 @@ namespace ChargesApi.Tests.V1.Controllers
         public async Task GetAllChargesListReturns200()
         {
             var response = _fixture.Create<List<ChargesListResponse>>();
-            _getAllChargesListUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(response);
+            _getAllChargesListUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<string>())).ReturnsAsync(response);
 
-            var result = await _chargesListApiController.GetAll("tenants", "block").ConfigureAwait(false);
+            var result = await _chargesListApiController.GetAll("DCB").ConfigureAwait(false);
             result.Should().NotBeNull();
 
             var okResult = result as OkObjectResult;
@@ -186,10 +191,10 @@ namespace ChargesApi.Tests.V1.Controllers
         public async Task GetAllInvalidIdReturns404()
         {
             List<ChargesListResponse> expectedResponse = null;
-            _getAllChargesListUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<string>(), It.IsAny<string>()))
+            _getAllChargesListUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<string>()))
                 .ReturnsAsync(expectedResponse);
 
-            var result = await _chargesListApiController.GetAll("tenants", "block")
+            var result = await _chargesListApiController.GetAll("DCB")
                 .ConfigureAwait(false);
 
             result.Should().NotBeNull();
@@ -209,12 +214,12 @@ namespace ChargesApi.Tests.V1.Controllers
         [Fact]
         public async Task GetAllReturns500()
         {
-            _getAllChargesListUseCase.Setup(x => x.ExecuteAsync(It.IsAny<string>(), It.IsAny<string>()))
+            _getAllChargesListUseCase.Setup(x => x.ExecuteAsync(It.IsAny<string>()))
                 .ThrowsAsync(new Exception("Test exception"));
 
             try
             {
-                var result = await _chargesListApiController.GetAll("tenants", "block")
+                var result = await _chargesListApiController.GetAll("DCB")
                     .ConfigureAwait(false);
                 Assert.True(false, "It should return exception, not come this");
             }
