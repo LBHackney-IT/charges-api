@@ -6,6 +6,6 @@ namespace ChargesApi.V1.UseCase.Interfaces
 {
     public interface IAddChargesListUseCase
     {
-        public Task<ChargesListResponse> ExecuteAsync(AddChargesListRequest chargesList);
+        public Task<ChargesListResponse> ExecuteAsync(AddChargesListRequest chargesList, string token);
     }
 }

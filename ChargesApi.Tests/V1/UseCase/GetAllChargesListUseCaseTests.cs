@@ -26,12 +26,12 @@ namespace ChargesApi.Tests.V1.UseCase
         {
             var entities = _fixture.Create<List<ChargesList>>();
 
-            _mockChargesListGateway.Setup(x => x.GetAllChargesListAsync(It.IsAny<string>(), It.IsAny<string>()))
+            _mockChargesListGateway.Setup(x => x.GetAllChargesListAsync(It.IsAny<string>()))
                 .ReturnsAsync(entities);
 
             var expectedResult = entities.ToResponse();
 
-            var result = await _getAllChargesListUseCase.ExecuteAsync("tenants", "Estate").ConfigureAwait(false);
+            var result = await _getAllChargesListUseCase.ExecuteAsync("DCB").ConfigureAwait(false);
 
             result.Should().NotBeNullOrEmpty();
             result.Should().HaveCount(entities.Count);
@@ -43,35 +43,15 @@ namespace ChargesApi.Tests.V1.UseCase
         {
             var entities = _fixture.Create<List<ChargesList>>();
 
-            _mockChargesListGateway.Setup(x => x.GetAllChargesListAsync(It.IsAny<string>(), It.IsAny<string>()))
+            _mockChargesListGateway.Setup(x => x.GetAllChargesListAsync(It.IsAny<string>()))
                 .ReturnsAsync(entities);
 
             var expectedResult = entities.ToResponse();
-            expectedResult.AddRange(entities.ToResponse());
-            var result = await _getAllChargesListUseCase.ExecuteAsync("tenants", "Block").ConfigureAwait(false);
+
+            var result = await _getAllChargesListUseCase.ExecuteAsync("DCB").ConfigureAwait(false);
 
             result.Should().NotBeNullOrEmpty();
-            result.Should().HaveCount(entities.Count * 2);
-            result.Should().BeEquivalentTo(expectedResult);
-        }
-        [Fact]
-        public async Task GetsAllChargeTypeProperty()
-        {
-            var entities = _fixture.Create<List<ChargesList>>();
-
-            _mockChargesListGateway.Setup(x => x.GetAllChargesListAsync(It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(entities);
-
-            var expectedResult = entities.ToResponse();
-            expectedResult.AddRange(entities.ToResponse());
-            expectedResult.AddRange(entities.ToResponse());
-
-            var result = await _getAllChargesListUseCase.ExecuteAsync("tenants", "Property")
-                .ConfigureAwait(false);
-
-            result.Should().NotBeNullOrEmpty();
-            result.Should().HaveCount(entities.Count * 3);
-
+            result.Should().HaveCount(3);
             result.Should().BeEquivalentTo(expectedResult);
         }
     }

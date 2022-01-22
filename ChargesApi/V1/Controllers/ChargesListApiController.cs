@@ -33,6 +33,7 @@ namespace ChargesApi.V1.Controllers
         /// Get Charges List model by provided id
         /// </summary>
         /// <param name="id">The value by which we are looking for charges list</param>
+        /// <param name="chargeCode">The value by which we are looking for charges list</param>
         /// <response code="200">Success. Charges list model was received successfully</response>
         /// <response code="400">Bad Request</response>
         /// <response code="404">Charges list with provided id cannot be found</response>
@@ -43,9 +44,9 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> Get([FromRoute] Guid id)
+        public async Task<IActionResult> Get([FromRoute] Guid id, [FromQuery] string chargeCode)
         {
-            var chargesList = await _getByIdChargesListUseCase.ExecuteAsync(id).ConfigureAwait(false);
+            var chargesList = await _getByIdChargesListUseCase.ExecuteAsync(id, chargeCode).ConfigureAwait(false);
 
             if (chargesList == null)
             {
@@ -58,8 +59,7 @@ namespace ChargesApi.V1.Controllers
         /// <summary>
         /// Get All Charges List model by provided chargeGroup and chargeType
         /// </summary>
-        /// <param name="chargeGroup">The value by which we are looking for charges list</param>
-        /// <param name="chargeType">The value by which we are looking for charges list</param>
+        /// <param name="chargeCode">The value by which we are looking for charges list</param>
         /// <response code="200">Success. Charges list model was received successfully</response>
         /// <response code="400">Bad Request</response>
         /// <response code="404">Charges list with provided id cannot be found</response>
@@ -69,9 +69,9 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] string chargeGroup, string chargeType)
+        public async Task<IActionResult> GetAll([FromQuery] string chargeCode)
         {
-            var chargesList = await _getAllChargesListUseCase.ExecuteAsync(chargeGroup, chargeType).ConfigureAwait(false);
+            var chargesList = await _getAllChargesListUseCase.ExecuteAsync(chargeCode).ConfigureAwait(false);
 
             if (chargesList == null)
             {
@@ -84,6 +84,8 @@ namespace ChargesApi.V1.Controllers
         /// <summary>
         /// Create new Charges list model
         /// </summary>
+        /// <param name="correlationId">Charges list model for create</param>
+        /// <param name="token">Charges list model for create</param>
         /// <param name="chargesList">Charges list model for create</param>
         /// <response code="201">Success. Charges list model was created successfully</response>
         /// <response code="400">Bad Request</response>
@@ -92,7 +94,9 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpPost]
-        public async Task<IActionResult> Post(AddChargesListRequest chargesList)
+        public async Task<IActionResult> Post([FromHeader(Name = "x-correlation-id")] string correlationId,
+                                             [FromHeader(Name = "Authorization")] string token,
+                                             [FromBody] AddChargesListRequest chargesList)
         {
             if (chargesList == null)
             {
@@ -101,7 +105,7 @@ namespace ChargesApi.V1.Controllers
 
             if (ModelState.IsValid)
             {
-                var charges = await _getAllChargesListUseCase.ExecuteAsync(chargesList.ChargeGroup.ToString(), chargesList.ChargeType.ToString()).ConfigureAwait(false);
+                var charges = await _getAllChargesListUseCase.ExecuteAsync(chargesList.ChargeCode.ToUpper()).ConfigureAwait(false);
                 if (charges.Any())
                 {
                     var checkCharge = charges.FirstOrDefault(x => x.ChargeName == chargesList.ChargeName && x.ChargeCode == chargesList.ChargeCode);
@@ -110,7 +114,7 @@ namespace ChargesApi.V1.Controllers
                         return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Charge already exists!"));
                     }
                 }
-                var chargesListResponse = await _addChargesListUseCase.ExecuteAsync(chargesList).ConfigureAwait(false);
+                var chargesListResponse = await _addChargesListUseCase.ExecuteAsync(chargesList, token).ConfigureAwait(false);
 
                 return CreatedAtAction($"Get", new { id = chargesListResponse.Id }, chargesListResponse);
             }

@@ -16,9 +16,9 @@ namespace ChargesApi.V1.UseCase
             _gateway = gateway;
         }
 
-        public async Task<ChargesListResponse> ExecuteAsync(Guid id)
+        public async Task<ChargesListResponse> ExecuteAsync(Guid id, string chargeCode)
         {
-            var chargesList = await _gateway.GetChargesListByIdAsync(id).ConfigureAwait(false);
+            var chargesList = await _gateway.GetChargesListByIdAsync(id, chargeCode).ConfigureAwait(false);
             return chargesList?.ToResponse();
         }
     }

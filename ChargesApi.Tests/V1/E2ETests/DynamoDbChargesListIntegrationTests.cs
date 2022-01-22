@@ -30,7 +30,7 @@ namespace ChargesApi.Tests.V1.E2ETests
         {
             Guid id = Guid.NewGuid();
 
-            var uri = new Uri($"api/v1/charges-list/{id}", UriKind.Relative);
+            var uri = new Uri($"api/v1/charges-list/{id}?chargeCode=xyz", UriKind.Relative);
             var response = await Client.GetAsync(uri).ConfigureAwait(false);
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -50,7 +50,7 @@ namespace ChargesApi.Tests.V1.E2ETests
             var chargeListRequest = ConstructChargesList();
             var chargeResponse = await CreateChargeAndValidateResponse(chargeListRequest).ConfigureAwait(false);
 
-            await GetChargesListByIdAndValidateResponse(chargeResponse.Id, chargeResponse).ConfigureAwait(false);
+            await GetChargesListByIdAndValidateResponse(chargeResponse.Id, chargeResponse.ChargeCode, chargeResponse).ConfigureAwait(false);
         }
 
         [Fact]
@@ -101,9 +101,9 @@ namespace ChargesApi.Tests.V1.E2ETests
             return apiEntity;
         }
 
-        private async Task GetChargesListByIdAndValidateResponse(Guid id, ChargesListResponse chargesList = null)
+        private async Task GetChargesListByIdAndValidateResponse(Guid id, string chargeCode, ChargesListResponse chargesList = null)
         {
-            var uri = new Uri($"api/v1/charges-list/{id}", UriKind.Relative);
+            var uri = new Uri($"api/v1/charges-list/{id}?chargeCode={chargeCode}", UriKind.Relative);
             using var response = await Client.GetAsync(uri).ConfigureAwait(false);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);

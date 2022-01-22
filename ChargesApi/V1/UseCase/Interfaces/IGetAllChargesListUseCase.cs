@@ -6,6 +6,6 @@ namespace ChargesApi.V1.UseCase.Interfaces
 {
     public interface IGetAllChargesListUseCase
     {
-        public Task<List<ChargesListResponse>> ExecuteAsync(string chargeGroup, string chargeType);
+        public Task<List<ChargesListResponse>> ExecuteAsync(string chargeCode);
     }
 }

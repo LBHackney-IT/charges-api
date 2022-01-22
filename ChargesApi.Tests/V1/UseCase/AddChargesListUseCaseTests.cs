@@ -30,15 +30,15 @@ namespace ChargesApi.Tests.V1.UseCase
         {
             var entities = _fixture.Create<AddChargesListRequest>();
 
-            _mockChargesListGateway.Setup(x => x.AddAsync(It.IsAny<ChargesList>()))
+            _mockChargesListGateway.Setup(x => x.AddAsync(It.IsAny<ChargesList>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 
             var expectedResult = entities.ToDomain();
 
-            var result = await _addChargesListUseCase.ExecuteAsync(entities)
+            var result = await _addChargesListUseCase.ExecuteAsync(entities, string.Empty)
                 .ConfigureAwait(false);
 
-            _mockChargesListGateway.Verify(_ => _.AddAsync(It.IsAny<ChargesList>()), Times.Once);
+            _mockChargesListGateway.Verify(_ => _.AddAsync(It.IsAny<ChargesList>(), It.IsAny<string>()), Times.Once);
         }
     }
 }

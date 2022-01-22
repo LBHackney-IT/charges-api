@@ -28,10 +28,10 @@ namespace ChargesApi.Tests.V1.UseCase
             var domain = _fixture.Create<ChargesList>();
             var expectedResult = domain.ToResponse();
 
-            _mockChargesListApiGateway.Setup(_ => _.GetChargesListByIdAsync(It.IsAny<Guid>()))
+            _mockChargesListApiGateway.Setup(_ => _.GetChargesListByIdAsync(It.IsAny<Guid>(), It.IsAny<string>()))
                 .ReturnsAsync(domain);
 
-            var result = await _getByIdChargesListUseCase.ExecuteAsync(Guid.NewGuid())
+            var result = await _getByIdChargesListUseCase.ExecuteAsync(Guid.NewGuid(), "DCB")
                 .ConfigureAwait(false);
 
             result.Should().NotBeNull();
@@ -41,10 +41,10 @@ namespace ChargesApi.Tests.V1.UseCase
         [Fact]
         public async Task GetByIdInvalidIdReturnsCharge()
         {
-            _mockChargesListApiGateway.Setup(_ => _.GetChargesListByIdAsync(It.IsAny<Guid>()))
+            _mockChargesListApiGateway.Setup(_ => _.GetChargesListByIdAsync(It.IsAny<Guid>(), It.IsAny<string>()))
                 .ReturnsAsync((ChargesList) null);
 
-            var result = await _getByIdChargesListUseCase.ExecuteAsync(Guid.NewGuid())
+            var result = await _getByIdChargesListUseCase.ExecuteAsync(Guid.NewGuid(), "DCB")
                 .ConfigureAwait(false);
 
             result.Should().BeNull();
