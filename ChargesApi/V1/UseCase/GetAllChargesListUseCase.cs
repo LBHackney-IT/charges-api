@@ -19,7 +19,7 @@ namespace ChargesApi.V1.UseCase
         public async Task<List<ChargesListResponse>> ExecuteAsync(string chargeCode)
         {
             var result = await _gateway.GetAllChargesListAsync(chargeCode.ToUpper()).ConfigureAwait(false);
-                 
+
             return result?.ToResponse();
         }
     }
