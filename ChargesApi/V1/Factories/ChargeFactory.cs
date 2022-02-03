@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Amazon.DynamoDBv2.Model;
 using ChargesApi.V1.Boundary.Request;
 using ChargesApi.V1.Boundary.Response;
 using ChargesApi.V1.Domain;
@@ -23,6 +25,10 @@ namespace ChargesApi.V1.Factories
                 TargetType = chargeEntity.TargetType,
                 ChargeYear = chargeEntity.ChargeYear,
                 ChargeGroup = chargeEntity.ChargeGroup,
+                CreatedAt = chargeEntity.CreatedAt,
+                CreatedBy = chargeEntity.CreatedBy,
+                LastUpdatedAt = chargeEntity.LastUpdatedAt,
+                LastUpdatedBy = chargeEntity.LastUpdatedBy,
                 DetailedCharges = chargeEntity.DetailedCharges
             };
         }
@@ -41,6 +47,10 @@ namespace ChargesApi.V1.Factories
                 TargetType = charge.TargetType,
                 ChargeGroup = charge.ChargeGroup,
                 ChargeYear = charge.ChargeYear,
+                CreatedAt = charge.CreatedAt,
+                CreatedBy = charge.CreatedBy,
+                LastUpdatedBy = charge.LastUpdatedBy,
+                LastUpdatedAt = charge.LastUpdatedAt,
                 DetailedCharges = charge.DetailedCharges
             };
         }
@@ -97,6 +107,42 @@ namespace ChargesApi.V1.Factories
         public static List<Charge> ToDomainList(this List<AddChargeRequest> charges)
         {
             return charges.Select(item => item.ToDomain()).ToList();
+        }
+
+        public static Dictionary<string, AttributeValue> ToQueryRequest(this Charge charge)
+        {
+            return new Dictionary<string, AttributeValue>()
+            {
+                {"target_id", new AttributeValue {S = charge.TargetId.ToString()}},
+                {"id", new AttributeValue {S = charge.Id.ToString()}},
+                {"target_type", new AttributeValue {S = charge.TargetType.ToString()}},
+                {"charge_group", new AttributeValue {S = charge.ChargeGroup.ToString()}},
+                {"charge_year", new AttributeValue {N = charge.ChargeYear.ToString()}},
+                {
+                    "detailed_charges", new AttributeValue
+                            {
+                                L = charge.DetailedCharges
+                                    .Select(p =>
+                                        new AttributeValue
+                                        {
+                                            M = new Dictionary<string, AttributeValue>
+                                            {
+                                                {"chargeCode", new AttributeValue {S = p.ChargeCode}},
+                                                {"frequency", new AttributeValue {S = p.Frequency}},
+                                                {"amount", new AttributeValue {N = p.Amount.ToString("F")}},
+                                                {"endDate", new AttributeValue {S = p.EndDate.ToString("F")}},
+                                                {"chargeType", new AttributeValue {S = p.ChargeType.ToString()}},
+                                                {"subType", new AttributeValue {S = p.SubType.ToString()}},
+                                                {"type", new AttributeValue {S = p.Type.ToString()}},
+                                                {"startDate", new AttributeValue {S = p.StartDate.ToString("F")}}
+                                            }
+                                        }
+                                    ).ToList()
+                            }
+                },
+                {"created_by", new AttributeValue {S = charge.CreatedBy}},
+                {"created_at", new AttributeValue {S = charge.CreatedAt.ToString("F")}}
+            };
         }
     }
 }

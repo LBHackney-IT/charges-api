@@ -11,6 +11,10 @@ namespace ChargesApi.V1.Domain
         public ChargeGroup ChargeGroup { get; set; }
         public short ChargeYear { get; set; }
         public IEnumerable<DetailedCharges> DetailedCharges { get; set; }
+        public string CreatedBy { get; set; }
+        public string LastUpdatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? LastUpdatedAt { get; set; }
     }
 }
 

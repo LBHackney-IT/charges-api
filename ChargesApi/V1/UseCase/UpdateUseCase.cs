@@ -3,6 +3,7 @@ using ChargesApi.V1.Boundary.Response;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Factories;
 using ChargesApi.V1.Gateways;
+using ChargesApi.V1.Infrastructure.JWT;
 using ChargesApi.V1.UseCase.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -39,8 +40,10 @@ namespace ChargesApi.V1.UseCase
             {
                 throw new ArgumentNullException(nameof(charge));
             }
-
-            await _gateway.UpdateAsync(charge.ToDomain(), token).ConfigureAwait(false);
+            var domainModel = charge.ToDomain();
+            domainModel.CreatedBy = Helper.GetUserName(token);
+            domainModel.LastUpdatedAt = DateTime.UtcNow;
+            await _gateway.UpdateAsync(domainModel).ConfigureAwait(false);
 
             return charge;
         }
