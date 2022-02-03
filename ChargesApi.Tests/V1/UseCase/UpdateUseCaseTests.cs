@@ -15,6 +15,7 @@ namespace ChargesApi.Tests.V1.UseCase
     {
         private readonly Mock<IChargesApiGateway> _mockChargeGateway;
         private readonly UpdateUseCase _updateUseCase;
+        private const string Token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZXN0IiwiaWF0IjoxNjM5NDIyNzE4LCJleHAiOjE5ODY1Nzc5MTgsImF1ZCI6InRlc3QiLCJzdWIiOiJ0ZXN0IiwiZ3JvdXBzIjpbInNvbWUtdmFsaWQtZ29vZ2xlLWdyb3VwIiwic29tZS1vdGhlci12YWxpZC1nb29nbGUtZ3JvdXAiXSwibmFtZSI6InRlc3RpbmcifQ.IcpQ00PGVgksXkR_HFqWOakgbQ_PwW9dTVQu4w77tmU";
 
         public UpdateUseCaseTests()
         {
@@ -25,24 +26,24 @@ namespace ChargesApi.Tests.V1.UseCase
         [Fact]
         public async Task UpdateValidModel()
         {
-            _mockChargeGateway.Setup(_ => _.UpdateAsync(It.IsAny<Charge>(), It.IsAny<string>()))
+            _mockChargeGateway.Setup(_ => _.UpdateAsync(It.IsAny<Charge>()))
                 .Returns(Task.CompletedTask);
 
-            await _updateUseCase.ExecuteAsync(new ChargeResponse(), string.Empty)
+            await _updateUseCase.ExecuteAsync(new ChargeResponse(), Token)
                 .ConfigureAwait(false);
 
-            _mockChargeGateway.Verify(_ => _.UpdateAsync(It.IsAny<Charge>(), It.IsAny<string>()), Times.Once);
+            _mockChargeGateway.Verify(_ => _.UpdateAsync(It.IsAny<Charge>()), Times.Once);
         }
 
         [Fact]
         public async Task UpdateInvalidModel()
         {
-            _mockChargeGateway.Setup(_ => _.AddAsync(It.IsAny<Charge>(), It.IsAny<string>()))
+            _mockChargeGateway.Setup(_ => _.AddAsync(It.IsAny<Charge>()))
                 .Returns(Task.CompletedTask);
 
             try
             {
-                await _updateUseCase.ExecuteAsync(null, string.Empty)
+                await _updateUseCase.ExecuteAsync(null, Token)
                     .ConfigureAwait(false);
 
                 Assert.True(false, "ArgumentNullException should be thrown!");

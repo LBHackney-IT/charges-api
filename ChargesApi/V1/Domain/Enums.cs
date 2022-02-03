@@ -46,4 +46,10 @@ namespace ChargesApi.V1.Domain
         Tenants,
         Leaseholders
     }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum ChargeFrequency
+    {
+        Monthly,
+        Weekly
+    }
 }

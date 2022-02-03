@@ -28,6 +28,11 @@ using Amazon.SimpleNotificationService;
 using Hackney.Core.Authorization;
 using Hackney.Core.JWT;
 using Newtonsoft.Json.Converters;
+using ChargesApi.V1.Gateways.Services.Interfaces;
+using ChargesApi.V1.Gateways.Services;
+using System.Net.Http.Headers;
+using ChargesApi.V1.Gateways.Common;
+using Hackney.Core.Logging;
 
 namespace ChargesApi
 {
@@ -119,13 +124,14 @@ namespace ChargesApi
             });
 
             ConfigureLogging(services, Configuration);
+            services.ConfigureLambdaLogging(Configuration);
             services.AddTokenFactory();
             //ConfigureDbContext(services);
             //TODO: For DynamoDb, remove the line above and uncomment the line below.
             services.ConfigureDynamoDB();
             services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
             services.AddAWSService<IAmazonSimpleNotificationService>();
-
+            services.AddLogCallAspect();
             RegisterGateways(services);
             RegisterUseCases(services);
             services.AddCors(opt => opt.AddPolicy("corsPolicy", builder =>
@@ -172,6 +178,36 @@ namespace ChargesApi
             services.AddScoped<IChargeMaintenanceApiGateway, ChargeMaintenanceGateway>();
             services.AddScoped<IChargesListApiGateway, ChargesListApiGateway>();
             services.AddScoped<ISnsGateway, ChargesSnsGateway>();
+
+            services.AddTransient<LoggingDelegatingHandler>();
+
+            var housingSearchApiUrl = Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_URL");
+            //var housingSearchApiKey = Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_KEY");
+            var housingSearchApiToken = Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_TOKEN");
+
+
+            services.AddHttpClient<IHousingSearchService, HousingSearchService>(c =>
+            {
+                c.BaseAddress = new Uri(housingSearchApiUrl);
+                //c.DefaultRequestHeaders.TryAddWithoutValidation("x-api-key", housingSearchApiKey);
+                c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(housingSearchApiToken);
+            })
+           .AddHttpMessageHandler<LoggingDelegatingHandler>();
+
+
+            var financialSummaryApiUrl = Environment.GetEnvironmentVariable("FINANCIAL_SUMMARY_API_URL");
+            //var housingSearchApiKey = Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_KEY");
+            var financialSummaryApiToken = Environment.GetEnvironmentVariable("FINANCIAL_SUMMARY_API_TOKEN");
+
+
+            services.AddHttpClient<IFinancialSummaryService, FinancialSummaryService>(c =>
+            {
+                c.BaseAddress = new Uri(financialSummaryApiUrl);
+                //c.DefaultRequestHeaders.TryAddWithoutValidation("x-api-key", housingSearchApiKey);
+                c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(financialSummaryApiToken);
+            })
+           .AddHttpMessageHandler<LoggingDelegatingHandler>();
+
         }
 
         private static void RegisterUseCases(IServiceCollection services)
@@ -190,6 +226,7 @@ namespace ChargesApi
             services.AddScoped<IAddChargesUpdateUseCase, AddChargesUpdateUseCase>();
             services.AddScoped<IGetChargesSummaryUseCase, GetChargesSummaryUseCase>();
             services.AddScoped<IAddBatchUseCase, AddBatchUseCase>();
+            services.AddScoped<IAddEstimateChargesUseCase, AddEstimateChargesUseCase>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -206,7 +243,7 @@ namespace ChargesApi
             {
                 app.UseHsts();
             }
-
+            app.UseLogCall();
             // TODO
             // If you DON'T use the renaming script, PLEASE replace with your own API name manually
             app.UseXRay("base-api");

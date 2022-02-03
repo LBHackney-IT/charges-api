@@ -16,7 +16,8 @@ namespace ChargesApi.V1.Factories
                 TargetId = domain.TargetId,
                 DetailedCharges = domain.DetailedCharges,
                 TargetType = domain.TargetType,
-                ChargeGroup = domain.ChargeGroup
+                ChargeGroup = domain.ChargeGroup,
+                ChargeYear = domain.ChargeYear
             };
         }
 
