@@ -142,6 +142,7 @@ namespace ChargesApi
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
+            services.AddHttpContextAccessor();
         }
 
         private static void ConfigureDbContext(IServiceCollection services)
