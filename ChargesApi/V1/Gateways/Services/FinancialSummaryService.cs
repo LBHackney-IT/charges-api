@@ -26,7 +26,7 @@ namespace ChargesApi.V1.Gateways.Services
             if (string.IsNullOrEmpty(apiToken))
                 throw new InvalidCredentialException("Api token shouldn't be null or empty.");
 
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiToken.ToString().Replace("Bearer ","").Trim());
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(apiToken.ToString().Replace("Bearer ", "").Trim());
 
             var response = await _client.PostAsJsonAsyncType(new Uri("api/v1/asset-summary", UriKind.Relative), addAssetSummaryRequest)
                 .ConfigureAwait(true);
