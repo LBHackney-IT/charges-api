@@ -47,14 +47,14 @@ namespace ChargesApi.Tests.V1.Controllers
 
             using var sourceFile = File.OpenRead(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location.Substring(0, Assembly.GetEntryAssembly().Location.IndexOf("bin\\"))), "EstimatesTest.xlsx"));
             using var stream = sourceFile;
-            
-                var file = new FormFile(stream, 0, stream.Length, null, "EstimatesTest.xlsx")
-                {
-                    Headers = new HeaderDictionary(),
-                    ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                };
+
+            var file = new FormFile(stream, 0, stream.Length, null, "EstimatesTest.xlsx")
+            {
+                Headers = new HeaderDictionary(),
+                ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            };
             var request = new AddEstimatesRequest { ChargeGroup = ChargeGroup.Leaseholders, EstimatesFile = file };
-                //var file = _fixture.Build<AddEstimatesRequest>().Create();
+            //var file = _fixture.Build<AddEstimatesRequest>().Create();
             var result = await _estimatesUploadController.Post(Token, request)
                 .ConfigureAwait(false);
 
@@ -69,9 +69,9 @@ namespace ChargesApi.Tests.V1.Controllers
         [Fact]
         public async Task InvalidFileAndInvalidModelReturnsBadRequest()
         {
-           
-           var result = await _estimatesUploadController.Post(Token, null)
-                .ConfigureAwait(false);
+
+            var result = await _estimatesUploadController.Post(Token, null)
+                 .ConfigureAwait(false);
 
             result.Should().NotBeNull();
 

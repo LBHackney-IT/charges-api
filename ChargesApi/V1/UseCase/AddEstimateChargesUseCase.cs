@@ -91,7 +91,7 @@ namespace ChargesApi.V1.UseCase
                             _logger.LogDebug($"Exception occurred while reading the Estimates Excel Sheet: {e.Message}");
                             throw new Exception(e.Message);
                         }
-                       
+
                     }
                     recordsCount++;
                 }
@@ -165,7 +165,7 @@ namespace ChargesApi.V1.UseCase
             _logger.LogDebug($"Charges loading Process completed with total record count loaded : {charges.Count}");
 
             // All Steps Evaluation
-            if (loadResult && loadSummaryResult && processedCount == recordsCount -1)
+            if (loadResult && loadSummaryResult && processedCount == recordsCount - 1)
                 return processedCount;
             else
                 return 0;

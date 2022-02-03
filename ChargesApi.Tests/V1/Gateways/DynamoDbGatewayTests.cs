@@ -376,7 +376,7 @@ namespace ChargesApi.Tests.V1.Gateways
             _amazonDynamoDb.Setup(p => p.TransactWriteItemsAsync(It.IsAny<TransactWriteItemsRequest>(), It.IsAny<CancellationToken>()))
                .ReturnsAsync(new TransactWriteItemsResponse());
 
-            var result =  _gateway.AddTransactionBatchAsync(null)
+            var result = _gateway.AddTransactionBatchAsync(null)
                 .ConfigureAwait(false);
 
             Func<Task<bool>> func =
@@ -384,7 +384,7 @@ namespace ChargesApi.Tests.V1.Gateways
                 .ConfigureAwait(false);
 
             func.Should().ThrowAsync<Exception>();
-          
+
 
         }
     }

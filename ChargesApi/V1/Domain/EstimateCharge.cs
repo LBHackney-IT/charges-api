@@ -28,6 +28,6 @@ namespace ChargesApi.V1.Domain
         public decimal HeatingStandingCharge { get; set; }
         public decimal LiftMaintenance { get; set; }
         public decimal ManagementCharge { get; set; }
-        public decimal ReserveFund  { get; set; }
+        public decimal ReserveFund { get; set; }
     }
 }

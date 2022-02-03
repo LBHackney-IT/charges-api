@@ -8,11 +8,11 @@ namespace ChargesApi.V1.Domain
     public class AddAssetSummaryRequest
     {
         public Guid TargetId { get; set; }
-        
+
         public TargetType TargetType { get; set; }
-       
+
         public string AssetName { get; set; }
-      
+
         public decimal TotalServiceCharges { get; set; }
 
         public DateTime SubmitDate { get; set; }

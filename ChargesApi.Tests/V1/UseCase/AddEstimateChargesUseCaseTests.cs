@@ -50,7 +50,7 @@ namespace ChargesApi.Tests.V1.UseCase
             _mockFinancialService.Setup(_ => _.AddEstimateSummary(It.IsAny<AddAssetSummaryRequest>())).ReturnsAsync(true);
             var resultCount = 0;
 
-            using var sourceFile = File.OpenRead( Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location.Substring(0, Assembly.GetEntryAssembly().Location.IndexOf("bin\\"))), "EstimatesTest.xlsx"));
+            using var sourceFile = File.OpenRead(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location.Substring(0, Assembly.GetEntryAssembly().Location.IndexOf("bin\\"))), "EstimatesTest.xlsx"));
             using (var stream = sourceFile)
             {
                 var file = new FormFile(stream, 0, stream.Length, null, "EstimatesTest.xlsx")
