@@ -22,6 +22,7 @@ namespace ChargesApi.V1.UseCase
         private readonly IHousingSearchService _housingSearchService;
         private readonly IFinancialSummaryService _financialSummaryService;
         private readonly ILogger<AddEstimateChargesUseCase> _logger;
+        private static List<Asset> _assetData;
 
         public AddEstimateChargesUseCase(IChargesApiGateway chargesApiGateway,
             IHousingSearchService housingSearchService,
@@ -35,6 +36,18 @@ namespace ChargesApi.V1.UseCase
         }
         public async Task<int> AddEstimates(IFormFile file, ChargeGroup chargeGroup, string token)
         {
+            // Get Full Assets List
+
+            if (_assetData == null)
+            {
+                _logger.LogDebug($"Starting fetching assets list from Housing Search API Asset Search Endpoint");
+                var assetsList = await GetAssetsList(AssetType.Dwelling.ToString()).ConfigureAwait(false);
+
+                _assetData = assetsList.Item1;
+                _logger.LogDebug($"Assets List fetching completed and total assets fetched : {assetsList.Item1.Count}");
+            }
+
+
             List<EstimateCharge> estimates = new List<EstimateCharge>();
             var recordsCount = 0;
             short chargeYear = 0; ;
@@ -105,10 +118,6 @@ namespace ChargesApi.V1.UseCase
                 _logger.LogDebug($"Reading Estimates Excel Sheet successfull with total record count : {recordsCount - 1}");
             }
 
-            // Get Full Assets List
-            _logger.LogDebug($"Starting fetching assets list from Housing Search API Asset Search Endpoint");
-            var assetsList = await GetAssetsList(AssetType.Dwelling.ToString()).ConfigureAwait(false);
-            _logger.LogDebug($"Assets List fetching completed and total assets fetched : {assetsList.Item1.Count}");
 
 
             _logger.LogDebug($"Starting UH numerical Asset Id transformation with Guid Asset Id");
@@ -116,7 +125,7 @@ namespace ChargesApi.V1.UseCase
             // Charges Transformation
             estimates.ForEach(item =>
             {
-                var data = assetsList.Item1.FirstOrDefault(x => x.AssetId == item.PropertyReferenceNumber);
+                var data = _assetData.FirstOrDefault(x => x.AssetId == item.PropertyReferenceNumber);
                 // TBC
                 if (data == null)
                 {
