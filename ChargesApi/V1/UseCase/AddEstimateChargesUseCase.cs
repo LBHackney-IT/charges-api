@@ -118,7 +118,7 @@ namespace ChargesApi.V1.UseCase
                 _logger.LogDebug($"Reading Estimates Excel Sheet successfull with total record count : {recordsCount - 1}");
             }
 
-           
+
 
             _logger.LogDebug($"Starting UH numerical Asset Id transformation with Guid Asset Id");
 
