@@ -10,7 +10,7 @@ namespace ChargesApi.V1
         public const string AttributeNotExistId = "attribute_not_exists(id)";
         public const string HackneyRootAssetId = "656feda1-896f-b136-da84-163ee4f1be6c";
         public const string RootAsset = "RootAsset";
-        public const int PageSize = 5000;
+        public const int PageSize = 8000;
         public const int Page = 1;
         public const int PerBatchProcessingCount = 25;
 
