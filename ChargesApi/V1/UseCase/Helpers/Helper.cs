@@ -53,5 +53,4 @@ namespace ChargesApi.V1.UseCase.Helpers
             }
         }
     }
-    
 }

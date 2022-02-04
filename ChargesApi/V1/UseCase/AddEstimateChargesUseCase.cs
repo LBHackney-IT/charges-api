@@ -49,7 +49,7 @@ namespace ChargesApi.V1.UseCase
 
                 //using (var data = new MemoryStream(fileBytes.ToArray()))
 
-                    stream.Position = 1;
+                stream.Position = 1;
 
                 // Excel Read Process
                 using var reader = ExcelReaderFactory.CreateReader(stream);
@@ -177,7 +177,7 @@ namespace ChargesApi.V1.UseCase
             else
                 return 0;
         }
-        
+
         private static decimal GetChargeAmount(object excelColumnValue)
         {
             decimal result;
