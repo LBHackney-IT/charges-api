@@ -192,6 +192,7 @@ namespace ChargesApi
                 c.BaseAddress = new Uri(housingSearchApiUrl);
                 //c.DefaultRequestHeaders.TryAddWithoutValidation("x-api-key", housingSearchApiKey);
                 c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(housingSearchApiToken);
+                c.Timeout = TimeSpan.FromSeconds(20);
             })
            .AddHttpMessageHandler<LoggingDelegatingHandler>();
 
@@ -204,6 +205,7 @@ namespace ChargesApi
             services.AddHttpClient<IFinancialSummaryService, FinancialSummaryService>(c =>
             {
                 c.BaseAddress = new Uri(financialSummaryApiUrl);
+                c.Timeout = TimeSpan.FromSeconds(20);
                 //c.DefaultRequestHeaders.TryAddWithoutValidation("x-api-key", housingSearchApiKey);
                 //c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(financialSummaryApiToken);
             })
