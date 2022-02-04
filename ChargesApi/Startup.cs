@@ -198,14 +198,14 @@ namespace ChargesApi
 
             var financialSummaryApiUrl = Environment.GetEnvironmentVariable("FINANCIAL_SUMMARY_API_URL");
             //var housingSearchApiKey = Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_KEY");
-            var financialSummaryApiToken = Environment.GetEnvironmentVariable("FINANCIAL_SUMMARY_API_TOKEN");
+            //var financialSummaryApiToken = Environment.GetEnvironmentVariable("FINANCIAL_SUMMARY_API_TOKEN");
 
 
             services.AddHttpClient<IFinancialSummaryService, FinancialSummaryService>(c =>
             {
                 c.BaseAddress = new Uri(financialSummaryApiUrl);
                 //c.DefaultRequestHeaders.TryAddWithoutValidation("x-api-key", housingSearchApiKey);
-                c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(financialSummaryApiToken);
+                //c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(financialSummaryApiToken);
             })
            .AddHttpMessageHandler<LoggingDelegatingHandler>();
 
