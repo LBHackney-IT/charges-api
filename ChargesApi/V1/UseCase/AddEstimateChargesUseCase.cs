@@ -2,6 +2,7 @@ using ChargesApi.V1.Domain;
 using ChargesApi.V1.Gateways;
 using ChargesApi.V1.Gateways.Services.Interfaces;
 using ChargesApi.V1.Infrastructure.JWT;
+using ChargesApi.V1.UseCase.Helpers;
 using ChargesApi.V1.UseCase.Interfaces;
 using ExcelDataReader;
 using Hackney.Shared.Asset.Domain;
@@ -38,11 +39,17 @@ namespace ChargesApi.V1.UseCase
             var recordsCount = 0;
             short chargeYear = 0; ;
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-            using (var stream = new MemoryStream())
+            var bytes = await file.GetBytes().ConfigureAwait(false);
+            using (var stream = new MemoryStream(bytes))
             {
                 _logger.LogDebug($"Starting reading the Excel File");
-                await file.CopyToAsync(stream).ConfigureAwait(false);
-                stream.Position = 1;
+
+                //var bytes = await file.GetBytes().ConfigureAwait(false);
+                //await bytes.CopyToAsync(stream).ConfigureAwait(false);
+
+                //using (var data = new MemoryStream(fileBytes.ToArray()))
+
+                    stream.Position = 1;
 
                 // Excel Read Process
                 using var reader = ExcelReaderFactory.CreateReader(stream);
@@ -122,7 +129,7 @@ namespace ChargesApi.V1.UseCase
             });
 
             var charges = new List<Charge>();
-            var createdBy = Helper.GetUserName(token);
+            var createdBy = Infrastructure.JWT.Helper.GetUserName(token);
 
             _logger.LogDebug($"Starting Charges formation Process");
             foreach (var item in estimates)
@@ -170,7 +177,7 @@ namespace ChargesApi.V1.UseCase
             else
                 return 0;
         }
-
+        
         private static decimal GetChargeAmount(object excelColumnValue)
         {
             decimal result;

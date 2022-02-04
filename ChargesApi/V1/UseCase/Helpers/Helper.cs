@@ -1,7 +1,9 @@
 using ChargesApi.V1.Domain;
 using Hackney.Shared.Tenure.Domain;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -42,5 +44,14 @@ namespace ChargesApi.V1.UseCase.Helpers
             return filteredData.Count();
 
         }
+        public static async Task<byte[]> GetBytes(this IFormFile formFile)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await formFile.CopyToAsync(memoryStream).ConfigureAwait(false);
+                return memoryStream.ToArray();
+            }
+        }
     }
+    
 }
