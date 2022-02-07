@@ -18,7 +18,7 @@ namespace ChargesApi.V1.UseCase.Helpers
             {
                 dt = dt.AddDays(1);
             }
-            return dt;
+            return DateTime.SpecifyKind(dt, DateTimeKind.Utc);
         }
 
         public static int GetLeaseholdersCount(List<EstimateCharge> estimateCharges)
