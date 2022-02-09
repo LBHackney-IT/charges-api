@@ -1,6 +1,5 @@
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +20,9 @@ namespace ChargesApi.V1.Infrastructure.Converters
             var options = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
+                WriteIndented = true,
+                Converters = { new JsonStringEnumConverter() }
             };
-
-            options.Converters.Add(new JsonStringEnumConverter());
-
             return options;
         }
 
@@ -44,7 +41,7 @@ namespace ChargesApi.V1.Infrastructure.Converters
                     $"This attribute has been used on a property that is not a list of custom objects.");
             }
 
-            return new DynamoDBList(list.Select(x => Document.FromJson(JsonConvert.SerializeObject(x))));
+            return new DynamoDBList(list.Select(x => Document.FromJson(JsonSerializer.Serialize(x, CreateJsonOptions()))));
         }
 
         public object FromEntry(DynamoDBEntry entry)
@@ -62,7 +59,7 @@ namespace ChargesApi.V1.Infrastructure.Converters
                     "This attribute has been used on a property that is not a list of custom objects.");
             }
 
-            return list.AsListOfDocument().Select(x => JsonConvert.DeserializeObject<T>(x.ToJson())).ToList();
+            return list.AsListOfDocument().Select(x => JsonSerializer.Deserialize<T>(x.ToJson(), CreateJsonOptions())).ToList();
         }
     }
 }

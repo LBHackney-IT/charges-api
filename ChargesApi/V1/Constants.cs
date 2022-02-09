@@ -13,6 +13,7 @@ namespace ChargesApi.V1
         public const int PageSize = 8000;
         public const int Page = 1;
         public const int PerBatchProcessingCount = 25;
+        public const string UtcDateFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";
 
         public const string EstimateChargeCode = "DSC";
         public const string ReserveFundChargeCode = "DSR";

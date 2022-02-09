@@ -130,11 +130,11 @@ namespace ChargesApi.V1.Factories
                                                 {"chargeCode", new AttributeValue {S = p.ChargeCode}},
                                                 {"frequency", new AttributeValue {S = p.Frequency}},
                                                 {"amount", new AttributeValue {N = p.Amount.ToString("F")}},
-                                                {"endDate", new AttributeValue {S = p.EndDate.ToString("F")}},
+                                                {"endDate", new AttributeValue {S = p.EndDate.ToString(Constants.UtcDateFormat)}},
                                                 {"chargeType", new AttributeValue {S = p.ChargeType.ToString()}},
                                                 {"subType", new AttributeValue {S = p.SubType.ToString()}},
                                                 {"type", new AttributeValue {S = p.Type.ToString()}},
-                                                {"startDate", new AttributeValue {S = p.StartDate.ToString("F")}}
+                                                {"startDate", new AttributeValue {S = p.StartDate.ToString(Constants.UtcDateFormat)}}
                                             }
                                         }
                                     ).ToList()
