@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31112.23
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChargesApi", "ChargesApi\ChargesApi.csproj", "{6F482163-3F51-487F-8F7D-37A1D4DAEA8B}"
 EndProject
@@ -29,6 +29,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "production", "production", 
 		..\account-api\terraform\production\variables.tf = ..\account-api\terraform\production\variables.tf
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{CAF352F6-B7E5-4FE4-90BB-4DDD2DFB9A04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,7 @@ Global
 		{8D8E7751-252E-4D37-AE8D-20DA2EFC9546} = {20433368-3BCA-4986-8E19-E98EEFE0B439}
 		{01FBC8E0-9AF8-4BF9-9BA6-18446AFB3DD3} = {20433368-3BCA-4986-8E19-E98EEFE0B439}
 		{4F1C4A5C-59AF-4DDE-AC02-A4B671F8C8EF} = {20433368-3BCA-4986-8E19-E98EEFE0B439}
+		{CAF352F6-B7E5-4FE4-90BB-4DDD2DFB9A04} = {20433368-3BCA-4986-8E19-E98EEFE0B439}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7695C85C-2C41-4EF3-9A7A-92AF54A85B54}

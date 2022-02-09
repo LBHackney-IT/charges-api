@@ -1,15 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using ChargesApi.V1.Controllers;
+using Amazon.SimpleNotificationService;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
+using ChargesApi.V1;
+using ChargesApi.V1.Controllers;
+using ChargesApi.V1.Factories;
 using ChargesApi.V1.Gateways;
+using ChargesApi.V1.Gateways.Common;
+using ChargesApi.V1.Gateways.Extensions;
+using ChargesApi.V1.Gateways.Services;
+using ChargesApi.V1.Gateways.Services.Interfaces;
 using ChargesApi.V1.Infrastructure;
 using ChargesApi.V1.UseCase;
 using ChargesApi.V1.UseCase.Interfaces;
 using ChargesApi.Versioning;
+using Hackney.Core.Authorization;
+using Hackney.Core.JWT;
+using Hackney.Core.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -21,32 +26,31 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using ChargesApi.V1;
-using ChargesApi.V1.Factories;
-using Amazon.SimpleNotificationService;
-using Hackney.Core.Authorization;
-using Hackney.Core.JWT;
 using Newtonsoft.Json.Converters;
-using ChargesApi.V1.Gateways.Services.Interfaces;
-using ChargesApi.V1.Gateways.Services;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net.Http.Headers;
-using ChargesApi.V1.Gateways.Common;
-using Hackney.Core.Logging;
+using System.Reflection;
 
 namespace ChargesApi
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostEnvironment environment)
         {
             Configuration = configuration;
+            CurrentEnvironment = environment;
 
             AWSSDKHandler.RegisterXRayForAllServices();
         }
 
         public IConfiguration Configuration { get; }
+        private IHostEnvironment CurrentEnvironment { get; }
         private static List<ApiVersionDescription> _apiVersions { get; set; }
+
         //TODO update the below to the name of your API
         private const string ApiName = "charges";
 
@@ -132,6 +136,7 @@ namespace ChargesApi
             services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
             services.AddAWSService<IAmazonSimpleNotificationService>();
             services.AddLogCallAspect();
+            services.AddAmazonS3(CurrentEnvironment, Configuration);
             RegisterGateways(services);
             RegisterUseCases(services);
             services.AddCors(opt => opt.AddPolicy("corsPolicy", builder =>
@@ -186,7 +191,6 @@ namespace ChargesApi
             //var housingSearchApiKey = Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_KEY");
             var housingSearchApiToken = Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_TOKEN");
 
-
             services.AddHttpClient<IHousingSearchService, HousingSearchService>(c =>
             {
                 c.BaseAddress = new Uri(housingSearchApiUrl);
@@ -196,11 +200,9 @@ namespace ChargesApi
             })
            .AddHttpMessageHandler<LoggingDelegatingHandler>();
 
-
             var financialSummaryApiUrl = Environment.GetEnvironmentVariable("FINANCIAL_SUMMARY_API_URL");
             //var housingSearchApiKey = Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_KEY");
             //var financialSummaryApiToken = Environment.GetEnvironmentVariable("FINANCIAL_SUMMARY_API_TOKEN");
-
 
             services.AddHttpClient<IFinancialSummaryService, FinancialSummaryService>(c =>
             {
@@ -210,7 +212,6 @@ namespace ChargesApi
                 //c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(financialSummaryApiToken);
             })
            .AddHttpMessageHandler<LoggingDelegatingHandler>();
-
         }
 
         private static void RegisterUseCases(IServiceCollection services)
@@ -250,7 +251,6 @@ namespace ChargesApi
             // TODO
             // If you DON'T use the renaming script, PLEASE replace with your own API name manually
             app.UseXRay("base-api");
-
 
             //Get All ApiVersions,
             var api = app.ApplicationServices.GetService<IApiVersionDescriptionProvider>();
