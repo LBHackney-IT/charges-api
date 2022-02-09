@@ -68,7 +68,7 @@ namespace ChargesApi.Tests.V1.Helper
                                                 { "type", new AttributeValue { S = _fixture.Create<string>() } },
                                                 { "subType", new AttributeValue { S = _fixture.Create<string>() } },
                                                 { "chargeCode", new AttributeValue { S = _fixture.Create<string>() } },
-                                                { "chargeType", new AttributeValue { S = _fixture.Create<ChargeType>().ToString() } },
+                                                { "chargeType", new AttributeValue { N =((int)_fixture.Create<ChargeType>()).ToString() } },
                                                 { "startDate", new AttributeValue { S = _fixture.Create<DateTime>().ToString("F") } },
                                                 { "endDate", new AttributeValue { S = _fixture.Create<DateTime>().ToString("F") } }
                                             }

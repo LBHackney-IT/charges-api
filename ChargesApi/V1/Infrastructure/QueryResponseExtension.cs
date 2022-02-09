@@ -33,11 +33,12 @@ namespace ChargesApi.V1.Infrastructure
                 var innerItem = item["detailed_charges"].L;
                 foreach (var detail in innerItem)
                 {
+                    var chargeType = (ChargeType) int.Parse(detail.M["chargeType"].N);
                     detailCharges.Add(new DetailedCharges
                     {
                         Amount = Convert.ToDecimal(detail.M["amount"].N),
                         ChargeCode = detail.M["chargeCode"].S,
-                        ChargeType = Enum.Parse<ChargeType>(detail.M["chargeType"].S),
+                        ChargeType = chargeType,
                         Type = detail.M["type"].S,
                         SubType = detail.M["subType"].S,
                         Frequency = detail.M["frequency"].S,
