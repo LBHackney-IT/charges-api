@@ -191,11 +191,13 @@ namespace ChargesApi
             //var housingSearchApiKey = Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_KEY");
             var housingSearchApiToken = Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_TOKEN");
 
+            var fakeUri = $"http://4590345803984584058034850348.test";
+            var fakeToken = $"test-token";
             services.AddHttpClient<IHousingSearchService, HousingSearchService>(c =>
             {
-                c.BaseAddress = new Uri(housingSearchApiUrl);
+                c.BaseAddress = new Uri(housingSearchApiUrl ?? fakeUri);
                 //c.DefaultRequestHeaders.TryAddWithoutValidation("x-api-key", housingSearchApiKey);
-                c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(housingSearchApiToken);
+                c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(housingSearchApiToken ?? fakeToken);
                 c.Timeout = TimeSpan.FromSeconds(20);
             })
            .AddHttpMessageHandler<LoggingDelegatingHandler>();
@@ -206,7 +208,7 @@ namespace ChargesApi
 
             services.AddHttpClient<IFinancialSummaryService, FinancialSummaryService>(c =>
             {
-                c.BaseAddress = new Uri(financialSummaryApiUrl);
+                c.BaseAddress = new Uri(financialSummaryApiUrl ?? fakeUri);
                 c.Timeout = TimeSpan.FromSeconds(20);
                 //c.DefaultRequestHeaders.TryAddWithoutValidation("x-api-key", housingSearchApiKey);
                 //c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(financialSummaryApiToken);
