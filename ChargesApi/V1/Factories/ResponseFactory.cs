@@ -17,6 +17,7 @@ namespace ChargesApi.V1.Factories
                 DetailedCharges = domain.DetailedCharges,
                 TargetType = domain.TargetType,
                 ChargeGroup = domain.ChargeGroup,
+                ChargeSubGroup = domain.ChargeSubGroup,
                 ChargeYear = domain.ChargeYear
             };
         }
@@ -28,6 +29,7 @@ namespace ChargesApi.V1.Factories
                 TargetId = response.TargetId,
                 TargetType = response.TargetType,
                 ChargeGroup = response.ChargeGroup,
+                ChargeSubGroup = response.ChargeSubGroup,
                 ChargeYear = response.ChargeYear,
                 Id = response.Id,
                 DetailedCharges = response.DetailedCharges
@@ -40,6 +42,7 @@ namespace ChargesApi.V1.Factories
                 TargetId = updateChargeRequest.TargetId,
                 TargetType = updateChargeRequest.TargetType,
                 ChargeGroup = updateChargeRequest.ChargeGroup,
+                ChargeSubGroup = updateChargeRequest.ChargeSubGroup,
                 ChargeYear = updateChargeRequest.ChargeYear,
                 Id = updateChargeRequest.Id,
                 DetailedCharges = updateChargeRequest.DetailedCharges
