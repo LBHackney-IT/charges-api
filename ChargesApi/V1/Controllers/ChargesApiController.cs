@@ -239,6 +239,5 @@ namespace ChargesApi.V1.Controllers
 
             return NoContent();
         }
-
     }
 }

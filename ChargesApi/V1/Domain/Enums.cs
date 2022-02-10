@@ -52,4 +52,10 @@ namespace ChargesApi.V1.Domain
         Monthly,
         Weekly
     }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum ChargeSubGroup
+    {
+        Estimate,
+        Actual
+    }
 }

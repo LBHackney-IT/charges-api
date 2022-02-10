@@ -25,6 +25,7 @@ namespace ChargesApi.V1.Factories
                 TargetType = chargeEntity.TargetType,
                 ChargeYear = chargeEntity.ChargeYear,
                 ChargeGroup = chargeEntity.ChargeGroup,
+                ChargeSubGroup = chargeEntity.ChargeSubGroup,
                 CreatedAt = chargeEntity.CreatedAt,
                 CreatedBy = chargeEntity.CreatedBy,
                 LastUpdatedAt = chargeEntity.LastUpdatedAt,
@@ -46,6 +47,7 @@ namespace ChargesApi.V1.Factories
                 TargetId = charge.TargetId,
                 TargetType = charge.TargetType,
                 ChargeGroup = charge.ChargeGroup,
+                ChargeSubGroup = charge.ChargeSubGroup,
                 ChargeYear = charge.ChargeYear,
                 CreatedAt = charge.CreatedAt,
                 CreatedBy = charge.CreatedBy,
@@ -67,6 +69,7 @@ namespace ChargesApi.V1.Factories
                 TargetId = chargeRequest.TargetId,
                 TargetType = chargeRequest.TargetType,
                 ChargeGroup = chargeRequest.ChargeGroup,
+                ChargeSubGroup = chargeRequest.ChargeSubGroup,
                 ChargeYear = chargeRequest.ChargeYear,
                 DetailedCharges = chargeRequest.DetailedCharges
             };
@@ -78,6 +81,7 @@ namespace ChargesApi.V1.Factories
                 TargetId = chargeResponse.TargetId,
                 TargetType = chargeResponse.TargetType,
                 ChargeGroup = chargeResponse.ChargeGroup,
+                ChargeSubGroup = chargeResponse.ChargeSubGroup,
                 ChargeYear = chargeResponse.ChargeYear,
                 Id = chargeResponse.Id,
                 DetailedCharges = chargeResponse.DetailedCharges
@@ -96,6 +100,7 @@ namespace ChargesApi.V1.Factories
                 TargetId = chargeRequest.TargetId,
                 TargetType = chargeRequest.TargetType,
                 ChargeGroup = chargeRequest.ChargeGroup,
+                ChargeSubGroup = chargeRequest.ChargeSubGroup,
                 ChargeYear = chargeRequest.ChargeYear,
                 DetailedCharges = chargeRequest.DetailedCharges
             };
@@ -117,6 +122,7 @@ namespace ChargesApi.V1.Factories
                 {"id", new AttributeValue {S = charge.Id.ToString()}},
                 {"target_type", new AttributeValue {S = charge.TargetType.ToString()}},
                 {"charge_group", new AttributeValue {S = charge.ChargeGroup.ToString()}},
+                {"charge_sub_group", new AttributeValue {S = charge.ChargeSubGroup.ToString()}},
                 {"charge_year", new AttributeValue {N = charge.ChargeYear.ToString()}},
                 {
                     "detailed_charges", new AttributeValue

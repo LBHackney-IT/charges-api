@@ -20,6 +20,9 @@ namespace ChargesApi.V1.Boundary.Request
         [AllowedValues(typeof(ChargeGroup))]
         public ChargeGroup ChargeGroup { get; set; }
 
+        [AllowedValues(typeof(ChargeSubGroup))]
+        public ChargeSubGroup ChargeSubGroup { get; set; }
+
         [Required]
         public short ChargeYear { get; set; }
 
