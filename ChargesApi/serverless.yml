@@ -28,6 +28,7 @@ functions:
       FINANCIAL_SUMMARY_API_URL: ${ssm:/housing-finance/${self:provider.stage}/financial-summary-api-url}
       HOUSING_SEARCH_API_URL: ${ssm:/housing-finance/${self:provider.stage}/housing-search-api-url}
       HOUSING_SEARCH_API_TOKEN: ${ssm:/housing-finance/${self:provider.stage}/housing-search-api-token}
+      S3Configuration__BucketName: ${ssm:/charges-api/${self:provider.stage}/s3-bucket-name}
 # TODO: Create ssm variables for this API's postgres mirror then rename base-api below to match api name
 # TODO: Remove this line if DynamoDb is being used
       # CONNECTION_STRING: Host=${ssm:/base-api/${self:provider.stage}/postgres-hostname};Port=${ssm:/base-api/${self:provider.stage}/postgres-port};Database=base-api-mirror;Username=${ssm:/base-api/${self:provider.stage}/postgres-username};Password=${ssm:/base-api/${self:provider.stage}/postgres-password}
