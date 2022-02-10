@@ -50,3 +50,19 @@ resource "aws_ssm_parameter" "new_charges_created_sns_arn" {
     value = aws_sns_topic.charges_topic.arn
 }
 
+resource "aws_s3_bucket" "chargesapi_s3_bucket" {
+  bucket = "lbh-charges-api-bucket-production"
+  acl    = "public-read"
+
+  tags = {
+    Name        = "charges-api-production"
+    Environment = "production"
+    terraform-managed = true
+    project_name      = "charges-api"
+  }
+
+  versioning {
+    enabled = false
+  }
+}
+
