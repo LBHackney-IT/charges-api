@@ -90,23 +90,6 @@ resources:
                       - ""
                       - - "arn:aws:s3:::"
                         - "Ref": "ServerlessDeploymentBucket"
-          - PolicyName: s3FileUploadOperations
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: "Allow"
-                  Action:
-                    - "s3:PutObject"
-                    - "s3:GetObject"
-                  Resource:
-                    Fn::Join:
-                      - ""
-                      - - "arn:aws:s3:::"
-                        - Fn::Join:
-                            - '-'
-                            - - 'lbh-charges-api-bucket'
-                              - ${self:provider.stage}
-                      - '/*'
           - PolicyName: lambdaInvocation
             PolicyDocument:
               Version: '2012-10-17'
@@ -115,6 +98,20 @@ resources:
                   Action:
                     - "lambda:InvokeFunction"
                   Resource: "*"
+          - PolicyName: charge-bucket-access
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - s3:PutObject
+                    - s3:GetObject
+                    - s3:ListBucket
+                    - s3:DeleteObject
+                  Resource:
+                    - "arn:aws:s3:::${self:custom.s3.${opt:stage}}"
+                    - "arn:aws:s3:::${self:custom.s3.${opt:stage}}/*"
+                    - "arn:aws:s3:::${self:custom.s3.${opt:stage}}/"
           - PolicyName: chargesDynamoDBAccess
             PolicyDocument:
               Version: '2012-10-17'
@@ -199,6 +196,10 @@ resources:
                           - Ref: 'AWS::AccountId'
                           - 'table/ChargesMaintenance'
 custom:
+  s3:
+    development: lbh-charges-api-bucket-development
+    staging: lbh-charges-api-bucket-staging
+    production: lbh-charges-api-bucket-production
   vpc:
     development:
       subnetIds:
