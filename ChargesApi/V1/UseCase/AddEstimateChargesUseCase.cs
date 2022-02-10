@@ -1,7 +1,7 @@
 using ChargesApi.V1.Domain;
+using ChargesApi.V1.Factories;
 using ChargesApi.V1.Gateways;
 using ChargesApi.V1.Gateways.Services.Interfaces;
-using ChargesApi.V1.Infrastructure.JWT;
 using ChargesApi.V1.UseCase.Helpers;
 using ChargesApi.V1.UseCase.Interfaces;
 using ExcelDataReader;
@@ -22,18 +22,28 @@ namespace ChargesApi.V1.UseCase
         private readonly IHousingSearchService _housingSearchService;
         private readonly IFinancialSummaryService _financialSummaryService;
         private readonly ILogger<AddEstimateChargesUseCase> _logger;
+        private readonly IAwsS3FileService _s3FileService;
+        private readonly ISnsGateway _snsGateway;
+        private readonly ISnsFactory _snsFactory;
         private static List<Asset> _assetData;
 
         public AddEstimateChargesUseCase(IChargesApiGateway chargesApiGateway,
             IHousingSearchService housingSearchService,
             IFinancialSummaryService financialSummaryService,
-            ILogger<AddEstimateChargesUseCase> logger)
+            ILogger<AddEstimateChargesUseCase> logger,
+            IAwsS3FileService s3FileService,
+            ISnsGateway snsGateway,
+            ISnsFactory snsFactory)
         {
             _chargesApiGateway = chargesApiGateway;
             _housingSearchService = housingSearchService;
             _financialSummaryService = financialSummaryService;
             _logger = logger;
+            _s3FileService = s3FileService;
+            _snsGateway = snsGateway;
+            _snsFactory = snsFactory;
         }
+
         public async Task<int> AddEstimates(IFormFile file, ChargeGroup chargeGroup, string token)
         {
             // Get Full Assets List
@@ -46,7 +56,6 @@ namespace ChargesApi.V1.UseCase
                 _assetData = assetsList.Item1;
                 _logger.LogDebug($"Assets List fetching completed and total assets fetched : {assetsList.Item1.Count}");
             }
-
 
             List<EstimateCharge> estimates = new List<EstimateCharge>();
             var recordsCount = 0;
@@ -111,14 +120,15 @@ namespace ChargesApi.V1.UseCase
                             _logger.LogDebug($"Exception occurred while reading the Estimates Excel Sheet: {e.Message}");
                             throw new Exception(e.Message);
                         }
-
                     }
                     recordsCount++;
                 }
-                _logger.LogDebug($"Reading Estimates Excel Sheet successfull with total record count : {recordsCount - 1}");
+                _logger.LogDebug($"Reading Estimates Excel Sheet successful with total record count : {recordsCount - 1}");
             }
 
-
+            var uploadResponse = await _s3FileService.UploadFile(file, file.FileName).ConfigureAwait(false);
+            var snsMessage = _snsFactory.CreateFileUploadMessage(uploadResponse);
+            await _snsGateway.Publish(snsMessage).ConfigureAwait(false);
 
             _logger.LogDebug($"Starting UH numerical Asset Id transformation with Guid Asset Id");
 
@@ -196,9 +206,9 @@ namespace ChargesApi.V1.UseCase
                 result = Convert.ToDecimal(excelColumnValue);
             return result;
         }
+
         private async Task<(List<Asset>, long)> GetAssetsList(string assetType)
         {
-
             var pageNumber = Constants.Page;
             var pageSize = Constants.PageSize;
 

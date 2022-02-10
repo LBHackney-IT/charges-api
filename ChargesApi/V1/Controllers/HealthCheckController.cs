@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using ChargesApi.V1.UseCase;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace ChargesApi.V1.Controllers
 {
@@ -25,6 +25,5 @@ namespace ChargesApi.V1.Controllers
         {
             ThrowOpsErrorUseCase.Execute();
         }
-
     }
 }

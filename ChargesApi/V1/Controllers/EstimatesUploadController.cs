@@ -6,9 +6,6 @@ using Hackney.Core.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -26,6 +23,7 @@ namespace ChargesApi.V1.Controllers
         {
             _addEstimatesUseCase = addEstimateChargesUseCase;
         }
+
         /// <summary>
         /// Create new List of Estimates records by batch processing
         /// </summary>
@@ -47,12 +45,8 @@ namespace ChargesApi.V1.Controllers
             }
             if (ModelState.IsValid)
             {
-                int processingCount = 0;
-                if (addEstimatesRequest != null)
-                {
-                    processingCount = await _addEstimatesUseCase.AddEstimates(addEstimatesRequest.EstimatesFile,
-                        addEstimatesRequest.ChargeGroup, token).ConfigureAwait(false);
-                }
+                var processingCount = await _addEstimatesUseCase.AddEstimates(addEstimatesRequest.EstimatesFile,
+                    addEstimatesRequest.ChargeGroup, token).ConfigureAwait(false);
                 return Ok($"{processingCount} estimates records processed successfully");
             }
             else
