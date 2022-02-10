@@ -6,8 +6,6 @@ using ChargesApi.V1.Gateways.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System;
-using System.IO;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace ChargesApi.V1.Gateways.Services
@@ -50,29 +48,6 @@ namespace ChargesApi.V1.Gateways.Services
                 {
                     throw new Exception($"Failed to upload file to S3", ex.InnerException);
                 }
-            }
-        }
-
-        public async Task<byte[]> GetFile(string key)
-        {
-            var response = await _s3Client.GetObjectAsync(_s3Settings.BucketName, key).ConfigureAwait(false);
-            if (response.HttpStatusCode != HttpStatusCode.OK) return null;
-
-            using var ms = new MemoryStream();
-            response.ResponseStream.CopyTo(ms);
-            return ms.ToArray();
-        }
-
-        public async Task<bool> DeleteFile(string key)
-        {
-            try
-            {
-                var response = await _s3Client.DeleteObjectAsync(_s3Settings.BucketName, key).ConfigureAwait(false);
-                return response.HttpStatusCode == System.Net.HttpStatusCode.NoContent;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to delete file in S3", ex.InnerException);
             }
         }
     }
