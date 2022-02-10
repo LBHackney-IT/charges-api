@@ -21,7 +21,7 @@ namespace ChargesApi.V1.Boundary.Request
         public ChargeGroup ChargeGroup { get; set; }
 
         /// <summary>
-        /// required only for ChargeGroup = tenant
+        /// Required only for ChargeGroup = Leaseholders
         /// </summary>
         [AllowedValues(typeof(ChargeSubGroup))]
         public ChargeSubGroup? ChargeSubGroup { get; set; }

@@ -9,8 +9,8 @@ namespace ChargesApi.V1.Infrastructure.Validators
         public UpdateChargeRequestValidator()
         {
             RuleFor(x => x.ChargeSubGroup).NotNull()
-                .When(_ => _.ChargeGroup == ChargeGroup.Tenants)
-                .WithMessage("{PropertyName} should be provided if Charge Group is Tenants");
+                .When(_ => _.ChargeGroup == ChargeGroup.Leaseholders)
+                .WithMessage("{PropertyName} should be provided if Charge Group is Leaseholders");
         }
     }
 }

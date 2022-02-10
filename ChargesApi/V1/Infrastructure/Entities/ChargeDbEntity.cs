@@ -22,7 +22,7 @@ namespace ChargesApi.V1.Infrastructure.Entities
         public ChargeGroup ChargeGroup { get; set; }
 
         /// <summary>
-        /// required only for ChargeGroup = tenant
+        /// Required only for ChargeGroup = Leaseholders
         /// </summary>
         [DynamoDBProperty(AttributeName = "charge_sub_group", Converter = typeof(DynamoDbEnumConverter<ChargeSubGroup>))]
         public ChargeSubGroup? ChargeSubGroup { get; set; }

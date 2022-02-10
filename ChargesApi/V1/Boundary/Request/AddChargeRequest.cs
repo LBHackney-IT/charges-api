@@ -21,7 +21,7 @@ namespace ChargesApi.V1.Boundary.Request
         public ChargeGroup ChargeGroup { get; set; }
 
         /// <summary>
-        /// ChargeSubGroup is required only for Tenant Charge Group.  
+        /// ChargeSubGroup is required only for Leaseholders Charge Group.  
         /// Allowed values - Estimate/Actual
         /// </summary>
         /// <example>Actual</example>

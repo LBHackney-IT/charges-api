@@ -11,7 +11,7 @@ namespace ChargesApi.V1.Domain
         public ChargeGroup ChargeGroup { get; set; }
 
         /// <summary>
-        /// required only for ChargeGroup = tenant
+        /// Required only for ChargeGroup = Leaseholders
         /// </summary>
         public ChargeSubGroup? ChargeSubGroup { get; set; }
         public short ChargeYear { get; set; }
