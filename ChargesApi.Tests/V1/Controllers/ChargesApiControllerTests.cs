@@ -438,6 +438,7 @@ namespace ChargesApi.Tests.V1.Controllers
                 });
             var patchDoc = new JsonPatchDocument<UpdateChargeRequest>();
             patchDoc.Add(_ => _.ChargeGroup, ChargeGroup.Tenants);
+            patchDoc.Add(_ => _.ChargeSubGroup, ChargeSubGroup.Actual);
             patchDoc.Add(_ => _.ChargeYear, 2022);
             patchDoc.Add(_ => _.TargetId, charge.TargetId);
             patchDoc.Add(_ => _.Id, charge.Id);

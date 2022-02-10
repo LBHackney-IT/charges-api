@@ -52,7 +52,7 @@ namespace ChargesApi.V1.Infrastructure
                     Id = Guid.Parse(item["id"].S),
                     TargetId = Guid.Parse(item["target_id"].S),
                     ChargeGroup = Enum.Parse<ChargeGroup>(item["charge_group"].S),
-                    ChargeSubGroup = Enum.Parse<ChargeSubGroup>(item["charge_sub_group"].S),
+                    ChargeSubGroup = item.ContainsKey("charge_sub_group") ? Enum.Parse<ChargeSubGroup>(item["charge_sub_group"].S) : ((ChargeSubGroup?) null),
                     TargetType = Enum.Parse<TargetType>(item["target_type"].S),
                     ChargeYear = Convert.ToInt16(item["charge_year"].N),
                     DetailedCharges = detailCharges

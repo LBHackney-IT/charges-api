@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using ChargesApi.V1.Infrastructure;
 using Microsoft.AspNetCore.JsonPatch;
 using ChargesApi.V1.Factories;
+using ChargesApi.V1.Infrastructure.Validators;
+using FluentValidation.Results;
 
 namespace ChargesApi.V1.Controllers
 {
@@ -208,6 +210,14 @@ namespace ChargesApi.V1.Controllers
             {
                 return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, ModelState.GetErrorMessages()));
             }
+
+            UpdateChargeRequestValidator validator = new UpdateChargeRequestValidator();
+            ValidationResult updateModelValidation = validator.Validate(updateCharge);
+            if (!updateModelValidation.IsValid)
+            {
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, updateModelValidation.GetErrorMessages()));
+            }
+
             chargeResponseObject = updateCharge.ToResponse();
             var response = await _updateUseCase.ExecuteAsync(chargeResponseObject, token).ConfigureAwait(false);
 

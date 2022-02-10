@@ -21,8 +21,11 @@ namespace ChargesApi.V1.Infrastructure.Entities
         [DynamoDBProperty(AttributeName = "charge_group", Converter = typeof(DynamoDbEnumConverter<ChargeGroup>))]
         public ChargeGroup ChargeGroup { get; set; }
 
+        /// <summary>
+        /// required only for ChargeGroup = tenant
+        /// </summary>
         [DynamoDBProperty(AttributeName = "charge_sub_group", Converter = typeof(DynamoDbEnumConverter<ChargeSubGroup>))]
-        public ChargeSubGroup ChargeSubGroup { get; set; }
+        public ChargeSubGroup? ChargeSubGroup { get; set; }
 
         [DynamoDBProperty(AttributeName = "charge_year")]
         public short ChargeYear { get; set; }

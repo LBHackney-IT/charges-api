@@ -9,7 +9,11 @@ namespace ChargesApi.V1.Domain
         public Guid TargetId { get; set; }
         public TargetType TargetType { get; set; }
         public ChargeGroup ChargeGroup { get; set; }
-        public ChargeSubGroup ChargeSubGroup { get; set; }
+
+        /// <summary>
+        /// required only for ChargeGroup = tenant
+        /// </summary>
+        public ChargeSubGroup? ChargeSubGroup { get; set; }
         public short ChargeYear { get; set; }
         public IEnumerable<DetailedCharges> DetailedCharges { get; set; }
         public string CreatedBy { get; set; }

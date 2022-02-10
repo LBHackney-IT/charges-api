@@ -33,6 +33,11 @@ using ChargesApi.V1.Gateways.Services;
 using System.Net.Http.Headers;
 using ChargesApi.V1.Gateways.Common;
 using Hackney.Core.Logging;
+using ChargesApi.V1.Boundary.Request;
+using ChargesApi.V1.Infrastructure.Validators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using System.Globalization;
 
 namespace ChargesApi
 {
@@ -132,8 +137,17 @@ namespace ChargesApi
             services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
             services.AddAWSService<IAmazonSimpleNotificationService>();
             services.AddLogCallAspect();
+
             RegisterGateways(services);
             RegisterUseCases(services);
+
+            services.AddFluentValidation(config =>
+            {
+                config.ValidatorOptions.LanguageManager.Culture = new CultureInfo("en");
+                config.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            });
+            RegisterValidators(services);
+
             services.AddCors(opt => opt.AddPolicy("corsPolicy", builder =>
                 builder
                     .AllowAnyOrigin()
@@ -230,6 +244,12 @@ namespace ChargesApi
             services.AddScoped<IGetChargesSummaryUseCase, GetChargesSummaryUseCase>();
             services.AddScoped<IAddBatchUseCase, AddBatchUseCase>();
             services.AddScoped<IAddEstimateChargesUseCase, AddEstimateChargesUseCase>();
+        }
+
+        private static void RegisterValidators(IServiceCollection services)
+        {
+            services.AddTransient<IValidator<AddChargeRequest>, AddChargeRequestValidator>();
+            services.AddTransient<IValidator<UpdateChargeRequest>, UpdateChargeRequestValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

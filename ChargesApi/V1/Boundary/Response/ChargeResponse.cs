@@ -36,10 +36,11 @@ namespace ChargesApi.V1.Boundary.Response
         public ChargeGroup ChargeGroup { get; set; }
 
         /// <summary>
+        /// Required only for ChargeGroup = Tenant
         /// Charge Sub Group - Estimate/Actual
         /// </summary>
         /// <example>Actual</example>
-        public ChargeSubGroup ChargeSubGroup { get; set; }
+        public ChargeSubGroup? ChargeSubGroup { get; set; }
 
         /// <summary>
         /// Charge Year - 2022 - Charge Start Date Year
