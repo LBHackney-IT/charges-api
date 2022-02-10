@@ -22,17 +22,20 @@ namespace ChargesApi.V1.UseCase
         private readonly IHousingSearchService _housingSearchService;
         private readonly IFinancialSummaryService _financialSummaryService;
         private readonly ILogger<AddEstimateChargesUseCase> _logger;
+        private readonly IAwsS3FileService _s3FileService;
         private static List<Asset> _assetData;
 
         public AddEstimateChargesUseCase(IChargesApiGateway chargesApiGateway,
             IHousingSearchService housingSearchService,
             IFinancialSummaryService financialSummaryService,
-            ILogger<AddEstimateChargesUseCase> logger)
+            ILogger<AddEstimateChargesUseCase> logger,
+            IAwsS3FileService s3FileService)
         {
             _chargesApiGateway = chargesApiGateway;
             _housingSearchService = housingSearchService;
             _financialSummaryService = financialSummaryService;
             _logger = logger;
+            _s3FileService = s3FileService;
         }
         public async Task<int> AddEstimates(IFormFile file, ChargeGroup chargeGroup, string token)
         {
@@ -115,10 +118,10 @@ namespace ChargesApi.V1.UseCase
                     }
                     recordsCount++;
                 }
-                _logger.LogDebug($"Reading Estimates Excel Sheet successfull with total record count : {recordsCount - 1}");
+                _logger.LogDebug($"Reading Estimates Excel Sheet successful with total record count : {recordsCount - 1}");
             }
 
-
+            await _s3FileService.UploadFile(file, file.FileName).ConfigureAwait(false);
 
             _logger.LogDebug($"Starting UH numerical Asset Id transformation with Guid Asset Id");
 

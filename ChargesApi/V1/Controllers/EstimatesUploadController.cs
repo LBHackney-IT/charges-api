@@ -30,7 +30,6 @@ namespace ChargesApi.V1.Controllers
         /// </summary>
         /// <param name="token">User Token</param>
         /// <param name="addEstimatesRequest">Estimates File model for create</param>
-        /// <param name="s3FileService"></param>
         /// <response code="201">Success. Estimates reccords was created successfully</response>
         /// <response code="400">Bad Request</response>
         /// <response code="500">Internal Server Error</response>
@@ -39,7 +38,7 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpPost]
         [LogCall(LogLevel.Information)]
-        public async Task<IActionResult> Post([FromHeader(Name = "Authorization")] string token, [FromForm] AddEstimatesRequest addEstimatesRequest, [FromServices] IAwsS3FileService s3FileService)
+        public async Task<IActionResult> Post([FromHeader(Name = "Authorization")] string token, [FromForm] AddEstimatesRequest addEstimatesRequest)
         {
             if (addEstimatesRequest == null)
             {
@@ -47,9 +46,6 @@ namespace ChargesApi.V1.Controllers
             }
             if (ModelState.IsValid)
             {
-                await s3FileService.UploadFile(addEstimatesRequest.EstimatesFile, addEstimatesRequest.EstimatesFile.FileName).ConfigureAwait(false);
-
-                //TODO: After successful file upload, acknowledge upload request and move processing logic below to lambda
                 var processingCount = await _addEstimatesUseCase.AddEstimates(addEstimatesRequest.EstimatesFile,
                     addEstimatesRequest.ChargeGroup, token).ConfigureAwait(false);
                 return Ok($"{processingCount} estimates records processed successfully");

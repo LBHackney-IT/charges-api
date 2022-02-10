@@ -1,17 +1,11 @@
 using AutoFixture;
-using ChargesApi.V1.Domain;
 using ChargesApi.V1.Gateways;
 using ChargesApi.V1.Gateways.Services.Interfaces;
 using ChargesApi.V1.UseCase;
-using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Threading.Tasks;
-using Xunit;
+using System;
 
 namespace ChargesApi.Tests.V1.UseCase
 {
@@ -20,7 +14,9 @@ namespace ChargesApi.Tests.V1.UseCase
         private readonly Mock<IChargesApiGateway> _mockChargeGateway;
         private readonly Mock<IHousingSearchService> _mockHousingSearchService;
         private readonly Mock<IFinancialSummaryService> _mockFinancialService;
+        private readonly Mock<IAwsS3FileService> _mockS3FileService;
         private readonly Mock<ILogger<AddEstimateChargesUseCase>> _mockLogger;
+
         //private const string Token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZXN0IiwiaWF0IjoxNjM5NDIyNzE4LCJleHAiOjE5ODY1Nzc5MTgsImF1ZCI6InRlc3QiLCJzdWIiOiJ0ZXN0IiwiZ3JvdXBzIjpbInNvbWUtdmFsaWQtZ29vZ2xlLWdyb3VwIiwic29tZS1vdGhlci12YWxpZC1nb29nbGUtZ3JvdXAiXSwibmFtZSI6InRlc3RpbmcifQ.IcpQ00PGVgksXkR_HFqWOakgbQ_PwW9dTVQu4w77tmU";
         private readonly Fixture _fixture;
 
@@ -33,11 +29,17 @@ namespace ChargesApi.Tests.V1.UseCase
             _mockHousingSearchService = new Mock<IHousingSearchService>();
             _mockLogger = new Mock<ILogger<AddEstimateChargesUseCase>>();
             _mockFinancialService = new Mock<IFinancialSummaryService>();
+            _mockS3FileService = new Mock<IAwsS3FileService>();
+
+            _mockS3FileService.Setup(s => s.UploadFile(It.IsAny<IFormFile>(), It.IsAny<string>()))
+                .ReturnsAsync($"uploads/{Guid.NewGuid()}.xslx");
             _addEstimateChargesUseCase = new AddEstimateChargesUseCase(_mockChargeGateway.Object,
                 _mockHousingSearchService.Object,
                 _mockFinancialService.Object,
-               _mockLogger.Object);
+               _mockLogger.Object,
+                _mockS3FileService.Object);
         }
+
         //[Fact]
         //public async Task AddValidExcelFileWithValidTransformWithSuccessChargeSave()
         //{
