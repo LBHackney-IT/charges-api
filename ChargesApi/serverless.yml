@@ -103,11 +103,11 @@ resources:
                       - ""
                       - - "arn:aws:s3"
                         - Ref: 'AWS::Region'
-                          - Ref: 'AWS::AccountId'
-                          - Fn::Join:
-                              - '-'
-                              - - 'lbh-charges-api-bucket'
-                                - ${self:provider.stage}
+                        - Ref: 'AWS::AccountId'
+                        - Fn::Join:
+                            - '-'
+                            - - 'lbh-charges-api-bucket'
+                              - ${self:provider.stage}
           - PolicyName: lambdaInvocation
             PolicyDocument:
               Version: '2012-10-17'
