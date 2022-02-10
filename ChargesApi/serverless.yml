@@ -100,7 +100,7 @@ resources:
                     - "s3:GetObject"
                   Resource:
                     Fn::Join:
-                      - ""
+                      - ":"
                       - - "arn:aws:s3"
                         - Ref: 'AWS::Region'
                         - Ref: 'AWS::AccountId'
