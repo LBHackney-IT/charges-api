@@ -102,8 +102,6 @@ resources:
                     Fn::Join:
                       - ":"
                       - - "arn:aws:s3"
-                        - Ref: 'AWS::Region'
-                        - Ref: 'AWS::AccountId'
                         - Fn::Join:
                             - '-'
                             - - 'lbh-charges-api-bucket'
