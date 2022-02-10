@@ -100,12 +100,13 @@ resources:
                     - "s3:GetObject"
                   Resource:
                     Fn::Join:
-                      - ":"
-                      - - "arn:aws:s3"
+                      - ""
+                      - - "arn:aws:s3:::"
                         - Fn::Join:
                             - '-'
                             - - 'lbh-charges-api-bucket'
                               - ${self:provider.stage}
+                      - '/*'
           - PolicyName: lambdaInvocation
             PolicyDocument:
               Version: '2012-10-17'
