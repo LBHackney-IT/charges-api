@@ -90,6 +90,24 @@ resources:
                       - ""
                       - - "arn:aws:s3:::"
                         - "Ref": "ServerlessDeploymentBucket"
+          - PolicyName: s3FileUploadOperations
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "s3:PutObject"
+                    - "s3:GetObject"
+                  Resource:
+                    Fn::Join:
+                      - ""
+                      - - "arn:aws:s3"
+                        - Ref: 'AWS::Region'
+                          - Ref: 'AWS::AccountId'
+                          - Fn::Join:
+                              - '-'
+                              - - 'lbh-charges-api-bucket'
+                                - ${self:provider.stage}
           - PolicyName: lambdaInvocation
             PolicyDocument:
               Version: '2012-10-17'
