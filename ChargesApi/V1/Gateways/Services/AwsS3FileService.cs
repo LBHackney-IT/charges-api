@@ -1,11 +1,13 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using ChargesApi.Configuration;
+using ChargesApi.V1.Boundary.Response;
 using ChargesApi.V1.Gateways.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System;
 using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace ChargesApi.V1.Gateways.Services
@@ -21,9 +23,8 @@ namespace ChargesApi.V1.Gateways.Services
             _s3Settings = s3Settings.Value;
         }
 
-        public async Task<string> UploadFile(IFormFile formFile, string fileName)
+        public async Task<FileLocationResponse> UploadFile(IFormFile formFile, string fileName)
         {
-            // var location = $"uploads/{formFile.FileName}";
             var location = $"uploads/{fileName}";
             using (var stream = formFile.OpenReadStream())
             {
@@ -38,7 +39,12 @@ namespace ChargesApi.V1.Gateways.Services
                 try
                 {
                     await _s3Client.PutObjectAsync(putRequest).ConfigureAwait(false);
-                    return location;
+                    return new FileLocationResponse
+                    {
+                        RelativePath = location,
+                        BucketName = _s3Settings.BucketName,
+                        FileUrl = null
+                    };
                 }
                 catch (Exception ex)
                 {
@@ -47,10 +53,14 @@ namespace ChargesApi.V1.Gateways.Services
             }
         }
 
-        public async Task<Stream> GetFile(string key)
+        public async Task<byte[]> GetFile(string key)
         {
             var response = await _s3Client.GetObjectAsync(_s3Settings.BucketName, key).ConfigureAwait(false);
-            return response.HttpStatusCode == System.Net.HttpStatusCode.OK ? response.ResponseStream : null;
+            if (response.HttpStatusCode != HttpStatusCode.OK) return null;
+
+            using var ms = new MemoryStream();
+            response.ResponseStream.CopyTo(ms);
+            return ms.ToArray();
         }
 
         public async Task<bool> DeleteFile(string key)
