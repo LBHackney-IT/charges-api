@@ -1,7 +1,7 @@
 using ChargesApi.V1.Domain;
+using ChargesApi.V1.Factories;
 using ChargesApi.V1.Gateways;
 using ChargesApi.V1.Gateways.Services.Interfaces;
-using ChargesApi.V1.Infrastructure.JWT;
 using ChargesApi.V1.UseCase.Helpers;
 using ChargesApi.V1.UseCase.Interfaces;
 using ExcelDataReader;
@@ -13,8 +13,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using ChargesApi.V1.Boundary.Response;
-using ChargesApi.V1.Factories;
 
 namespace ChargesApi.V1.UseCase
 {
@@ -45,6 +43,7 @@ namespace ChargesApi.V1.UseCase
             _snsGateway = snsGateway;
             _snsFactory = snsFactory;
         }
+
         public async Task<int> AddEstimates(IFormFile file, ChargeGroup chargeGroup, string token)
         {
             // Get Full Assets List
@@ -57,7 +56,6 @@ namespace ChargesApi.V1.UseCase
                 _assetData = assetsList.Item1;
                 _logger.LogDebug($"Assets List fetching completed and total assets fetched : {assetsList.Item1.Count}");
             }
-
 
             List<EstimateCharge> estimates = new List<EstimateCharge>();
             var recordsCount = 0;
@@ -122,7 +120,6 @@ namespace ChargesApi.V1.UseCase
                             _logger.LogDebug($"Exception occurred while reading the Estimates Excel Sheet: {e.Message}");
                             throw new Exception(e.Message);
                         }
-
                     }
                     recordsCount++;
                 }
@@ -209,9 +206,9 @@ namespace ChargesApi.V1.UseCase
                 result = Convert.ToDecimal(excelColumnValue);
             return result;
         }
+
         private async Task<(List<Asset>, long)> GetAssetsList(string assetType)
         {
-
             var pageNumber = Constants.Page;
             var pageSize = Constants.PageSize;
 

@@ -1,6 +1,7 @@
 using Amazon.SimpleNotificationService;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
 using ChargesApi.V1;
+using ChargesApi.V1.Boundary.Request;
 using ChargesApi.V1.Controllers;
 using ChargesApi.V1.Factories;
 using ChargesApi.V1.Gateways;
@@ -9,9 +10,12 @@ using ChargesApi.V1.Gateways.Extensions;
 using ChargesApi.V1.Gateways.Services;
 using ChargesApi.V1.Gateways.Services.Interfaces;
 using ChargesApi.V1.Infrastructure;
+using ChargesApi.V1.Infrastructure.Validators;
 using ChargesApi.V1.UseCase;
 using ChargesApi.V1.UseCase.Interfaces;
 using ChargesApi.Versioning;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Hackney.Core.Authorization;
 using Hackney.Core.JWT;
 using Hackney.Core.Logging;
@@ -30,6 +34,7 @@ using Newtonsoft.Json.Converters;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -139,6 +144,14 @@ namespace ChargesApi
             services.AddAmazonS3(CurrentEnvironment, Configuration);
             RegisterGateways(services);
             RegisterUseCases(services);
+
+            services.AddFluentValidation(config =>
+            {
+                config.ValidatorOptions.LanguageManager.Culture = new CultureInfo("en");
+                config.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            });
+            RegisterValidators(services);
+
             services.AddCors(opt => opt.AddPolicy("corsPolicy", builder =>
                 builder
                     .AllowAnyOrigin()
@@ -233,6 +246,12 @@ namespace ChargesApi
             services.AddScoped<IGetChargesSummaryUseCase, GetChargesSummaryUseCase>();
             services.AddScoped<IAddBatchUseCase, AddBatchUseCase>();
             services.AddScoped<IAddEstimateChargesUseCase, AddEstimateChargesUseCase>();
+        }
+
+        private static void RegisterValidators(IServiceCollection services)
+        {
+            services.AddTransient<IValidator<AddChargeRequest>, AddChargeRequestValidator>();
+            services.AddTransient<IValidator<UpdateChargeRequest>, UpdateChargeRequestValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

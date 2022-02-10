@@ -1,6 +1,5 @@
 using ChargesApi.V1.Boundary.Request;
 using ChargesApi.V1.Boundary.Response;
-using ChargesApi.V1.Gateways.Services.Interfaces;
 using ChargesApi.V1.Infrastructure;
 using ChargesApi.V1.UseCase.Interfaces;
 using Hackney.Core.Logging;

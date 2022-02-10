@@ -1,4 +1,5 @@
 {
+  "$schema": "http://json.schemastore.org/launchsettings.json",
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
@@ -7,21 +8,21 @@
       "sslPort": 44394
     }
   },
-  "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
     "charges_api": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "api/v1/healthcheck/ping",
       "environmentVariables": {
-        "DynamoDb_LocalServiceUrl": "http://localhost:8000",
-        "DynamoDb_LocalAccessKey": "2cl9i",
-        "DynamoDb_LocalSecretKey": "vymxp",
-        "DynamoDb_LocalMode": "true",
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "REQUIRED_GOOGL_GROUPS": "e2e-testing-development;HackneyAll;saml-mtfh-developer;saml-housingfinance"
+        "DynamoDb_LocalServiceUrl": "http://localhost:8000",
+        "DynamoDb_LocalMode": "true",
+        "DynamoDb_LocalSecretKey": "vymxp",
+        "DynamoDb_LocalAccessKey": "2cl9i",
+        "REQUIRED_GOOGL_GROUPS": "e2e-testing-development",
+        "URLS_TO_SKIP_AUTH": "/development/swagger/v1.0/swagger.json"
       },
-      "applicationUrl": "http://localhost:5000"
+      "applicationUrl": "http://localhost:5002"
     }
   }
 }
