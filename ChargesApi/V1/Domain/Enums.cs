@@ -38,7 +38,8 @@ namespace ChargesApi.V1.Domain
     {
         Estate,
         Block,
-        Property
+        Property,
+        NA
     }
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ChargeGroup
