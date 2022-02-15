@@ -57,7 +57,7 @@ namespace ChargesApi.Tests.V1.Gateways
             {
                 Id = new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"),
                 TargetId = new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"),
-                VersionId =1,
+                VersionId = 1,
                 TargetType = TargetType.Dwelling,
                 DetailedCharges = new List<DetailedCharges>
                         {

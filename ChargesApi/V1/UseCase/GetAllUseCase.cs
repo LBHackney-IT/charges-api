@@ -20,10 +20,10 @@ namespace ChargesApi.V1.UseCase
 
         public async Task<List<ChargeResponse>> ExecuteAsync(Guid targetId)
         {
-            var charges = await _gateway.GetAllChargesAsync(targetId).ConfigureAwait(false);
+            var charges = (await _gateway.GetAllChargesAsync(targetId).ConfigureAwait(false)).OrderByDescending(c => c.VersionId).ToList();
 
             // Get the latest version number
-            var latestVersionId = charges.Select(c => c.VersionId).Distinct().ToList().Max();
+            var latestVersionId = charges.FirstOrDefault()?.VersionId ?? 0;
             if (latestVersionId > 0)
             {
                 charges = charges.Where(c => c.VersionId == latestVersionId).ToList();
