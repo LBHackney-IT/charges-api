@@ -57,6 +57,7 @@ namespace ChargesApi.Tests.V1.Gateways
             {
                 Id = new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"),
                 TargetId = new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"),
+                VersionId =1,
                 TargetType = TargetType.Dwelling,
                 DetailedCharges = new List<DetailedCharges>
                         {
@@ -82,6 +83,7 @@ namespace ChargesApi.Tests.V1.Gateways
 
             charge.Id.Should().Be(new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"));
             charge.TargetId.Should().Be(new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"));
+            charge.VersionId.Should().Be(1);
             charge.TargetType.Should().Be(TargetType.Dwelling);
             charge.DetailedCharges.Should().NotBeNull();
             charge.DetailedCharges.Should().HaveCount(1);

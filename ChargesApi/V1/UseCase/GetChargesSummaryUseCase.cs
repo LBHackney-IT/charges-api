@@ -25,6 +25,11 @@ namespace ChargesApi.V1.UseCase
             var result = new ChargesSummaryResponse();
             if (charges.Any())
             {
+                var latestVersionId = charges.Select(c => c.VersionId).Distinct().ToList().Max();
+                if (latestVersionId > 0)
+                {
+                    charges = charges.Where(c => c.VersionId == latestVersionId).ToList();
+                }
                 result.TargetId = charges.First().TargetId;
                 result.TargetType = charges.First().TargetType;
                 var chargesList = new List<ChargeDetail>();

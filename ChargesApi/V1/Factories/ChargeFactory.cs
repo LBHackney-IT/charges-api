@@ -1,11 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Amazon.DynamoDBv2.Model;
 using ChargesApi.V1.Boundary.Request;
 using ChargesApi.V1.Boundary.Response;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Infrastructure.Entities;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ChargesApi.V1.Factories
 {
@@ -22,6 +21,7 @@ namespace ChargesApi.V1.Factories
             {
                 Id = chargeEntity.Id,
                 TargetId = chargeEntity.TargetId,
+                VersionId = chargeEntity.VersionId,
                 TargetType = chargeEntity.TargetType,
                 ChargeYear = chargeEntity.ChargeYear,
                 ChargeGroup = chargeEntity.ChargeGroup,
@@ -45,6 +45,7 @@ namespace ChargesApi.V1.Factories
             {
                 Id = charge.Id,
                 TargetId = charge.TargetId,
+                VersionId = charge.VersionId,
                 TargetType = charge.TargetType,
                 ChargeGroup = charge.ChargeGroup,
                 ChargeSubGroup = charge.ChargeSubGroup,
@@ -74,6 +75,7 @@ namespace ChargesApi.V1.Factories
                 DetailedCharges = chargeRequest.DetailedCharges
             };
         }
+
         public static Charge ToDomain(this ChargeResponse chargeResponse)
         {
             return new Charge
@@ -87,6 +89,7 @@ namespace ChargesApi.V1.Factories
                 DetailedCharges = chargeResponse.DetailedCharges
             };
         }
+
         public static Charge ToDomain(this UpdateChargeRequest chargeRequest)
         {
             if (chargeRequest == null)
@@ -105,10 +108,12 @@ namespace ChargesApi.V1.Factories
                 DetailedCharges = chargeRequest.DetailedCharges
             };
         }
+
         public static List<ChargeDbEntity> ToDatabaseList(this List<Charge> charges)
         {
             return charges.Select(item => item.ToDatabase()).ToList();
         }
+
         public static List<Charge> ToDomainList(this List<AddChargeRequest> charges)
         {
             return charges.Select(item => item.ToDomain()).ToList();
@@ -120,6 +125,7 @@ namespace ChargesApi.V1.Factories
             {
                 {"target_id", new AttributeValue {S = charge.TargetId.ToString()}},
                 {"id", new AttributeValue {S = charge.Id.ToString()}},
+                {"version_id", new AttributeValue {N = charge.VersionId.ToString()}},
                 {"target_type", new AttributeValue {S = charge.TargetType.ToString()}},
                 {"charge_group", new AttributeValue {S = charge.ChargeGroup.ToString()}},
                 {"charge_sub_group", new AttributeValue {S = charge.ChargeSubGroup.ToString()}},

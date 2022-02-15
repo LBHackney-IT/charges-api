@@ -19,6 +19,7 @@ namespace ChargesApi.Tests.V1.Factories
             {
                 Id = new Guid("0f668265-1501-4722-8e37-77c7116dae2f"),
                 TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
+                VersionId = 1,
                 TargetType = TargetType.Dwelling,
                 ChargeYear = 2022,
                 DetailedCharges = new List<DetailedCharges>()
@@ -39,6 +40,7 @@ namespace ChargesApi.Tests.V1.Factories
 
             databaseEntity.Id.Should().Be(domain.Id);
             databaseEntity.TargetId.Should().Be(domain.TargetId);
+            databaseEntity.VersionId.Should().Be(domain.VersionId);
             databaseEntity.TargetType.Should().Be(domain.TargetType);
 
             var entityDetailedCharges = databaseEntity.DetailedCharges.ToList();
