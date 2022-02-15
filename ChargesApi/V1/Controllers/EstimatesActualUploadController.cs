@@ -47,7 +47,7 @@ namespace ChargesApi.V1.Controllers
             {
                 var processingResult = await _addEstimatesUseCase.ExecuteAsync(addEstimatesActualRequest.EstimatesActualFile,
                     addEstimatesActualRequest.ChargeGroup, token).ConfigureAwait(false);
-                if(processingResult)
+                if (processingResult)
                     return Ok("Excel File validated and pushed successfully to S3 for further processing, the processing will take few mins to complete");
                 else
                     return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "File validattion failed and not pushed to S3"));

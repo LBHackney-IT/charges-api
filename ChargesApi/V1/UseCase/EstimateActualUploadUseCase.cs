@@ -111,7 +111,7 @@ namespace ChargesApi.V1.UseCase
             await _snsGateway.Publish(snsMessage).ConfigureAwait(false);
 
             _logger.LogDebug($"File successfully pushed to S3 bucket");
-            
+
             // All Steps Evaluation
             if (chargeYear > 0 && !string.IsNullOrEmpty(chargeSubGroup) && excelData.Count == recordsCount - 1)
                 return true;
