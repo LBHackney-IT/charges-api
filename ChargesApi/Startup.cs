@@ -246,6 +246,7 @@ namespace ChargesApi
             services.AddScoped<IGetChargesSummaryUseCase, GetChargesSummaryUseCase>();
             services.AddScoped<IAddBatchUseCase, AddBatchUseCase>();
             services.AddScoped<IAddEstimateChargesUseCase, AddEstimateChargesUseCase>();
+            services.AddScoped<IGetPropertyChargesUseCase, GetPropertyChargesUseCase>();
         }
 
         private static void RegisterValidators(IServiceCollection services)

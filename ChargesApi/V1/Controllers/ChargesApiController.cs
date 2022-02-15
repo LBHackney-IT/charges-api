@@ -5,9 +5,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
+using ChargesApi.V1.Domain;
 using ChargesApi.V1.Infrastructure;
 using Microsoft.AspNetCore.JsonPatch;
 using ChargesApi.V1.Factories;
@@ -248,6 +251,45 @@ namespace ChargesApi.V1.Controllers
             }
 
             return NoContent();
+        }
+
+        /// <summary>
+        /// Returns the Property Charges Csv File
+        /// </summary>
+        /// <param name="useCase">Use case to return property charges list</param>
+        /// <param name="queryParameters">Search parameters to filter property charges</param>
+        /// <response code="204">Success. File generated successfully</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="404">Property Charge with provided parameters cannot be found</response>
+        [ProducesResponseType(typeof(File), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
+        [HttpGet("download")]
+        public async Task<ActionResult> DownloadPropertyChargesFile([FromServices] IGetPropertyChargesUseCase useCase, PropertyChargesQueryParameters queryParameters)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest,
+                    ModelState.GetErrorMessages()));
+
+            var propertyCharges = await useCase.ExecuteAsync(queryParameters).ConfigureAwait(false);
+
+            if (propertyCharges == null)
+                return NotFound(new BaseErrorResponse((int) HttpStatusCode.NotFound,
+                    "Property Charges cannot be found!"));
+
+            var builder = new StringBuilder();
+            foreach (var propertyCharge in propertyCharges)
+            {
+                builder.AppendLine(
+                    $"{propertyCharge.Id},{propertyCharge.TargetId},{propertyCharge.TargetType},{propertyCharge.ChargeGroup},{propertyCharge.ChargeSubGroup},{propertyCharge.ChargeYear}");
+
+                foreach (var detailedCharge in propertyCharge.DetailedCharges)
+                    builder.AppendLine(
+                        $",{detailedCharge.SubType},{detailedCharge.Amount}");
+            }
+
+            return File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", "charges.csv");
         }
     }
 }

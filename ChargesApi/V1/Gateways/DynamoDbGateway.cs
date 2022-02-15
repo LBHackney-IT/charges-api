@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ChargesApi.V1.Boundary.Request;
 using Microsoft.Extensions.Configuration;
 using ChargesApi.V1.Infrastructure.JWT;
 using Microsoft.Extensions.Logging;
@@ -70,6 +71,25 @@ namespace ChargesApi.V1.Gateways
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
                     {":V_target_id",new AttributeValue{S = targetId.ToString()}}
+                },
+                ScanIndexForward = true
+            };
+
+            var chargesLists = await _amazonDynamoDb.QueryAsync(request).ConfigureAwait(false);
+
+            return chargesLists?.ToChargeDomain();
+        }
+
+        public async Task<IList<Charge>> GetChargesAsync(PropertyChargesQueryParameters queryParameters)
+        {
+            var request = new QueryRequest
+            {
+                TableName = Constants.ChargeTableName,
+                FilterExpression = "charge_year = :V_charge_year and charge_group = :V_charge_group and charge_sub_group = :V_charge_sub_group and ",
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue> {
+                    {":V_charge_year", new AttributeValue { S =  queryParameters.ChargeYear.ToString() }},
+                    {":V_charge_group", new AttributeValue { S =  queryParameters.ChargeGroup.ToString() }},
+                    {":V_charge_sub_group", new AttributeValue { S =  queryParameters.ChargeSubGroup.ToString() }}
                 },
                 ScanIndexForward = true
             };
