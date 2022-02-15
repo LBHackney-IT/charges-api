@@ -15,11 +15,11 @@ namespace ChargesApi.V1.Controllers
     [Route("api/v1/estimates")]
     [Produces("application/json")]
     [ApiVersion("1.0")]
-    public class EstimatesUploadController : BaseController
+    public class EstimatesActualUploadController : BaseController
     {
-        private readonly IAddEstimateChargesUseCase _addEstimatesUseCase;
+        private readonly IEstimateActualUploadUseCase _addEstimatesUseCase;
 
-        public EstimatesUploadController(IAddEstimateChargesUseCase addEstimateChargesUseCase)
+        public EstimatesActualUploadController(IEstimateActualUploadUseCase addEstimateChargesUseCase)
         {
             _addEstimatesUseCase = addEstimateChargesUseCase;
         }
@@ -28,7 +28,7 @@ namespace ChargesApi.V1.Controllers
         /// Create new List of Estimates records by batch processing
         /// </summary>
         /// <param name="token">User Token</param>
-        /// <param name="addEstimatesRequest">Estimates File model for create</param>
+        /// <param name="addEstimatesActualRequest">Estimates/Actual File model for create</param>
         /// <response code="201">Success. Estimates reccords was created successfully</response>
         /// <response code="400">Bad Request</response>
         /// <response code="500">Internal Server Error</response>
@@ -37,17 +37,20 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpPost]
         [LogCall(LogLevel.Information)]
-        public async Task<IActionResult> Post([FromHeader(Name = "Authorization")] string token, [FromForm] AddEstimatesRequest addEstimatesRequest)
+        public async Task<IActionResult> Post([FromHeader(Name = "Authorization")] string token, [FromForm] AddEstimatesActualRequest addEstimatesActualRequest)
         {
-            if (addEstimatesRequest == null)
+            if (addEstimatesActualRequest == null)
             {
-                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Add Estimate request cannot be null!"));
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Add Estimate/Actual request cannot be null!"));
             }
             if (ModelState.IsValid)
             {
-                var processingCount = await _addEstimatesUseCase.AddEstimates(addEstimatesRequest.EstimatesFile,
-                    addEstimatesRequest.ChargeGroup, token).ConfigureAwait(false);
-                return Ok($"{processingCount} estimates records processed successfully");
+                var processingResult = await _addEstimatesUseCase.ExecuteAsync(addEstimatesActualRequest.EstimatesActualFile,
+                    addEstimatesActualRequest.ChargeGroup, token).ConfigureAwait(false);
+                if(processingResult)
+                    return Ok("Excel File validated and pushed successfully to S3 for further processing, the processing will take few mins to complete");
+                else
+                    return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "File validattion failed and not pushed to S3"));
             }
             else
             {

@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 namespace ChargesApi.V1.UseCase.Interfaces
 {
-    public interface IAddEstimateChargesUseCase
+    public interface IEstimateActualUploadUseCase
     {
-        Task<int> AddEstimates(IFormFile file, ChargeGroup chargeGroup, string token);
+        Task<bool> ExecuteAsync(IFormFile file, ChargeGroup chargeGroup, string token);
     }
 }
