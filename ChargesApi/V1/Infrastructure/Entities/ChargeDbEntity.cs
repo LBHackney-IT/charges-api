@@ -16,7 +16,7 @@ namespace ChargesApi.V1.Infrastructure.Entities
         public Guid Id { get; set; }
 
         [DynamoDBRangeKey(AttributeName = "version_id")]
-        public int VersionId { get; set; }
+        public int? VersionId { get; set; }
 
         [DynamoDBProperty(AttributeName = "target_type", Converter = typeof(DynamoDbEnumConverter<TargetType>))]
         public TargetType TargetType { get; set; }
