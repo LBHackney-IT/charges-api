@@ -15,10 +15,16 @@ namespace ChargesApi.V1.UseCase
     public class UpdateUseCase : IUpdateUseCase
     {
         private readonly IChargesApiGateway _gateway;
+        private readonly ISnsGateway _snsGateway;
+        private readonly ISnsFactory _snsFactory;
 
-        public UpdateUseCase(IChargesApiGateway gateway)
+        public UpdateUseCase(IChargesApiGateway gateway,
+                             ISnsGateway snsGateway,
+                             ISnsFactory snsFactory)
         {
             _gateway = gateway;
+            _snsGateway = snsGateway;
+            _snsFactory = snsFactory;
         }
 
         public ChargeResponse Execute(UpdateChargeRequest charge)
@@ -44,6 +50,9 @@ namespace ChargesApi.V1.UseCase
             domainModel.CreatedBy = Helper.GetUserName(token);
             domainModel.LastUpdatedAt = DateTime.UtcNow;
             await _gateway.UpdateAsync(domainModel).ConfigureAwait(false);
+
+            var snsMessage = _snsFactory.Create(charge);
+            await _snsGateway.Publish(snsMessage).ConfigureAwait(false);
 
             return charge;
         }
