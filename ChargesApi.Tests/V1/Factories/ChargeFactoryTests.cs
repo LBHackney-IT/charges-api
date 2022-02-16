@@ -19,7 +19,8 @@ namespace ChargesApi.Tests.V1.Factories
             {
                 Id = new Guid("0f668265-1501-4722-8e37-77c7116dae2f"),
                 TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
-                TargetType = TargetType.Asset,
+                TargetType = TargetType.Dwelling,
+                ChargeYear = 2022,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges
@@ -61,7 +62,7 @@ namespace ChargesApi.Tests.V1.Factories
             {
                 Id = new Guid("0f668265-1501-4722-8e37-77c7116dae2f"),
                 TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
-                TargetType = TargetType.Asset,
+                TargetType = TargetType.Dwelling,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges

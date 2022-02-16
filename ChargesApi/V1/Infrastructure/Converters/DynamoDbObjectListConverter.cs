@@ -20,11 +20,9 @@ namespace ChargesApi.V1.Infrastructure.Converters
             var options = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
+                WriteIndented = true,
+                Converters = { new JsonStringEnumConverter() }
             };
-
-            options.Converters.Add(new JsonStringEnumConverter());
-
             return options;
         }
 

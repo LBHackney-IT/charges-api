@@ -16,13 +16,21 @@
     <PackageReference Include="AWSSDK.Core" Version="3.7.0.40" />
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.0.28" />
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.0.1" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.0.32" />
     <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.2.9" />
     <PackageReference Include="AWSXRayRecorder.Core" Version="2.10.0" />
     <PackageReference Include="AWSXRayRecorder.Handlers.AspNetCore" Version="2.7.2" />
     <PackageReference Include="AWSXRayRecorder.Handlers.AwsSdk" Version="2.8.2" />
     <PackageReference Include="AWSXRayRecorder.Handlers.EntityFramework" Version="1.1.0" />
+    <PackageReference Include="ExcelDataReader" Version="3.6.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.6" />
     <PackageReference Include="Hackney.Core.Authorization" Version="1.64.0" />
+    <PackageReference Include="Hackney.Core.Logging" Version="1.49.0" />
+    <PackageReference Include="Hackney.Shared.Asset" Version="0.7.0" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.HealthChecks" Version="1.0.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.18" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="3.1.18" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="4.1.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0" />

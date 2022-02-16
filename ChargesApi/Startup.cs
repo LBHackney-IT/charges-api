@@ -1,15 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using ChargesApi.V1.Controllers;
+using Amazon.SimpleNotificationService;
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
+using ChargesApi.V1;
+using ChargesApi.V1.Boundary.Request;
+using ChargesApi.V1.Controllers;
+using ChargesApi.V1.Factories;
 using ChargesApi.V1.Gateways;
+using ChargesApi.V1.Gateways.Common;
+using ChargesApi.V1.Gateways.Extensions;
+using ChargesApi.V1.Gateways.Services;
+using ChargesApi.V1.Gateways.Services.Interfaces;
 using ChargesApi.V1.Infrastructure;
+using ChargesApi.V1.Infrastructure.Validators;
 using ChargesApi.V1.UseCase;
 using ChargesApi.V1.UseCase.Interfaces;
 using ChargesApi.Versioning;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Hackney.Core.Authorization;
+using Hackney.Core.JWT;
+using Hackney.Core.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -21,34 +30,41 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using ChargesApi.V1;
-using ChargesApi.V1.Factories;
-using Amazon.SimpleNotificationService;
-using Hackney.Core.Authorization;
-using Hackney.Core.JWT;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net.Http.Headers;
+using System.Reflection;
 
 namespace ChargesApi
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostEnvironment environment)
         {
             Configuration = configuration;
+            CurrentEnvironment = environment;
 
             AWSSDKHandler.RegisterXRayForAllServices();
         }
 
         public IConfiguration Configuration { get; }
+        private IHostEnvironment CurrentEnvironment { get; }
         private static List<ApiVersionDescription> _apiVersions { get; set; }
+
         //TODO update the below to the name of your API
-        private const string ApiName = "charges-api";
+        private const string ApiName = "charges";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services
                 .AddMvc()
+                .AddNewtonsoftJson(opts => opts.SerializerSettings.Converters.Add(new StringEnumConverter()))
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddApiVersioning(o =>
             {
@@ -117,15 +133,25 @@ namespace ChargesApi
             });
 
             ConfigureLogging(services, Configuration);
+            services.ConfigureLambdaLogging(Configuration);
             services.AddTokenFactory();
             //ConfigureDbContext(services);
             //TODO: For DynamoDb, remove the line above and uncomment the line below.
             services.ConfigureDynamoDB();
             services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
             services.AddAWSService<IAmazonSimpleNotificationService>();
-
+            services.AddLogCallAspect();
+            services.AddAmazonS3(CurrentEnvironment, Configuration);
             RegisterGateways(services);
             RegisterUseCases(services);
+
+            services.AddFluentValidation(config =>
+            {
+                config.ValidatorOptions.LanguageManager.Culture = new CultureInfo("en");
+                config.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            });
+            RegisterValidators(services);
+
             services.AddCors(opt => opt.AddPolicy("corsPolicy", builder =>
                 builder
                     .AllowAnyOrigin()
@@ -134,6 +160,7 @@ namespace ChargesApi
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
+            services.AddHttpContextAccessor();
         }
 
         private static void ConfigureDbContext(IServiceCollection services)
@@ -170,6 +197,23 @@ namespace ChargesApi
             services.AddScoped<IChargeMaintenanceApiGateway, ChargeMaintenanceGateway>();
             services.AddScoped<IChargesListApiGateway, ChargesListApiGateway>();
             services.AddScoped<ISnsGateway, ChargesSnsGateway>();
+
+            services.AddTransient<LoggingDelegatingHandler>();
+
+            var housingSearchApiUrl = Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_URL");
+            //var housingSearchApiKey = Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_KEY");
+            var housingSearchApiToken = Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_TOKEN");
+
+            var fakeUri = $"http://4590345803984584058034850348.test";
+            var fakeToken = $"test-token";
+            services.AddHttpClient<IHousingSearchService, HousingSearchService>(c =>
+            {
+                c.BaseAddress = new Uri(housingSearchApiUrl ?? fakeUri);
+                //c.DefaultRequestHeaders.TryAddWithoutValidation("x-api-key", housingSearchApiKey);
+                c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(housingSearchApiToken ?? fakeToken);
+                c.Timeout = TimeSpan.FromSeconds(20);
+            })
+           .AddHttpMessageHandler<LoggingDelegatingHandler>();
         }
 
         private static void RegisterUseCases(IServiceCollection services)
@@ -188,6 +232,13 @@ namespace ChargesApi
             services.AddScoped<IAddChargesUpdateUseCase, AddChargesUpdateUseCase>();
             services.AddScoped<IGetChargesSummaryUseCase, GetChargesSummaryUseCase>();
             services.AddScoped<IAddBatchUseCase, AddBatchUseCase>();
+            services.AddScoped<IEstimateActualUploadUseCase, EstimateActualUploadUseCase>();
+        }
+
+        private static void RegisterValidators(IServiceCollection services)
+        {
+            services.AddTransient<IValidator<AddChargeRequest>, AddChargeRequestValidator>();
+            services.AddTransient<IValidator<UpdateChargeRequest>, UpdateChargeRequestValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -204,17 +255,17 @@ namespace ChargesApi
             {
                 app.UseHsts();
             }
-
+            app.UseLogCall();
             // TODO
             // If you DON'T use the renaming script, PLEASE replace with your own API name manually
             app.UseXRay("base-api");
-
 
             //Get All ApiVersions,
             var api = app.ApplicationServices.GetService<IApiVersionDescriptionProvider>();
             _apiVersions = api.ApiVersionDescriptions.ToList();
 
             //Swagger ui to view the swagger.json file
+            app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 foreach (var apiVersionDescription in _apiVersions)
@@ -224,9 +275,9 @@ namespace ChargesApi
                         $"{ApiName}-api {apiVersionDescription.GetFormattedApiVersion()}");
                 }
             });
+            app.UseSwagger();
             app.UseGoogleGroupAuthorization();
             app.UseMiddleware<ExceptionMiddleware>();
-            app.UseSwagger();
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {

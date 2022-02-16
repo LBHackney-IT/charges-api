@@ -11,6 +11,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using ChargesApi.V1.Infrastructure.JWT;
+using Microsoft.Extensions.Logging;
+using Hackney.Core.Logging;
 
 namespace ChargesApi.V1.Gateways
 {
@@ -18,13 +21,15 @@ namespace ChargesApi.V1.Gateways
     {
         private readonly IDynamoDBContext _dynamoDbContext;
         private readonly IAmazonDynamoDB _amazonDynamoDb;
-        private readonly IConfiguration _configuration;
+        private readonly ILogger<IChargesApiGateway> _logger;
 
-        public DynamoDbGateway(IDynamoDBContext dynamoDbContext, IAmazonDynamoDB amazonDynamoDb, IConfiguration configuration)
+        public DynamoDbGateway(IDynamoDBContext dynamoDbContext,
+            IAmazonDynamoDB amazonDynamoDb,
+            ILogger<IChargesApiGateway> logger)
         {
             _dynamoDbContext = dynamoDbContext;
             _amazonDynamoDb = amazonDynamoDb;
-            _configuration = configuration;
+            _logger = logger;
         }
 
         public void Add(Charge charge)
@@ -57,7 +62,7 @@ namespace ChargesApi.V1.Gateways
         {
             var request = new QueryRequest
             {
-                TableName = "Charges",
+                TableName = Constants.ChargeTableName,
                 KeyConditionExpression = "target_id = :V_target_id",
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
@@ -119,7 +124,7 @@ namespace ChargesApi.V1.Gateways
             var chargesBatch = _dynamoDbContext.CreateBatchWrite<ChargeDbEntity>();
 
             var items = charges.ToDatabaseList();
-            var maxBatchCount = _configuration.GetValue<int>("BatchProcessing:PerBatchCount");
+            var maxBatchCount = Constants.PerBatchProcessingCount;
             if (items.Count > maxBatchCount)
             {
                 var loopCount = (items.Count / maxBatchCount) + 1;
@@ -137,6 +142,59 @@ namespace ChargesApi.V1.Gateways
             }
 
             return true;
+        }
+        [LogCall]
+        public async Task<bool> AddTransactionBatchAsync(List<Charge> charges)
+        {
+            bool result = false;
+
+            List<TransactWriteItem> actions = new List<TransactWriteItem>();
+            foreach (Charge charge in charges)
+            {
+                Dictionary<string, AttributeValue> columns = new Dictionary<string, AttributeValue>();
+                columns = charge.ToQueryRequest();
+
+                actions.Add(new TransactWriteItem
+                {
+                    Put = new Put()
+                    {
+                        TableName = Constants.ChargeTableName,
+                        Item = columns,
+                        ReturnValuesOnConditionCheckFailure = ReturnValuesOnConditionCheckFailure.ALL_OLD,
+                        ConditionExpression = Constants.AttributeNotExistId
+                    }
+                });
+            }
+
+            TransactWriteItemsRequest placeOrderCharges = new TransactWriteItemsRequest
+            {
+                TransactItems = actions,
+                ReturnConsumedCapacity = ReturnConsumedCapacity.TOTAL
+            };
+
+            try
+            {
+                await _amazonDynamoDb.TransactWriteItemsAsync(placeOrderCharges).ConfigureAwait(false);
+                result = true;
+            }
+            catch (ResourceNotFoundException rnf)
+            {
+                _logger.LogDebug($"One of the table involved in the transaction is not found: {rnf.Message}");
+            }
+            catch (InternalServerErrorException ise)
+            {
+                _logger.LogDebug($"Internal Server Error: {ise.Message}");
+            }
+            catch (TransactionCanceledException tce)
+            {
+                _logger.LogDebug($"Transaction Canceled: {tce.Message}");
+            }
+            catch (Exception e)
+            {
+                _logger.LogDebug($"Transaction Canceled: {e.Message}");
+                throw new Exception(e.Message);
+            }
+            return result;
         }
     }
 }

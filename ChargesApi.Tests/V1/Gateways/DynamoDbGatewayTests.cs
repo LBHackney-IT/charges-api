@@ -14,22 +14,27 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Xunit;
+using Microsoft.Extensions.Logging;
+using AutoFixture;
 
 namespace ChargesApi.Tests.V1.Gateways
 {
+    [Collection("LogCall collection")]
     public class DynamoDbGatewayTests
     {
         private readonly Mock<IDynamoDBContext> _dynamoDb;
         private readonly Mock<IAmazonDynamoDB> _amazonDynamoDb;
-        private readonly Mock<IConfiguration> _mockConfig;
         private readonly DynamoDbGateway _gateway;
+        private readonly Mock<ILogger<DynamoDbGateway>> _logger;
+        private readonly Fixture _fixture;
 
         public DynamoDbGatewayTests()
         {
+            _fixture = new Fixture();
             _dynamoDb = new Mock<IDynamoDBContext>();
             _amazonDynamoDb = new Mock<IAmazonDynamoDB>();
-            _mockConfig = new Mock<IConfiguration>();
-            _gateway = new DynamoDbGateway(_dynamoDb.Object, _amazonDynamoDb.Object, _mockConfig.Object);
+            _logger = new Mock<ILogger<DynamoDbGateway>>();
+            _gateway = new DynamoDbGateway(_dynamoDb.Object, _amazonDynamoDb.Object, _logger.Object);
         }
         [Fact]
         public async Task GetChargeByIdReturnsNullIfEntityDoesntExist()
@@ -50,7 +55,7 @@ namespace ChargesApi.Tests.V1.Gateways
             {
                 Id = new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"),
                 TargetId = new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"),
-                TargetType = TargetType.Asset,
+                TargetType = TargetType.Dwelling,
                 DetailedCharges = new List<DetailedCharges>
                         {
                             new DetailedCharges
@@ -75,7 +80,7 @@ namespace ChargesApi.Tests.V1.Gateways
 
             charge.Id.Should().Be(new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"));
             charge.TargetId.Should().Be(new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"));
-            charge.TargetType.Should().Be(TargetType.Asset);
+            charge.TargetType.Should().Be(TargetType.Dwelling);
             charge.DetailedCharges.Should().NotBeNull();
             charge.DetailedCharges.Should().HaveCount(1);
 
@@ -101,7 +106,7 @@ namespace ChargesApi.Tests.V1.Gateways
             charges.Should().NotBeNull();
             charges.Should().HaveCount(1);
 
-            charges[0].TargetType.Should().Be(TargetType.Asset);
+            charges[0].TargetType.Should().Be(TargetType.Dwelling);
             charges[0].DetailedCharges.Should().NotBeNull();
             charges[0].DetailedCharges.Should().HaveCount(9);
 
@@ -122,7 +127,7 @@ namespace ChargesApi.Tests.V1.Gateways
             {
                 Id = new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"),
                 TargetId = new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"),
-                TargetType = TargetType.Asset,
+                TargetType = TargetType.Dwelling,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges
@@ -138,17 +143,6 @@ namespace ChargesApi.Tests.V1.Gateways
             };
 
             await _gateway.AddAsync(domain).ConfigureAwait(false);
-
-            _dynamoDb.Verify(_ => _.SaveAsync(It.IsAny<ChargeDbEntity>(), default), Times.Once);
-        }
-
-        [Fact]
-        public async Task AddChargeWithInvalidModel()
-        {
-            _dynamoDb.Setup(_ => _.SaveAsync(It.IsAny<ChargeDbEntity>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-            await _gateway.AddAsync(null).ConfigureAwait(false);
 
             _dynamoDb.Verify(_ => _.SaveAsync(It.IsAny<ChargeDbEntity>(), default), Times.Once);
         }
@@ -162,7 +156,7 @@ namespace ChargesApi.Tests.V1.Gateways
             {
                 Id = new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"),
                 TargetId = new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"),
-                TargetType = TargetType.Asset,
+                TargetType = TargetType.Dwelling,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges
@@ -183,17 +177,6 @@ namespace ChargesApi.Tests.V1.Gateways
         }
 
         [Fact]
-        public async Task UpdateChargeWithInvalidModel()
-        {
-            _dynamoDb.Setup(_ => _.SaveAsync(It.IsAny<ChargeDbEntity>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-            await _gateway.AddAsync(null).ConfigureAwait(false);
-
-            _dynamoDb.Verify(_ => _.SaveAsync(It.IsAny<ChargeDbEntity>(), default), Times.Once);
-        }
-
-        [Fact]
         public async Task RemoveChargeIfItExist()
         {
             _dynamoDb.Setup(_ => _.DeleteAsync(It.IsAny<ChargeDbEntity>(), default))
@@ -202,7 +185,7 @@ namespace ChargesApi.Tests.V1.Gateways
             {
                 Id = new Guid("4976341d-f5fe-40a5-a9a0-6aa88a3692d2"),
                 TargetId = new Guid("a361a7f2-fa89-4131-a66e-9434e8425a7c"),
-                TargetType = TargetType.Asset,
+                TargetType = TargetType.Dwelling,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges
@@ -231,6 +214,176 @@ namespace ChargesApi.Tests.V1.Gateways
             await _gateway.RemoveAsync(null).ConfigureAwait(false);
 
             _dynamoDb.Verify(_ => _.DeleteAsync(It.IsAny<ChargeDbEntity>(), default), Times.Once);
+        }
+
+        [Fact]
+        public async Task AddTransactionBatchAsync()
+        {
+            var entities = new List<Charge>()
+            {
+                        new Charge
+                        {
+                            Id = new Guid("271b9a38-e78f-4a3f-81c0-4541bc5acc2c"),
+                            TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
+                            TargetType = TargetType.Dwelling,
+                            ChargeGroup = ChargeGroup.Tenants,
+                            DetailedCharges = new List<DetailedCharges>()
+                            {
+                                new DetailedCharges
+                                {
+                                    Type = "Service",
+                                    SubType = "Block Cleaning",
+                                    ChargeCode = "DCB",
+                                    ChargeType = ChargeType.Estate,
+                                    StartDate = new DateTime(2021, 7, 2),
+                                    EndDate = new DateTime(2021, 7, 4),
+                                    Amount = 150,
+                                    Frequency = "Weekly"
+                                },
+                                new DetailedCharges
+                                {
+                                    Type = "Service",
+                                    SubType = "Heating",
+                                    ChargeCode = "DCT",
+                                    ChargeType = ChargeType.Block,
+                                    StartDate = new DateTime(2021, 7, 2),
+                                    EndDate = new DateTime(2021, 7, 4),
+                                    Amount = 120,
+                                    Frequency = "Weekly"
+                                }
+                            }
+                        },
+                        new Charge
+                        {
+                            Id = new Guid("0f668265-1501-4722-8e37-77c7116dae2f"),
+                            TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
+                            TargetType = TargetType.Dwelling,
+                            ChargeGroup = ChargeGroup.Leaseholders,
+                            DetailedCharges = new List<DetailedCharges>()
+                            {
+                                 new DetailedCharges
+                                {
+                                    Type = "Service",
+                                    SubType = "Block Cleaning",
+                                    ChargeCode = "DCB",
+                                    ChargeType = ChargeType.Estate,
+                                    StartDate = new DateTime(2021, 7, 2),
+                                    EndDate = new DateTime(2021, 7, 4),
+                                    Amount = 150,
+                                    Frequency = "Weekly"
+                                },
+                                new DetailedCharges
+                                {
+                                    Type = "Service",
+                                    SubType = "Heating",
+                                    ChargeCode = "DCT",
+                                    ChargeType = ChargeType.Block,
+                                    StartDate = new DateTime(2021, 7, 2),
+                                    EndDate = new DateTime(2021, 7, 4),
+                                    Amount = 120,
+                                    Frequency = "Weekly"
+                                }
+                            }
+                        }
+            };
+
+            _amazonDynamoDb.Setup(p => p.TransactWriteItemsAsync(It.IsAny<TransactWriteItemsRequest>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(new TransactWriteItemsResponse());
+
+            var result = await _gateway.AddTransactionBatchAsync(entities)
+                .ConfigureAwait(false);
+            result.Should().BeTrue();
+
+        }
+        private static List<Charge> GetCharges()
+        {
+            return new List<Charge>()
+            {
+                        new Charge
+                        {
+                            Id = new Guid("271b9a38-e78f-4a3f-81c0-4541bc5acc2c"),
+                            TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
+                            TargetType = TargetType.Dwelling,
+                            ChargeGroup = ChargeGroup.Tenants,
+                            DetailedCharges = new List<DetailedCharges>()
+                            {
+                                new DetailedCharges
+                                {
+                                    Type = "Service",
+                                    SubType = "Block Cleaning",
+                                    ChargeCode = "DCB",
+                                    ChargeType = ChargeType.Estate,
+                                    StartDate = new DateTime(2021, 7, 2),
+                                    EndDate = new DateTime(2021, 7, 4),
+                                    Amount = 150,
+                                    Frequency = "Weekly"
+                                },
+                                new DetailedCharges
+                                {
+                                    Type = "Service",
+                                    SubType = "Heating",
+                                    ChargeCode = "DCT",
+                                    ChargeType = ChargeType.Block,
+                                    StartDate = new DateTime(2021, 7, 2),
+                                    EndDate = new DateTime(2021, 7, 4),
+                                    Amount = 120,
+                                    Frequency = "Weekly"
+                                }
+                            }
+                        },
+                        new Charge
+                        {
+                            Id = new Guid("0f668265-1501-4722-8e37-77c7116dae2f"),
+                            TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
+                            TargetType = TargetType.Dwelling,
+                            ChargeGroup = ChargeGroup.Leaseholders,
+                            DetailedCharges = new List<DetailedCharges>()
+                            {
+                                 new DetailedCharges
+                                {
+                                    Type = "Service",
+                                    SubType = "Block Cleaning",
+                                    ChargeCode = "DCB",
+                                    ChargeType = ChargeType.Estate,
+                                    StartDate = new DateTime(2021, 7, 2),
+                                    EndDate = new DateTime(2021, 7, 4),
+                                    Amount = 150,
+                                    Frequency = "Weekly"
+                                },
+                                new DetailedCharges
+                                {
+                                    Type = "Service",
+                                    SubType = "Heating",
+                                    ChargeCode = "DCT",
+                                    ChargeType = ChargeType.Block,
+                                    StartDate = new DateTime(2021, 7, 2),
+                                    EndDate = new DateTime(2021, 7, 4),
+                                    Amount = 120,
+                                    Frequency = "Weekly"
+                                }
+                            }
+                        }
+            };
+
+        }
+        [Fact]
+        public void AddTransactionBatchAsyncWithException()
+        {
+            var entities = GetCharges();
+            var ex = new TransactionCanceledException("test");
+            _amazonDynamoDb.Setup(p => p.TransactWriteItemsAsync(It.IsAny<TransactWriteItemsRequest>(), It.IsAny<CancellationToken>()))
+               .ReturnsAsync(new TransactWriteItemsResponse());
+
+            var result = _gateway.AddTransactionBatchAsync(null)
+                .ConfigureAwait(false);
+
+            Func<Task<bool>> func =
+                async () => await _gateway.AddTransactionBatchAsync(null)
+                .ConfigureAwait(false);
+
+            func.Should().ThrowAsync<Exception>();
+
+
         }
     }
 }

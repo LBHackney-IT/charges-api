@@ -16,6 +16,7 @@ using System.Net;
 using System.Threading.Tasks;
 using AutoFixture;
 using Xunit;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace ChargesApi.Tests.V1.Controllers
 {
@@ -31,6 +32,7 @@ namespace ChargesApi.Tests.V1.Controllers
         private readonly Mock<IRemoveUseCase> _removeUseCase;
         private readonly Mock<IUpdateUseCase> _updateUseCase;
         private readonly Mock<IAddBatchUseCase> _batchUseCase;
+        private const string Token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZXN0IiwiaWF0IjoxNjM5NDIyNzE4LCJleHAiOjE5ODY1Nzc5MTgsImF1ZCI6InRlc3QiLCJzdWIiOiJ0ZXN0IiwiZ3JvdXBzIjpbInNvbWUtdmFsaWQtZ29vZ2xlLWdyb3VwIiwic29tZS1vdGhlci12YWxpZC1nb29nbGUtZ3JvdXAiXSwibmFtZSI6InRlc3RpbmcifQ.IcpQ00PGVgksXkR_HFqWOakgbQ_PwW9dTVQu4w77tmU";
 
         public ChargesApiControllerTests()
         {
@@ -60,14 +62,14 @@ namespace ChargesApi.Tests.V1.Controllers
                         {
                             Id = new Guid("271b9a38-e78f-4a3f-81c0-4541bc5acc2c"),
                             TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
-                            TargetType = TargetType.Asset,
+                            TargetType = TargetType.Dwelling,
                             DetailedCharges = new List<DetailedCharges>()
                         },
                         new ChargeResponse
                         {
                             Id = new Guid("0f668265-1501-4722-8e37-77c7116dae2f"),
                             TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
-                            TargetType = TargetType.Asset,
+                            TargetType = TargetType.Dwelling,
                             DetailedCharges = new List<DetailedCharges>()
                             {
                                 new DetailedCharges
@@ -100,13 +102,13 @@ namespace ChargesApi.Tests.V1.Controllers
 
             charges[0].Id.Should().Be(new Guid("271b9a38-e78f-4a3f-81c0-4541bc5acc2c"));
             charges[0].TargetId.Should().Be(new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"));
-            charges[0].TargetType.Should().Be(TargetType.Asset);
+            charges[0].TargetType.Should().Be(TargetType.Dwelling);
             charges[0].DetailedCharges.Should().NotBeNull();
             charges[0].DetailedCharges.Should().BeEmpty();
 
             charges[1].Id.Should().Be(new Guid("0f668265-1501-4722-8e37-77c7116dae2f"));
             charges[1].TargetId.Should().Be(new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"));
-            charges[1].TargetType.Should().Be(TargetType.Asset);
+            charges[1].TargetType.Should().Be(TargetType.Dwelling);
             charges[1].DetailedCharges.Should().NotBeNull();
             charges[1].DetailedCharges.Should().HaveCount(1);
 
@@ -129,7 +131,7 @@ namespace ChargesApi.Tests.V1.Controllers
                         {
                             Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
                             TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
-                            TargetType = TargetType.Asset,
+                            TargetType = TargetType.Dwelling,
                             DetailedCharges = new List<DetailedCharges>()
                             {
                                 new DetailedCharges
@@ -162,7 +164,7 @@ namespace ChargesApi.Tests.V1.Controllers
 
             charges[0].Id.Should().Be(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"));
             charges[0].TargetId.Should().Be(new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"));
-            charges[0].TargetType.Should().Be(TargetType.Asset);
+            charges[0].TargetType.Should().Be(TargetType.Dwelling);
             charges[0].DetailedCharges.Should().NotBeNull();
             charges[0].DetailedCharges.Should().HaveCount(1);
 
@@ -202,7 +204,7 @@ namespace ChargesApi.Tests.V1.Controllers
                 {
                     Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
                     TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
-                    TargetType = TargetType.Asset,
+                    TargetType = TargetType.Dwelling,
                     DetailedCharges = new List<DetailedCharges>()
                     {
                         new DetailedCharges
@@ -232,7 +234,7 @@ namespace ChargesApi.Tests.V1.Controllers
 
             charge.Id.Should().Be(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"));
             charge.TargetId.Should().Be(new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"));
-            charge.TargetType.Should().Be(TargetType.Asset);
+            charge.TargetType.Should().Be(TargetType.Dwelling);
             charge.DetailedCharges.Should().NotBeNull();
             charge.DetailedCharges.Should().HaveCount(1);
 
@@ -291,12 +293,12 @@ namespace ChargesApi.Tests.V1.Controllers
         [Fact]
         public async Task AddChargeWithValidDataReturns201()
         {
-            _addUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<AddChargeRequest>()))
+            _addUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<AddChargeRequest>(), It.IsAny<string>()))
                 .ReturnsAsync(new ChargeResponse
                 {
                     Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
                     TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
-                    TargetType = TargetType.Asset,
+                    TargetType = TargetType.Dwelling,
                     DetailedCharges = new List<DetailedCharges>()
                     {
                         new DetailedCharges
@@ -314,7 +316,7 @@ namespace ChargesApi.Tests.V1.Controllers
             var charge = new AddChargeRequest
             {
                 TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
-                TargetType = TargetType.Asset,
+                TargetType = TargetType.Dwelling,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges
@@ -330,7 +332,7 @@ namespace ChargesApi.Tests.V1.Controllers
             };
 
 
-            var result = await _chargeController.Post(charge).ConfigureAwait(false);
+            var result = await _chargeController.Post(Guid.NewGuid().ToString(), Token, charge).ConfigureAwait(false);
 
             result.Should().NotBeNull();
 
@@ -356,7 +358,7 @@ namespace ChargesApi.Tests.V1.Controllers
         [Fact]
         public async Task AddChargeWithNullReturns400()
         {
-            var result = await _chargeController.Post(null).ConfigureAwait(false);
+            var result = await _chargeController.Post(null, null, null).ConfigureAwait(false);
 
             var badRequest = result as BadRequestObjectResult;
 
@@ -374,13 +376,13 @@ namespace ChargesApi.Tests.V1.Controllers
         }
 
         [Fact]
-        public async Task PutChargeWithValidModelReturns200()
+        public async Task PatchChargeWithValidModelReturns200()
         {
             var charge = new UpdateChargeRequest
             {
                 Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
                 TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
-                TargetType = TargetType.Asset,
+                TargetType = TargetType.Dwelling,
                 DetailedCharges = new List<DetailedCharges>()
                 {
                     new DetailedCharges
@@ -396,14 +398,31 @@ namespace ChargesApi.Tests.V1.Controllers
             };
 
             _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
-                .ReturnsAsync(new ChargeResponse());
-
-            _updateUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<UpdateChargeRequest>()))
                 .ReturnsAsync(new ChargeResponse
                 {
                     Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
                     TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
-                    TargetType = TargetType.Asset,
+                    TargetType = TargetType.Dwelling,
+                    DetailedCharges = new List<DetailedCharges>()
+                {
+                    new DetailedCharges
+                    {
+                        Type = "Type",
+                        SubType = "SubType",
+                        StartDate = new DateTime(2021, 7, 2),
+                        EndDate = new DateTime(2021, 7, 4),
+                        Amount = 120,
+                        Frequency = "Frequency"
+                    }
+                }
+                });
+
+            _updateUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<ChargeResponse>(), It.IsAny<string>()))
+                .ReturnsAsync(new ChargeResponse
+                {
+                    Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
+                    TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
+                    TargetType = TargetType.Dwelling,
                     DetailedCharges = new List<DetailedCharges>()
                     {
                         new DetailedCharges
@@ -417,26 +436,30 @@ namespace ChargesApi.Tests.V1.Controllers
                         }
                     }
                 });
+            var patchDoc = new JsonPatchDocument<UpdateChargeRequest>();
+            patchDoc.Add(_ => _.ChargeGroup, ChargeGroup.Tenants);
+            patchDoc.Add(_ => _.ChargeSubGroup, ChargeSubGroup.Actual);
+            patchDoc.Add(_ => _.ChargeYear, 2022);
+            patchDoc.Add(_ => _.TargetId, charge.TargetId);
+            patchDoc.Add(_ => _.Id, charge.Id);
+            patchDoc.Add(_ => _.DetailedCharges, charge.DetailedCharges);
+            patchDoc.Add(_ => _.TargetType, charge.TargetType);
 
-            var result = await _chargeController.Put(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"), charge)
+
+            var result = await _chargeController.Patch(Guid.NewGuid().ToString(), Token, new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
+                new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"), patchDoc)
                 .ConfigureAwait(false);
 
-            var redirectToActionResult = result as CreatedAtActionResult;
+            var redirectToActionResult = result as OkObjectResult;
 
             redirectToActionResult.Should().NotBeNull();
-
-            redirectToActionResult.ActionName.Should().BeEquivalentTo("Get");
-
-            redirectToActionResult.RouteValues.Should().NotBeNull();
-
-            redirectToActionResult.RouteValues["id"].Should().BeEquivalentTo(new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"));
         }
 
         [Fact]
         public async Task PutChargeWithNullReturns400()
         {
-            var result = await _chargeController.Put(Guid.NewGuid(), null)
-                .ConfigureAwait(false);
+            var result = await _chargeController.Patch(string.Empty, string.Empty, Guid.NewGuid(), Guid.NewGuid(),
+                null).ConfigureAwait(false);
 
             var badRequest = result as BadRequestObjectResult;
 
@@ -454,53 +477,16 @@ namespace ChargesApi.Tests.V1.Controllers
         }
 
         [Fact]
-        public async Task PutChargeWithDifferentIdsInRouteAndModelReturns400()
-        {
-            var charge = new UpdateChargeRequest
-            {
-                Id = new Guid("a3833a1d-0bd4-4cd2-a1cf-7db57b416505"),
-                TargetId = new Guid("59ca03ad-6c5c-49fa-8b7b-664e370417da"),
-                TargetType = TargetType.Asset,
-                DetailedCharges = new List<DetailedCharges>()
-                {
-                    new DetailedCharges
-                    {
-                        Type = "Type",
-                        SubType = "SubType",
-                        StartDate = new DateTime(2021, 7, 2),
-                        EndDate = new DateTime(2021, 7, 4),
-                        Amount = 150,
-                        Frequency = "Frequency"
-                    }
-                }
-            };
-
-            var result = await _chargeController.Put(Guid.NewGuid(), charge).ConfigureAwait(false);
-
-            var badRequest = result as BadRequestObjectResult;
-
-            badRequest.Should().NotBeNull();
-
-            var error = badRequest.Value as BaseErrorResponse;
-
-            error.Should().NotBeNull();
-
-            error.StatusCode.Should().Be(400);
-
-            error.Message.Should().BeEquivalentTo("Ids in route and model are different");
-
-            error.Details.Should().BeEquivalentTo("");
-        }
-
-        [Fact]
         public async Task PutChargeWithInvalidIdReturns404()
         {
             _getByIdUseCase.Setup(_ => _.ExecuteAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
                 .ReturnsAsync((ChargeResponse) null);
 
             var guid = Guid.NewGuid();
+            var patchDoc = new JsonPatchDocument<UpdateChargeRequest>();
+            patchDoc.Add(_ => _.Id, guid);
 
-            var result = await _chargeController.Put(guid, new UpdateChargeRequest() { Id = guid })
+            var result = await _chargeController.Patch(Guid.NewGuid().ToString(), Token, Guid.NewGuid(), Guid.NewGuid(), patchDoc)
                 .ConfigureAwait(false);
 
             var notFoundResult = result as NotFoundObjectResult;

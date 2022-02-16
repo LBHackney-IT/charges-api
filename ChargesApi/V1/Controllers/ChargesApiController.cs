@@ -9,6 +9,10 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using ChargesApi.V1.Infrastructure;
+using Microsoft.AspNetCore.JsonPatch;
+using ChargesApi.V1.Factories;
+using ChargesApi.V1.Infrastructure.Validators;
+using FluentValidation.Results;
 
 namespace ChargesApi.V1.Controllers
 {
@@ -97,6 +101,8 @@ namespace ChargesApi.V1.Controllers
         /// <summary>
         /// Create new Charge model
         /// </summary>
+        /// <param name="correlationId">The value that is used to combine several requests into a common group</param>
+        /// <param name="token">The jwt token value</param>
         /// <param name="charge">Charge model for create</param>
         /// <response code="201">Success. Charge model was created successfully</response>
         /// <response code="400">Bad Request</response>
@@ -105,7 +111,9 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpPost]
-        public async Task<IActionResult> Post(AddChargeRequest charge)
+        public async Task<IActionResult> Post([FromHeader(Name = "x-correlation-id")] string correlationId,
+                                             [FromHeader(Name = "Authorization")] string token,
+                                             [FromBody] AddChargeRequest charge)
         {
             if (charge == null)
             {
@@ -114,7 +122,7 @@ namespace ChargesApi.V1.Controllers
 
             if (ModelState.IsValid)
             {
-                var chargeResponse = await _addUseCase.ExecuteAsync(charge).ConfigureAwait(false);
+                var chargeResponse = await _addUseCase.ExecuteAsync(charge, token).ConfigureAwait(false);
 
                 return CreatedAtAction($"Get", new { id = chargeResponse.Id, targetId = chargeResponse.TargetId }, chargeResponse);
             }
@@ -163,8 +171,11 @@ namespace ChargesApi.V1.Controllers
         /// <summary>
         /// Update existing charge model
         /// </summary>
+        /// <param name="correlationId">The value that is used to combine several requests into a common group</param>
+        /// <param name="token">The jwt token value</param>
         /// <param name="id">The value by which we are looking for charge</param>
-        /// <param name="charge">Charge model for update</param>
+        /// <param name="targetId">The value by which we are looking for charge</param>
+        /// <param name="patchDoc">Charge model for update</param>
         /// <response code="200">Success. Charge models was updated successfully</response>
         /// <response code="400">Bad Request</response>
         /// <response code="404">Charge with provided id cannot be found</response>
@@ -174,29 +185,43 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [Route("{id}")]
-        [HttpPut]
-        public async Task<IActionResult> Put([FromRoute] Guid id, [FromBody] UpdateChargeRequest charge)
+        [HttpPatch]
+        public async Task<IActionResult> Patch([FromHeader(Name = "x-correlation-id")] string correlationId,
+                                             [FromHeader(Name = "Authorization")] string token,
+                                             [FromRoute] Guid id, [FromQuery] Guid targetId,
+                                             [FromBody] JsonPatchDocument<UpdateChargeRequest> patchDoc)
         {
-            if (charge == null)
+            if (patchDoc == null)
             {
                 return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Charge model cannot be null!"));
             }
 
-            if (id != charge.Id)
-            {
-                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Ids in route and model are different"));
-            }
-
-            ChargeResponse chargeResponseObject = await _getByIdUseCase.ExecuteAsync(id, charge.TargetId).ConfigureAwait(false);
+            ChargeResponse chargeResponseObject = await _getByIdUseCase.ExecuteAsync(id, targetId).ConfigureAwait(false);
 
             if (chargeResponseObject == null)
             {
                 return NotFound(new BaseErrorResponse((int) HttpStatusCode.NotFound, "No Charge by Id cannot be found!"));
             }
+            UpdateChargeRequest updateCharge = chargeResponseObject.ToUpdateModel();
 
-            await _updateUseCase.ExecuteAsync(charge).ConfigureAwait(false);
+            patchDoc.ApplyTo(updateCharge);
 
-            return CreatedAtAction("Get", new { id = charge.Id, targetId = charge.TargetId }, charge);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, ModelState.GetErrorMessages()));
+            }
+
+            UpdateChargeRequestValidator validator = new UpdateChargeRequestValidator();
+            ValidationResult updateModelValidation = validator.Validate(updateCharge);
+            if (!updateModelValidation.IsValid)
+            {
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, updateModelValidation.GetErrorMessages()));
+            }
+
+            chargeResponseObject = updateCharge.ToResponse();
+            var response = await _updateUseCase.ExecuteAsync(chargeResponseObject, token).ConfigureAwait(false);
+
+            return Ok(response);
         }
 
         /// <summary>
@@ -224,6 +249,5 @@ namespace ChargesApi.V1.Controllers
 
             return NoContent();
         }
-
     }
 }

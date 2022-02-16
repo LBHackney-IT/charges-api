@@ -2,6 +2,7 @@ using Amazon.DynamoDBv2.Model;
 using ChargesApi.V1.Domain;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace ChargesApi.V1.Infrastructure
 {
@@ -35,7 +36,7 @@ namespace ChargesApi.V1.Infrastructure
                 {
                     detailCharges.Add(new DetailedCharges
                     {
-                        Amount = Convert.ToDecimal(detail.M["amount"].N),
+                        Amount = Convert.ToDecimal(detail.M["amount"].N, CultureInfo.InvariantCulture),
                         ChargeCode = detail.M["chargeCode"].S,
                         ChargeType = Enum.Parse<ChargeType>(detail.M["chargeType"].S),
                         Type = detail.M["type"].S,
@@ -51,7 +52,9 @@ namespace ChargesApi.V1.Infrastructure
                     Id = Guid.Parse(item["id"].S),
                     TargetId = Guid.Parse(item["target_id"].S),
                     ChargeGroup = Enum.Parse<ChargeGroup>(item["charge_group"].S),
+                    ChargeSubGroup = item.ContainsKey("charge_sub_group") ? Enum.Parse<ChargeSubGroup>(item["charge_sub_group"].S) : ((ChargeSubGroup?) null),
                     TargetType = Enum.Parse<TargetType>(item["target_type"].S),
+                    ChargeYear = Convert.ToInt16(item["charge_year"].N),
                     DetailedCharges = detailCharges
                 });
             }

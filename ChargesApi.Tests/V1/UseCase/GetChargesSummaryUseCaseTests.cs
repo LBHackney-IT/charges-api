@@ -35,25 +35,25 @@ namespace ChargesApi.Tests.V1.UseCase
                             {
                                 new DetailedCharges
                                 {
-                                    Type = "service",
+                                    Type = "Service",
                                     SubType = "Block Cleaning",
                                     ChargeCode = "DCB",
                                     ChargeType = ChargeType.Estate,
                                     StartDate = new DateTime(2021, 7, 2),
                                     EndDate = new DateTime(2021, 7, 4),
                                     Amount = 150,
-                                    Frequency = "weekly"
+                                    Frequency = "Weekly"
                                 },
                                 new DetailedCharges
                                 {
-                                    Type = "service",
+                                    Type = "Service",
                                     SubType = "Heating",
                                     ChargeCode = "DCT",
                                     ChargeType = ChargeType.Block,
                                     StartDate = new DateTime(2021, 7, 2),
                                     EndDate = new DateTime(2021, 7, 4),
                                     Amount = 120,
-                                    Frequency = "weekly"
+                                    Frequency = "Weekly"
                                 }
                             }
                         },
@@ -67,25 +67,25 @@ namespace ChargesApi.Tests.V1.UseCase
                             {
                                  new DetailedCharges
                                 {
-                                    Type = "service",
+                                    Type = "Service",
                                     SubType = "Block Cleaning",
                                     ChargeCode = "DCB",
                                     ChargeType = ChargeType.Estate,
                                     StartDate = new DateTime(2021, 7, 2),
                                     EndDate = new DateTime(2021, 7, 4),
                                     Amount = 150,
-                                    Frequency = "weekly"
+                                    Frequency = "Weekly"
                                 },
                                 new DetailedCharges
                                 {
-                                    Type = "service",
+                                    Type = "Service",
                                     SubType = "Heating",
                                     ChargeCode = "DCT",
                                     ChargeType = ChargeType.Block,
                                     StartDate = new DateTime(2021, 7, 2),
                                     EndDate = new DateTime(2021, 7, 4),
                                     Amount = 120,
-                                    Frequency = "weekly"
+                                    Frequency = "Weekly"
                                 }
                             }
                         }

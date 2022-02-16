@@ -63,3 +63,6 @@ tmp/
 
 .fake
 .ionide
+
+# Ignore development settings
+*appsettings.Development.json
