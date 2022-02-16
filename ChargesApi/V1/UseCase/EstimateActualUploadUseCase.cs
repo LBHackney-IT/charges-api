@@ -106,7 +106,12 @@ namespace ChargesApi.V1.UseCase
             }
 
             // Upload file to S3 and raise Event FileUplaodedEvent
-            var uploadResponse = await _s3FileService.UploadFile(file, file.FileName).ConfigureAwait(false);
+            var fileName = string.Concat(
+                Path.GetFileNameWithoutExtension(file.FileName),
+                DateTime.Now.ToString("yyyyMMddHHmmssfff"),
+                Path.GetExtension(file.FileName)
+            );
+            var uploadResponse = await _s3FileService.UploadFile(file, fileName).ConfigureAwait(false);
             var snsMessage = _snsFactory.CreateFileUploadMessage(uploadResponse);
             await _snsGateway.Publish(snsMessage).ConfigureAwait(false);
 

@@ -6,6 +6,7 @@ using ChargesApi.V1.Gateways.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ChargesApi.V1.Gateways.Services
@@ -32,6 +33,7 @@ namespace ChargesApi.V1.Gateways.Services
                     BucketName = _s3Settings.BucketName ?? "test bucket",
                     InputStream = stream,
                     AutoCloseStream = true,
+                    TagSet = new List<Tag> { new Tag { Key = "status", Value = "Uploaded" } },
                     ContentType = formFile.ContentType
                 };
                 try
