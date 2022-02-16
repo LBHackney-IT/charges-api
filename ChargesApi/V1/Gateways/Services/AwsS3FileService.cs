@@ -48,7 +48,7 @@ namespace ChargesApi.V1.Gateways.Services
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception($"Failed to upload file to S3", ex.InnerException);
+                    throw new Exception($"Failed to upload file to S3  {ex.Message}", ex.InnerException);
                 }
             }
         }
