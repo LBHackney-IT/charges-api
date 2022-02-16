@@ -28,6 +28,23 @@ namespace ChargesApi.V1.Factories
             };
         }
 
+        public ChargesSns Create(ChargeResponse chargeResponse) => new ChargesSns
+        {
+            CorrelationId = Guid.NewGuid(),
+            DateTime = DateTime.UtcNow,
+            EntityId = chargeResponse.Id,
+            Id = Guid.NewGuid(),
+            EventType = ChargeUpdateEventConstants.DWELLINGCHARGEUPDATEDTYPE,
+            Version = ChargeUpdateEventConstants.V1VERSION,
+            SourceDomain = EventCreationConstants.SOURCEDOMAIN,
+            SourceSystem = EventCreationConstants.SOURCESYSTEM,
+            EventData = new EventData
+            {
+                NewData = chargeResponse
+            },
+            User = new User { Name = EventCreationConstants.NAME, Email = EventCreationConstants.EMAIL }
+        };
+
         public ChargesSns CreateFileUploadMessage(FileLocationResponse location)
         {
             return new ChargesSns
