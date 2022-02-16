@@ -33,7 +33,7 @@ namespace ChargesApi.V1.Gateways.Services
                     BucketName = _s3Settings.BucketName ?? "test bucket",
                     InputStream = stream,
                     AutoCloseStream = true,
-                    TagSet = new List<Tag> { new Tag { Key = "status", Value = "Uploaded" } },
+                    //TagSet = new List<Tag> { new Tag { Key = "status", Value = "Uploaded" } },
                     ContentType = formFile.ContentType
                 };
                 try
@@ -48,7 +48,7 @@ namespace ChargesApi.V1.Gateways.Services
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception($"Failed to upload file to S3", ex.InnerException);
+                    throw new Exception($"Failed to upload file to S3  {ex.Message}", ex.InnerException);
                 }
             }
         }
