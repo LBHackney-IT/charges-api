@@ -2,7 +2,7 @@ using System;
 
 namespace ChargesApi.V1.Domain
 {
-    public class EstimateCharge
+    public class EstimateActualCharge
     {
         public string PropertyReferenceNumber { get; set; }
         public Guid AssetId { get; set; }

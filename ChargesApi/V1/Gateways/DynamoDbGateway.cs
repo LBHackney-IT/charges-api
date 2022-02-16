@@ -21,17 +21,14 @@ namespace ChargesApi.V1.Gateways
     {
         private readonly IDynamoDBContext _dynamoDbContext;
         private readonly IAmazonDynamoDB _amazonDynamoDb;
-        private readonly IConfiguration _configuration;
         private readonly ILogger<IChargesApiGateway> _logger;
 
         public DynamoDbGateway(IDynamoDBContext dynamoDbContext,
             IAmazonDynamoDB amazonDynamoDb,
-            IConfiguration configuration,
             ILogger<IChargesApiGateway> logger)
         {
             _dynamoDbContext = dynamoDbContext;
             _amazonDynamoDb = amazonDynamoDb;
-            _configuration = configuration;
             _logger = logger;
         }
 
@@ -127,7 +124,7 @@ namespace ChargesApi.V1.Gateways
             var chargesBatch = _dynamoDbContext.CreateBatchWrite<ChargeDbEntity>();
 
             var items = charges.ToDatabaseList();
-            var maxBatchCount = _configuration.GetValue<int>("BatchProcessing:PerBatchCount");
+            var maxBatchCount = Constants.PerBatchProcessingCount;
             if (items.Count > maxBatchCount)
             {
                 var loopCount = (items.Count / maxBatchCount) + 1;
