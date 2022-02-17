@@ -249,5 +249,19 @@ namespace ChargesApi.V1.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Delete all charges for specified year, ChargeGroup and ChargeSubGroup
+        /// </summary>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteBatch([FromQuery] short chargeYear, [FromQuery] string chargeGroup, [FromQuery] string chargeSubGroup)
+        {
+
+        }
     }
 }
