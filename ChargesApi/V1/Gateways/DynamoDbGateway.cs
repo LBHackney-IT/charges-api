@@ -1,19 +1,16 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
-using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Factories;
 using ChargesApi.V1.Infrastructure;
 using ChargesApi.V1.Infrastructure.Entities;
+using Hackney.Core.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using ChargesApi.V1.Infrastructure.JWT;
-using Microsoft.Extensions.Logging;
-using Hackney.Core.Logging;
 
 namespace ChargesApi.V1.Gateways
 {
@@ -195,6 +192,30 @@ namespace ChargesApi.V1.Gateways
                 throw new Exception(e.Message);
             }
             return result;
+        }
+
+        public async Task DeleteBatchAsync(IEnumerable<Charge> charges)
+        {
+            var request = new BatchWriteItemRequest
+            {
+                ReturnConsumedCapacity = ReturnConsumedCapacity.TOTAL,
+                RequestItems = new Dictionary<string, List<WriteRequest>>
+                {
+                    {
+                        Constants.ChargeTableName,
+                        charges.ToWriteRequests().ToList()
+                    }
+                }
+            };
+
+            BatchWriteItemResponse response;
+            do
+            {
+                response = await _amazonDynamoDb.BatchWriteItemAsync(request).ConfigureAwait(false);
+
+                request.RequestItems = response.UnprocessedItems;
+            }
+            while (response.UnprocessedItems.Count > 0);
         }
     }
 }

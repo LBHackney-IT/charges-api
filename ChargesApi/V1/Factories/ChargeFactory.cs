@@ -114,6 +114,17 @@ namespace ChargesApi.V1.Factories
             return charges.Select(item => item.ToDomain()).ToList();
         }
 
+        public static IEnumerable<WriteRequest> ToWriteRequests(this IEnumerable<Charge> charges) => charges.Select(c => new WriteRequest
+        {
+            DeleteRequest = new DeleteRequest
+            {
+                Key = new Dictionary<string, AttributeValue>
+                {
+                    { "id", new AttributeValue { S = c.Id.ToString() } }
+                }
+            }
+        });
+
         public static Dictionary<string, AttributeValue> ToQueryRequest(this Charge charge)
         {
             return new Dictionary<string, AttributeValue>()

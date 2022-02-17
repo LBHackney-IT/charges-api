@@ -1,5 +1,6 @@
 using ChargesApi.V1.Domain;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -27,5 +28,7 @@ namespace ChargesApi.V1.Gateways
         public Task<bool> AddBatchAsync(List<Charge> charges);
 
         public Task<bool> AddTransactionBatchAsync(List<Charge> charges);
+
+        public Task DeleteBatchAsync(IEnumerable<Charge> charges);
     }
 }
