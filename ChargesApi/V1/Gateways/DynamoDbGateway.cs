@@ -217,5 +217,23 @@ namespace ChargesApi.V1.Gateways
             }
             while (response.UnprocessedItems.Count > 0);
         }
+
+        public async Task<IEnumerable<Charge>> ScanByYearGroupSubGroup(short chargeYear, string chargeGroup, string chargeSubGroup)
+        {
+            var request = new ScanRequest
+            {
+                TableName = Constants.ChargeTableName,
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                    { ":charge_year", new AttributeValue { N = chargeYear.ToString() } },
+                    { ":charge_group", new AttributeValue { N = chargeGroup } },
+                    { ":charge_sub_group", new AttributeValue { N = chargeSubGroup } }
+                }
+            };
+
+            var response = await _amazonDynamoDb.ScanAsync(request).ConfigureAwait(false);
+
+            return response.Items.Select(i => i.ToDomain());
+        }
     }
 }

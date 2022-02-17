@@ -28,6 +28,7 @@ namespace ChargesApi.V1.Controllers
         private readonly IRemoveUseCase _removeUseCase;
         private readonly IUpdateUseCase _updateUseCase;
         private readonly IAddBatchUseCase _addBatchUseCase;
+        private readonly IDeleteBatchChargesUseCase _deleteBatchChargesUseCase;
 
         public ChargesApiController(
             IGetAllUseCase getAllUseCase,
@@ -36,7 +37,7 @@ namespace ChargesApi.V1.Controllers
             IRemoveUseCase removeUseCase,
             IUpdateUseCase updateUseCase,
             IAddBatchUseCase addBatchUseCase
-        )
+            IDeleteBatchChargesUseCase deleteBatchChargesUseCase)
         {
             _getAllUseCase = getAllUseCase;
             _getByIdUseCase = getByIdUseCase;
@@ -44,6 +45,7 @@ namespace ChargesApi.V1.Controllers
             _removeUseCase = removeUseCase;
             _updateUseCase = updateUseCase;
             _addBatchUseCase = addBatchUseCase;
+            _deleteBatchChargesUseCase = deleteBatchChargesUseCase;
         }
 
         /// <summary>
@@ -261,7 +263,10 @@ namespace ChargesApi.V1.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteBatch([FromQuery] short chargeYear, [FromQuery] string chargeGroup, [FromQuery] string chargeSubGroup)
         {
+            await _deleteBatchChargesUseCase.ExecuteAsync(chargeYear, chargeGroup, chargeSubGroup)
+                .ConfigureAwait(false);
 
+            return Ok("Deleted");
         }
     }
 }
