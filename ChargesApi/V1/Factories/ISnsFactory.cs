@@ -9,6 +9,6 @@ namespace ChargesApi.V1.Factories
         ChargesSns Create(ChargeResponse chargeResponse);
         ChargesSns Create(AddChargesUpdateRequest chargeUpdate);
         ChargesSns CreateFileUploadMessage(FileLocationResponse location);
-        ChargesSns Update(ChargeResponse chargeResponse);
+        ChargesUpdateSns Update(ChargeResponse chargeResponse);
     }
 }
