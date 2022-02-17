@@ -57,7 +57,7 @@ namespace ChargesApi.V1.UseCase
 
             var charge = singleCharge.ToResponse();
             var snsMessage = _snsFactory.Update(charge);
-            await _snsGateway.Publish(snsMessage).ConfigureAwait(false);
+            await _snsGateway.PublishUpdate(snsMessage).ConfigureAwait(false);
 
             return charge;
         }
