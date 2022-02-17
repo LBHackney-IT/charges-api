@@ -15,6 +15,7 @@ namespace ChargesApi.V1.Boundary.Request
         public string SubType { get; set; }
 
         /// <example>Estate</example>
+        [AllowedValues(typeof(ChargeType))]
         public ChargeType ChargeType { get; set; }
 
         /// <example>50</example>

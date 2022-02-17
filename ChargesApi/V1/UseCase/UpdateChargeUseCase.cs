@@ -29,16 +29,15 @@ namespace ChargesApi.V1.UseCase
             // Retrieve collection of charges
             var charges = await _chargesApiGateway.GetAllChargesAsync(targetId).ConfigureAwait(false);
 
-            // TODO: FK Check charge if null
+            if (charges == null)
+                throw new ArgumentException($"No Charge by Id cannot be found!");
 
             // Get single charge by chargeSubGroup and chargeYear
             var singleCharge = charges.FirstOrDefault(x => x.ChargeYear == chargesUpdateDomain.ChargeYear
                                                            && x.ChargeSubGroup == chargesUpdateDomain.ChargeSubGroup);
 
             if (singleCharge == null)
-            {
                 throw new ArgumentNullException(nameof(chargesUpdateDomain));
-            }
 
             // Update the existing detailed charge
             foreach (var requestedDetailedCharge in chargesUpdateDomain.DetailedCharges)
@@ -57,7 +56,7 @@ namespace ChargesApi.V1.UseCase
             await _chargesApiGateway.UpdateAsync(singleCharge).ConfigureAwait(false);
 
             var charge = singleCharge.ToResponse();
-            var snsMessage = _snsFactory.Create(charge);
+            var snsMessage = _snsFactory.Update(charge);
             await _snsGateway.Publish(snsMessage).ConfigureAwait(false);
 
             return charge;
