@@ -7,6 +7,7 @@ namespace ChargesApi.Tests.V1.Helper
     {
         public static Guid ID { get; } = Guid.NewGuid();
         public static Guid TARGETID { get; } = Guid.NewGuid();
+        public const int VERSIONID = 1;
         public const string TYPE = "Service";
         public const string SUBTYPE = "Water";
         public const string FREQUENCY = "Weekly";
@@ -25,6 +26,7 @@ namespace ChargesApi.Tests.V1.Helper
             {
                 Id = ID,
                 TargetId = TARGETID,
+                VersionId = VERSIONID,
                 TargetType = TARGETTYPE,
                 DetailedCharges = new[]
             {

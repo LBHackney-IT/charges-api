@@ -4,6 +4,7 @@ using ChargesApi.V1.Gateways;
 using ChargesApi.V1.UseCase.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ChargesApi.V1.UseCase
@@ -19,7 +20,16 @@ namespace ChargesApi.V1.UseCase
 
         public async Task<List<ChargeResponse>> ExecuteAsync(Guid targetId)
         {
-            return (await _gateway.GetAllChargesAsync(targetId).ConfigureAwait(false)).ToResponse();
+            var charges = (await _gateway.GetAllChargesAsync(targetId).ConfigureAwait(false)).OrderByDescending(c => c.VersionId).ToList();
+
+            // Get the latest version number
+            var latestVersionId = charges.FirstOrDefault()?.VersionId ?? 0;
+            if (latestVersionId > 0)
+            {
+                charges = charges.Where(c => c.VersionId == latestVersionId).ToList();
+            }
+
+            return charges.ToResponse();
         }
     }
 }

@@ -1,3 +1,4 @@
+using AutoFixture;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Factories;
 using ChargesApi.V1.Gateways;
@@ -6,6 +7,7 @@ using FluentAssertions;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -16,15 +18,17 @@ namespace ChargesApi.Tests.V1.UseCase
         private readonly Mock<IChargesApiGateway> _mockChargeGateway;
         private readonly GetAllUseCase _getAllUseCase;
 
+        private readonly Fixture _fixture;
+
         public GetAllUseCaseTests()
         {
-
+            _fixture = new Fixture();
             _mockChargeGateway = new Mock<IChargesApiGateway>();
             _getAllUseCase = new GetAllUseCase(_mockChargeGateway.Object);
         }
 
         [Fact]
-        public async Task GetsAllFromTheGateway()
+        public async Task ShouldReturnAllValuesFromGateway()
         {
             var entities = new List<Charge>()
                     {
@@ -67,6 +71,28 @@ namespace ChargesApi.Tests.V1.UseCase
             result.Should().HaveCount(2);
 
             result.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Fact]
+        public async Task ShouldReturnLatestVersion()
+        {
+            var targetId = Guid.NewGuid();
+            var chargeList = _fixture.Build<Charge>()
+                .OmitAutoProperties()
+                .With(c => c.TargetId, targetId)
+                .With(c => c.VersionId, 0)
+                .CreateMany(20).ToList();
+
+            foreach (var charge in chargeList.Take(10).ToList())
+            {
+                charge.VersionId = 1;
+            }
+
+            _mockChargeGateway.Setup(g => g.GetAllChargesAsync(It.IsAny<Guid>())).ReturnsAsync(chargeList);
+
+            var result = await _getAllUseCase.ExecuteAsync(targetId).ConfigureAwait(false);
+
+            result.Should().HaveCount(10);
         }
     }
 }

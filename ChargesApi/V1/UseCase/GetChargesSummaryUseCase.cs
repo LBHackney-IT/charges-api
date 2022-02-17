@@ -21,10 +21,15 @@ namespace ChargesApi.V1.UseCase
 
         public async Task<ChargesSummaryResponse> ExecuteAsync(Guid targetId)
         {
-            var charges = await _chargesApiGateway.GetAllChargesAsync(targetId).ConfigureAwait(false);
+            var charges = (await _chargesApiGateway.GetAllChargesAsync(targetId).ConfigureAwait(false)).OrderByDescending(c => c.VersionId).ToList();
             var result = new ChargesSummaryResponse();
             if (charges.Any())
             {
+                var latestVersionId = charges.FirstOrDefault()?.VersionId ?? 0;
+                if (latestVersionId > 0)
+                {
+                    charges = charges.Where(c => c.VersionId == latestVersionId).ToList();
+                }
                 result.TargetId = charges.First().TargetId;
                 result.TargetType = charges.First().TargetType;
                 var chargesList = new List<ChargeDetail>();

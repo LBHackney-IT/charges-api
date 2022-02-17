@@ -3,7 +3,6 @@ using ChargesApi.V1.Domain;
 using FluentAssertions;
 using System;
 using System.Linq;
-using ChargesApi.V1.Infrastructure;
 using Xunit;
 
 namespace ChargesApi.Tests.V1.Domain
@@ -17,6 +16,7 @@ namespace ChargesApi.Tests.V1.Domain
 
             charge.Id.Should().Be(Constants.ID);
             charge.TargetId.Should().Be(Constants.TARGETID);
+            charge.VersionId.Should().Be(Constants.VERSIONID);
             charge.TargetType.Should().Be(Constants.TARGETTYPE);
             charge.DetailedCharges.Should().ContainSingle();
             charge.DetailedCharges.First().Amount.Should().Be(Constants.AMOUNT);

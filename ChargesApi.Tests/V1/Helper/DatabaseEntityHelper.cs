@@ -20,6 +20,7 @@ namespace ChargesApi.Tests.V1.Helper
                 Id = charge.Id,
                 DetailedCharges = charge.DetailedCharges,
                 TargetId = charge.TargetId,
+                VersionId = charge.VersionId,
                 TargetType = charge.TargetType
             };
         }
