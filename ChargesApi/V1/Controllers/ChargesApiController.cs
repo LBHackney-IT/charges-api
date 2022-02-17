@@ -36,7 +36,7 @@ namespace ChargesApi.V1.Controllers
             IAddUseCase addUseCase,
             IRemoveUseCase removeUseCase,
             IUpdateUseCase updateUseCase,
-            IAddBatchUseCase addBatchUseCase
+            IAddBatchUseCase addBatchUseCase,
             IDeleteBatchChargesUseCase deleteBatchChargesUseCase)
         {
             _getAllUseCase = getAllUseCase;
