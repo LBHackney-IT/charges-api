@@ -59,10 +59,10 @@ namespace ChargesApi.Tests.V1.E2ETests
 
             var uri = new Uri($"api/v1/charges-maintenance/{id}", UriKind.Relative);
             var response = await Client.GetAsync(uri).ConfigureAwait(false);
-
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-
             var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound, responseContent);
+
             var apiEntity = JsonConvert.DeserializeObject<BaseErrorResponse>(responseContent);
 
             apiEntity.Should().NotBeNull();
