@@ -171,5 +171,20 @@ namespace ChargesApi.V1.Factories
                 {"created_at", new AttributeValue {S = charge.CreatedAt.ToString("F")}}
             };
         }
+
+        public static ChargesUpdateDomain ToDomain(this ChargesUpdateRequest chargesUpdateRequest)
+        {
+            if (chargesUpdateRequest == null)
+            {
+                return null;
+            }
+
+            return new ChargesUpdateDomain
+            {
+                ChargeSubGroup = chargesUpdateRequest.ChargeSubGroup,
+                ChargeYear = chargesUpdateRequest.ChargeYear,
+                DetailedCharges = chargesUpdateRequest.DetailedCharges
+            };
+        }
     }
 }

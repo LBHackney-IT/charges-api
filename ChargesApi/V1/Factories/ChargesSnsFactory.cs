@@ -45,6 +45,24 @@ namespace ChargesApi.V1.Factories
             User = new User { Name = EventCreationConstants.NAME, Email = EventCreationConstants.EMAIL }
         };
 
+        public ChargesUpdateSns Update(ChargeResponse chargeResponse) => new ChargesUpdateSns
+        {
+            CorrelationId = Guid.NewGuid(),
+            DateTime = DateTime.UtcNow,
+            EntityId = chargeResponse.Id,
+            EntityTargetId = chargeResponse.TargetId,
+            Id = Guid.NewGuid(),
+            EventType = ChargeUpdateEventConstants.DWELLINGCHARGEUPDATEDTYPE,
+            Version = ChargeUpdateEventConstants.V1VERSION,
+            SourceDomain = EventCreationConstants.SOURCEDOMAIN,
+            SourceSystem = EventCreationConstants.SOURCESYSTEM,
+            EventData = new EventData
+            {
+                NewData = chargeResponse.DetailedCharges
+            },
+            User = new User { Name = EventCreationConstants.NAME, Email = EventCreationConstants.EMAIL }
+        };
+
         public ChargesSns CreateFileUploadMessage(FileLocationResponse location)
         {
             return new ChargesSns
