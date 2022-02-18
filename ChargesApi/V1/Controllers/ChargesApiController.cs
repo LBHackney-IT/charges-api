@@ -268,7 +268,7 @@ namespace ChargesApi.V1.Controllers
             {
                 return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "ChargeSubGroup is required if ChargeGroup is Leaseholders!"));
             }
-            
+
             await _deleteBatchChargesUseCase.ExecuteAsync(chargeYear, chargeGroup, chargeSubGroup)
                 .ConfigureAwait(false);
 
