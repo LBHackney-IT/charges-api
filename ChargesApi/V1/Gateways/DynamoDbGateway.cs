@@ -201,7 +201,7 @@ namespace ChargesApi.V1.Gateways
                 return;
             }
 
-            for (int i = 0; i < chargeIds.Count() / batchCapacity; i++)
+            for (int i = 0; i <= chargeIds.Count() / batchCapacity; i++)
             {
                 await DeleteBatchAsync(chargeIds.Skip(i * batchCapacity).Take(batchCapacity))
                     .ConfigureAwait(false);
