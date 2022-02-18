@@ -50,7 +50,7 @@ namespace ChargesApi.Tests.V1.Controllers
             _httpContext = new DefaultHttpContext();
             _controllerContext = new ControllerContext(new ActionContext(_httpContext, new RouteData(), new ControllerActionDescriptor()));
             _chargeController = new ChargesApiController(_getAllUseCase.Object, _getByIdUseCase.Object, _addUseCase.Object,
-                                                        _removeUseCase.Object, _updateUseCase.Object, _batchUseCase.Object, 
+                                                        _removeUseCase.Object, _updateUseCase.Object, _batchUseCase.Object,
                                                         _updateChargeUseCase.Object, _deleteBatchChargesUseCase.Object)
             {
                 ControllerContext = _controllerContext
