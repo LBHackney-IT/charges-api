@@ -218,7 +218,7 @@ namespace ChargesApi.V1.Gateways
             while (response.UnprocessedItems.Count > 0);
         }
 
-        public async Task<IEnumerable<Charge>> ScanByYearGroupSubGroup(short chargeYear, string chargeGroup, string chargeSubGroup)
+        public async Task<IEnumerable<Charge>> ScanByYearGroupSubGroup(short chargeYear, ChargeGroup chargeGroup, ChargeSubGroup chargeSubGroup)
         {
             var request = new ScanRequest
             {
@@ -226,8 +226,8 @@ namespace ChargesApi.V1.Gateways
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
                     { ":charge_year", new AttributeValue { N = chargeYear.ToString() } },
-                    { ":charge_group", new AttributeValue { N = chargeGroup } },
-                    { ":charge_sub_group", new AttributeValue { N = chargeSubGroup } }
+                    { ":charge_group", new AttributeValue { S = chargeGroup.ToString() } },
+                    { ":charge_sub_group", new AttributeValue { S = chargeSubGroup.ToString() } }
                 }
             };
 

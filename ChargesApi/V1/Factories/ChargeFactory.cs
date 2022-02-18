@@ -11,20 +11,26 @@ namespace ChargesApi.V1.Factories
 {
     public static class ChargeFactory
     {
-        public static Charge ToDomain(this Dictionary<string, AttributeValue> scanResponseItem) => new Charge
+        public static Charge ToDomain(this Dictionary<string, AttributeValue> scanResponseItem)
         {
-            Id = Guid.Parse(scanResponseItem["id"].S),
-            TargetId = Guid.Parse(scanResponseItem["target_id"].S),
-            TargetType = Enum.Parse<TargetType>(scanResponseItem["target_type"].S, true),
-            ChargeYear = short.Parse(scanResponseItem["charge_year"].N),
-            ChargeGroup = Enum.Parse<ChargeGroup>(scanResponseItem["charge_group"].S),
-            ChargeSubGroup = Enum.Parse<ChargeSubGroup>(scanResponseItem["charge_sub_group"].S),
-            CreatedAt = DateTime.Parse(scanResponseItem["created_at"].S),
-            CreatedBy = scanResponseItem["created_by"].S,
-            LastUpdatedAt = DateTime.Parse(scanResponseItem["last_updated_at"].S),
-            LastUpdatedBy = scanResponseItem["last_updated_by"].S,
-            DetailedCharges = scanResponseItem["DetailedCharges"].L.Select(av => av.M.ToDomain())
-        };
+            var chargeGroup = Enum.Parse<ChargeGroup>(scanResponseItem["charge_group"].S);
+
+            return new Charge
+            {
+                Id = Guid.Parse(scanResponseItem["id"].S),
+                TargetId = Guid.Parse(scanResponseItem["target_id"].S),
+                TargetType = Enum.Parse<TargetType>(scanResponseItem["target_type"].S, true),
+                ChargeYear = short.Parse(scanResponseItem["charge_year"].N),
+                ChargeGroup = chargeGroup,
+                ChargeSubGroup = chargeGroup == ChargeGroup.Leaseholders ? Enum.Parse<ChargeSubGroup>(scanResponseItem["charge_sub_group"].S)
+                                                                         : default,
+                CreatedAt = DateTime.Parse(scanResponseItem["created_at"].S),
+                CreatedBy = scanResponseItem["created_by"].S,
+                LastUpdatedAt = DateTime.Parse(scanResponseItem["last_updated_at"].S),
+                LastUpdatedBy = scanResponseItem["last_updated_by"].S,
+                DetailedCharges = scanResponseItem["DetailedCharges"].L.Select(av => av.M.ToDetailedCharge())
+            };
+        }
 
         public static Charge ToDomain(this ChargeDbEntity chargeEntity)
         {
