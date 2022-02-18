@@ -1,3 +1,4 @@
+using Amazon.S3.Model;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Factories;
 using ChargesApi.V1.Gateways;
@@ -111,7 +112,12 @@ namespace ChargesApi.V1.UseCase
                 DateTime.Now.ToString("yyyyMMddHHmmssfff"),
                 Path.GetExtension(file.FileName)
             );
-            var uploadResponse = await _s3FileService.UploadFile(file, fileName).ConfigureAwait(false);
+            var fileTags = new List<Tag>()
+            {
+                new Tag {Key = "year", Value = $"{chargeYear}"},
+                new Tag {Key = "valuesType", Value = $"{chargeSubGroup}"}
+            };
+            var uploadResponse = await _s3FileService.UploadFile(file, fileName, fileTags).ConfigureAwait(false);
             var snsMessage = _snsFactory.CreateFileUploadMessage(uploadResponse);
             await _snsGateway.Publish(snsMessage).ConfigureAwait(false);
 
