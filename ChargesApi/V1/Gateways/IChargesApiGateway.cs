@@ -27,5 +27,9 @@ namespace ChargesApi.V1.Gateways
         public Task<bool> AddBatchAsync(List<Charge> charges);
 
         public Task<bool> AddTransactionBatchAsync(List<Charge> charges);
+
+        public Task DeleteBatchAsync(IEnumerable<ChargeKeys> chargeIds);
+
+        Task<IEnumerable<ChargeKeys>> ScanByYearGroupSubGroup(short chargeYear, ChargeGroup chargeGroup, ChargeSubGroup? chargeSubGroup);
     }
 }

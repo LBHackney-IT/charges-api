@@ -33,6 +33,7 @@ namespace ChargesApi.Tests.V1.Controllers
         private readonly Mock<IUpdateUseCase> _updateUseCase;
         private readonly Mock<IAddBatchUseCase> _batchUseCase;
         private readonly Mock<IUpdateChargeUseCase> _updateChargeUseCase;
+        private readonly Mock<IDeleteBatchChargesUseCase> _deleteBatchChargesUseCase;
         private const string Token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZXN0IiwiaWF0IjoxNjM5NDIyNzE4LCJleHAiOjE5ODY1Nzc5MTgsImF1ZCI6InRlc3QiLCJzdWIiOiJ0ZXN0IiwiZ3JvdXBzIjpbInNvbWUtdmFsaWQtZ29vZ2xlLWdyb3VwIiwic29tZS1vdGhlci12YWxpZC1nb29nbGUtZ3JvdXAiXSwibmFtZSI6InRlc3RpbmcifQ.IcpQ00PGVgksXkR_HFqWOakgbQ_PwW9dTVQu4w77tmU";
 
         public ChargesApiControllerTests()
@@ -44,11 +45,13 @@ namespace ChargesApi.Tests.V1.Controllers
             _updateUseCase = new Mock<IUpdateUseCase>();
             _batchUseCase = new Mock<IAddBatchUseCase>();
             _updateChargeUseCase = new Mock<IUpdateChargeUseCase>();
+            _deleteBatchChargesUseCase = new Mock<IDeleteBatchChargesUseCase>();
 
             _httpContext = new DefaultHttpContext();
             _controllerContext = new ControllerContext(new ActionContext(_httpContext, new RouteData(), new ControllerActionDescriptor()));
             _chargeController = new ChargesApiController(_getAllUseCase.Object, _getByIdUseCase.Object, _addUseCase.Object,
-                                                        _removeUseCase.Object, _updateUseCase.Object, _batchUseCase.Object, _updateChargeUseCase.Object)
+                                                        _removeUseCase.Object, _updateUseCase.Object, _batchUseCase.Object,
+                                                        _updateChargeUseCase.Object, _deleteBatchChargesUseCase.Object)
             {
                 ControllerContext = _controllerContext
             };

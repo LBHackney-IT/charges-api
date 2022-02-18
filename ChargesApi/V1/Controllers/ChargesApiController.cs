@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using ChargesApi.V1.Factories;
 using ChargesApi.V1.Infrastructure.Validators;
 using FluentValidation.Results;
+using ChargesApi.V1.Domain;
 
 namespace ChargesApi.V1.Controllers
 {
@@ -29,6 +30,7 @@ namespace ChargesApi.V1.Controllers
         private readonly IUpdateUseCase _updateUseCase;
         private readonly IAddBatchUseCase _addBatchUseCase;
         private readonly IUpdateChargeUseCase _updateChargeUseCase;
+        private readonly IDeleteBatchChargesUseCase _deleteBatchChargesUseCase;
 
         public ChargesApiController(
             IGetAllUseCase getAllUseCase,
@@ -37,8 +39,8 @@ namespace ChargesApi.V1.Controllers
             IRemoveUseCase removeUseCase,
             IUpdateUseCase updateUseCase,
             IAddBatchUseCase addBatchUseCase,
-            IUpdateChargeUseCase updateChargeUseCase
-        )
+            IUpdateChargeUseCase updateChargeUseCase,
+            IDeleteBatchChargesUseCase deleteBatchChargesUseCase)
         {
             _getAllUseCase = getAllUseCase;
             _getByIdUseCase = getByIdUseCase;
@@ -47,6 +49,7 @@ namespace ChargesApi.V1.Controllers
             _updateUseCase = updateUseCase;
             _addBatchUseCase = addBatchUseCase;
             _updateChargeUseCase = updateChargeUseCase;
+            _deleteBatchChargesUseCase = deleteBatchChargesUseCase;
         }
 
         /// <summary>
@@ -278,6 +281,28 @@ namespace ChargesApi.V1.Controllers
 
             await _updateChargeUseCase.ExecuteAsync(targetId, chargesUpdateRequest.ToDomain(), token).ConfigureAwait(false);
             return Ok();
+        }
+
+        /// <summary>
+        /// Delete all charges for specified year, ChargeGroup and ChargeSubGroup
+        /// </summary>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteBatch([FromQuery] short chargeYear, [FromQuery] ChargeGroup chargeGroup, [FromQuery] ChargeSubGroup? chargeSubGroup)
+        {
+            if (chargeGroup == ChargeGroup.Leaseholders && !chargeSubGroup.HasValue)
+            {
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "ChargeSubGroup is required if ChargeGroup is Leaseholders!"));
+            }
+
+            await _deleteBatchChargesUseCase.ExecuteAsync(chargeYear, chargeGroup, chargeSubGroup)
+                .ConfigureAwait(false);
+
+            return Ok("Deleted");
         }
     }
 }
