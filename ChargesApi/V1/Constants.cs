@@ -13,7 +13,7 @@ namespace ChargesApi.V1
         public const string HackneyRootAssetId = "656feda1-896f-b136-da84-163ee4f1be6c";
         public const int PageSize = 8000;
         public const int Page = 1;
-        public const int PerBatchProcessingCount = 25;
+        public const int PerBatchProcessingCount = 10;
         public const string UtcDateFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";
 
         public const string EstimateChargeCode = "DSC";
