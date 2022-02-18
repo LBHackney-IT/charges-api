@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using ChargesApi.V1.Factories;
 using ChargesApi.V1.Infrastructure.Validators;
 using FluentValidation.Results;
+using ChargesApi.V1.Domain;
 
 namespace ChargesApi.V1.Controllers
 {
@@ -261,8 +262,13 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpDelete]
-        public async Task<IActionResult> DeleteBatch([FromQuery] short chargeYear, [FromQuery] string chargeGroup, [FromQuery] string chargeSubGroup)
+        public async Task<IActionResult> DeleteBatch([FromQuery] short chargeYear, [FromQuery] ChargeGroup chargeGroup, [FromQuery] ChargeSubGroup? chargeSubGroup)
         {
+            if (chargeGroup == ChargeGroup.Leaseholders && !chargeSubGroup.HasValue)
+            {
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "ChargeSubGroup is required if ChargeGroup is Leaseholders!"));
+            }
+            
             await _deleteBatchChargesUseCase.ExecuteAsync(chargeYear, chargeGroup, chargeSubGroup)
                 .ConfigureAwait(false);
 
