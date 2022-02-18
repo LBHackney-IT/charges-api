@@ -23,7 +23,7 @@ namespace ChargesApi.V1.Factories
             CreatedBy = scanResponseItem["created_by"].S,
             LastUpdatedAt = DateTime.Parse(scanResponseItem["last_updated_at"].S),
             LastUpdatedBy = scanResponseItem["last_updated_by"].S,
-            DetailedCharges = scanResponseItem["DetailedCharges"].L.Select(av => av.ToDomain())
+            DetailedCharges = scanResponseItem["DetailedCharges"].L.Select(av => av.M.ToDomain())
         };
 
         public static Charge ToDomain(this ChargeDbEntity chargeEntity)
