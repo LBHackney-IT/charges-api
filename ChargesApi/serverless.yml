@@ -25,7 +25,6 @@ functions:
       REQUIRED_GOOGL_GROUPS: ${ssm:/housing-finance/${self:provider.stage}/authorization/required-google-groups}
       ALLOWED_ORIGINS: ${ssm:/charges-api/${self:provider.stage}/allowed-origins}
       CHARGES_SNS_ARN: ${ssm:/sns-topic/${self:provider.stage}/charges/arn}
-      FINANCIAL_SUMMARY_API_URL: ${ssm:/housing-finance/${self:provider.stage}/financial-summary-api-url}
       HOUSING_SEARCH_API_URL: ${ssm:/housing-finance/${self:provider.stage}/housing-search-api-url}
       HOUSING_SEARCH_API_TOKEN: ${ssm:/housing-finance/${self:provider.stage}/housing-search-api-token}
       S3Configuration__BucketName: ${ssm:/housing-finance/${self:provider.stage}/charges-api-s3-bucket-name}
@@ -108,6 +107,11 @@ resources:
                     - s3:GetObject
                     - s3:ListBucket
                     - s3:DeleteObject
+                    - s3:PutBucketTagging
+                    - s3:GetObjectTagging
+                    - s3:GetObjectVersionTagging
+                    - s3:PutObjectTagging
+                    - s3:PutObjectVersionTagging
                   Resource:
                     - "arn:aws:s3:::${self:custom.s3.${opt:stage}}"
                     - "arn:aws:s3:::${self:custom.s3.${opt:stage}}/*"

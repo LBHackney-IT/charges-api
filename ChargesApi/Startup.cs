@@ -214,19 +214,6 @@ namespace ChargesApi
                 c.Timeout = TimeSpan.FromSeconds(20);
             })
            .AddHttpMessageHandler<LoggingDelegatingHandler>();
-
-            var financialSummaryApiUrl = Environment.GetEnvironmentVariable("FINANCIAL_SUMMARY_API_URL");
-            //var housingSearchApiKey = Environment.GetEnvironmentVariable("HOUSING_SEARCH_API_KEY");
-            //var financialSummaryApiToken = Environment.GetEnvironmentVariable("FINANCIAL_SUMMARY_API_TOKEN");
-
-            services.AddHttpClient<IFinancialSummaryService, FinancialSummaryService>(c =>
-            {
-                c.BaseAddress = new Uri(financialSummaryApiUrl ?? fakeUri);
-                c.Timeout = TimeSpan.FromSeconds(20);
-                //c.DefaultRequestHeaders.TryAddWithoutValidation("x-api-key", housingSearchApiKey);
-                //c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(financialSummaryApiToken);
-            })
-           .AddHttpMessageHandler<LoggingDelegatingHandler>();
         }
 
         private static void RegisterUseCases(IServiceCollection services)
@@ -245,8 +232,10 @@ namespace ChargesApi
             services.AddScoped<IAddChargesUpdateUseCase, AddChargesUpdateUseCase>();
             services.AddScoped<IGetChargesSummaryUseCase, GetChargesSummaryUseCase>();
             services.AddScoped<IAddBatchUseCase, AddBatchUseCase>();
-            services.AddScoped<IAddEstimateChargesUseCase, AddEstimateChargesUseCase>();
-            services.AddScoped<IGetPropertyChargesUseCase, GetPropertyChargesUseCase>();
+            services.AddScoped<IEstimateActualUploadUseCase, EstimateActualUploadUseCase>();
+            services.AddScoped<IGetFileProcessingLogUseCase, GetFileProcessingLogUseCase>();
+            services.AddScoped<IUpdateChargeUseCase, UpdateChargeUseCase>();
+            services.AddScoped<IDeleteBatchChargesUseCase, DeleteBatchChargesUseCase>();
         }
 
         private static void RegisterValidators(IServiceCollection services)

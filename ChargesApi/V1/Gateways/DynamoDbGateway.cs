@@ -1,14 +1,16 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
-using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Factories;
 using ChargesApi.V1.Infrastructure;
 using ChargesApi.V1.Infrastructure.Entities;
+using Hackney.Core.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ChargesApi.V1.Boundary.Request;
 using Microsoft.Extensions.Configuration;
@@ -22,17 +24,14 @@ namespace ChargesApi.V1.Gateways
     {
         private readonly IDynamoDBContext _dynamoDbContext;
         private readonly IAmazonDynamoDB _amazonDynamoDb;
-        private readonly IConfiguration _configuration;
         private readonly ILogger<IChargesApiGateway> _logger;
 
         public DynamoDbGateway(IDynamoDBContext dynamoDbContext,
             IAmazonDynamoDB amazonDynamoDb,
-            IConfiguration configuration,
             ILogger<IChargesApiGateway> logger)
         {
             _dynamoDbContext = dynamoDbContext;
             _amazonDynamoDb = amazonDynamoDb;
-            _configuration = configuration;
             _logger = logger;
         }
 
@@ -147,7 +146,7 @@ namespace ChargesApi.V1.Gateways
             var chargesBatch = _dynamoDbContext.CreateBatchWrite<ChargeDbEntity>();
 
             var items = charges.ToDatabaseList();
-            var maxBatchCount = _configuration.GetValue<int>("BatchProcessing:PerBatchCount");
+            var maxBatchCount = Constants.PerBatchProcessingCount;
             if (items.Count > maxBatchCount)
             {
                 var loopCount = (items.Count / maxBatchCount) + 1;
@@ -156,6 +155,7 @@ namespace ChargesApi.V1.Gateways
                     var itemsToWrite = items.Skip(start * maxBatchCount).Take(maxBatchCount);
                     chargesBatch.AddPutItems(itemsToWrite);
                     await chargesBatch.ExecuteAsync().ConfigureAwait(false);
+                    Thread.Sleep(1000);
                 }
             }
             else
@@ -218,6 +218,72 @@ namespace ChargesApi.V1.Gateways
                 throw new Exception(e.Message);
             }
             return result;
+        }
+
+        public async Task DeleteBatchAsync(IEnumerable<ChargeKeys> chargeIds, int batchCapacity)
+        {
+            if (batchCapacity <= 0)
+            {
+                return;
+            }
+
+            for (int i = 0; i <= chargeIds.Count() / batchCapacity; i++)
+            {
+                await DeleteBatchAsync(chargeIds.Skip(i * batchCapacity).Take(batchCapacity))
+                    .ConfigureAwait(false);
+            }
+        }
+
+        private async Task DeleteBatchAsync(IEnumerable<ChargeKeys> chargeIds)
+        {
+            var request = new BatchWriteItemRequest
+            {
+                ReturnConsumedCapacity = ReturnConsumedCapacity.TOTAL,
+                RequestItems = new Dictionary<string, List<WriteRequest>>
+                {
+                    {
+                        Constants.ChargeTableName,
+                        chargeIds.ToWriteRequests().ToList()
+                    }
+                }
+            };
+
+            BatchWriteItemResponse response;
+            do
+            {
+                response = await _amazonDynamoDb.BatchWriteItemAsync(request).ConfigureAwait(false);
+
+                request.RequestItems = response.UnprocessedItems;
+            }
+            while (response.UnprocessedItems.Count > 0);
+        }
+
+        public async Task<IEnumerable<ChargeKeys>> ScanByYearGroupSubGroup(short chargeYear, ChargeGroup chargeGroup, ChargeSubGroup? chargeSubGroup)
+        {
+            var scanRequest = new ScanRequest
+            {
+                TableName = Constants.ChargeTableName,
+                FilterExpression = "charge_year = :charge_year and charge_group = :charge_group",
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                    { ":charge_year", new AttributeValue { N = chargeYear.ToString() } },
+                    { ":charge_group", new AttributeValue { S = chargeGroup.ToString() } }
+                }
+            };
+
+            if (chargeSubGroup != null)
+            {
+                scanRequest.FilterExpression += " and charge_sub_group = :charge_sub_group";
+                scanRequest.ExpressionAttributeValues.Add(":charge_sub_group", new AttributeValue { S = chargeSubGroup.Value.ToString() });
+            }
+            else
+            {
+                scanRequest.FilterExpression += " and attribute_not_exists(charge_sub_group)";
+            }
+
+            var response = await _amazonDynamoDb.ScanAsync(scanRequest).ConfigureAwait(false);
+
+            return response.Items.Select(i => i.GetChargeKeys());
         }
     }
 }

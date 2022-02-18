@@ -6,7 +6,9 @@ namespace ChargesApi.V1.Factories
 {
     public interface ISnsFactory
     {
+        ChargesSns Create(ChargeResponse chargeResponse);
         ChargesSns Create(AddChargesUpdateRequest chargeUpdate);
         ChargesSns CreateFileUploadMessage(FileLocationResponse location);
+        ChargesUpdateSns Update(ChargeResponse chargeResponse);
     }
 }

@@ -6,47 +6,43 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
+using System.Collections.Generic;
+using Amazon.S3.Model;
 using ChargesApi.V1.Boundary.Response;
 using ChargesApi.V1.Factories;
 
 namespace ChargesApi.Tests.V1.UseCase
 {
-    public class AddEstimateChargesUseCaseTests
+    public class EstimateActualUploadUseCaseTests
     {
-        private readonly Mock<IChargesApiGateway> _mockChargeGateway;
         private readonly Mock<IHousingSearchService> _mockHousingSearchService;
-        private readonly Mock<IFinancialSummaryService> _mockFinancialService;
         private readonly Mock<IAwsS3FileService> _mockS3FileService;
         private readonly Mock<ISnsGateway> _mockSnsGateway;
         private readonly Mock<ISnsFactory> _mockSnsFactory;
-        private readonly Mock<ILogger<AddEstimateChargesUseCase>> _mockLogger;
+        private readonly Mock<ILogger<EstimateActualUploadUseCase>> _mockLogger;
 
         //private const string Token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZXN0IiwiaWF0IjoxNjM5NDIyNzE4LCJleHAiOjE5ODY1Nzc5MTgsImF1ZCI6InRlc3QiLCJzdWIiOiJ0ZXN0IiwiZ3JvdXBzIjpbInNvbWUtdmFsaWQtZ29vZ2xlLWdyb3VwIiwic29tZS1vdGhlci12YWxpZC1nb29nbGUtZ3JvdXAiXSwibmFtZSI6InRlc3RpbmcifQ.IcpQ00PGVgksXkR_HFqWOakgbQ_PwW9dTVQu4w77tmU";
         private readonly Fixture _fixture;
 
-        private readonly AddEstimateChargesUseCase _addEstimateChargesUseCase;
+        private readonly EstimateActualUploadUseCase _addEstimateChargesUseCase;
 
-        public AddEstimateChargesUseCaseTests()
+        public EstimateActualUploadUseCaseTests()
         {
             _fixture = new Fixture();
-            _mockChargeGateway = new Mock<IChargesApiGateway>();
             _mockHousingSearchService = new Mock<IHousingSearchService>();
-            _mockLogger = new Mock<ILogger<AddEstimateChargesUseCase>>();
-            _mockFinancialService = new Mock<IFinancialSummaryService>();
+            _mockLogger = new Mock<ILogger<EstimateActualUploadUseCase>>();
             _mockS3FileService = new Mock<IAwsS3FileService>();
             _mockSnsGateway = new Mock<ISnsGateway>();
             _mockSnsFactory = new Mock<ISnsFactory>();
 
-            _mockS3FileService.Setup(s => s.UploadFile(It.IsAny<IFormFile>(), It.IsAny<string>()))
+            _mockS3FileService.Setup(s => s.UploadFile(It.IsAny<IFormFile>(), It.IsAny<string>(), It.IsAny<List<Tag>>()))
                 .ReturnsAsync(new FileLocationResponse
                 {
                     RelativePath = $"uploads/{Guid.NewGuid()}.xslx",
                     BucketName = "test-bucket",
                     FileUrl = null
                 });
-            _addEstimateChargesUseCase = new AddEstimateChargesUseCase(_mockChargeGateway.Object,
-                _mockHousingSearchService.Object,
-                _mockFinancialService.Object,
+            _addEstimateChargesUseCase = new EstimateActualUploadUseCase(
                _mockLogger.Object,
                 _mockS3FileService.Object,
                 _mockSnsGateway.Object,

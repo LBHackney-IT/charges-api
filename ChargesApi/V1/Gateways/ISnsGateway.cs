@@ -6,6 +6,6 @@ namespace ChargesApi.V1.Gateways
     public interface ISnsGateway
     {
         Task Publish(ChargesSns chargesSns);
-
+        Task PublishUpdate(ChargesUpdateSns chargesUpdateSns);
     }
 }

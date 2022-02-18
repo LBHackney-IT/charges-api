@@ -6,5 +6,7 @@ namespace ChargesApi.V1.Infrastructure.AppConstants
         public const string V1VERSION = "v1";
 
         public const string EVENTTYPE = "ChargeUpdateEvent";
+
+        public const string DWELLINGCHARGEUPDATEDTYPE = "DwellingChargeUpdatedEvent";
     }
 }
