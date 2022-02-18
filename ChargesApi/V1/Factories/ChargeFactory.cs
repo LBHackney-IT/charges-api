@@ -11,20 +11,8 @@ namespace ChargesApi.V1.Factories
 {
     public static class ChargeFactory
     {
-        public static Charge ToDomain(this Dictionary<string, AttributeValue> scanResponseItem) => new Charge
-        {
-            Id = Guid.Parse(scanResponseItem["id"].S),
-            TargetId = Guid.Parse(scanResponseItem["target_id"].S),
-            TargetType = Enum.Parse<TargetType>(scanResponseItem["target_type"].S, true),
-            ChargeYear = short.Parse(scanResponseItem["charge_year"].N),
-            ChargeGroup = Enum.Parse<ChargeGroup>(scanResponseItem["charge_group"].S),
-            ChargeSubGroup = Enum.Parse<ChargeSubGroup>(scanResponseItem["charge_sub_group"].S),
-            CreatedAt = DateTime.Parse(scanResponseItem["created_at"].S),
-            CreatedBy = scanResponseItem["created_by"].S,
-            LastUpdatedAt = DateTime.Parse(scanResponseItem["last_updated_at"].S),
-            LastUpdatedBy = scanResponseItem["last_updated_by"].S,
-            DetailedCharges = scanResponseItem["DetailedCharges"].L.Select(av => av.ToDomain())
-        };
+        public static ChargeKeys GetChargeKeys(this Dictionary<string, AttributeValue> scanResponseItem)
+            => new ChargeKeys(Guid.Parse(scanResponseItem["id"].S), Guid.Parse(scanResponseItem["target_id"].S));
 
         public static Charge ToDomain(this ChargeDbEntity chargeEntity)
         {
@@ -129,16 +117,23 @@ namespace ChargesApi.V1.Factories
             return charges.Select(item => item.ToDomain()).ToList();
         }
 
-        public static IEnumerable<WriteRequest> ToWriteRequests(this IEnumerable<Charge> charges) => charges.Select(c => new WriteRequest
-        {
-            DeleteRequest = new DeleteRequest
+        /// <summary>
+        /// Returns a list of WriteRequest objects with [id] attributes only
+        /// </summary>
+        /// <param name="chargeIds"></param>
+        /// <returns></returns>
+        public static IEnumerable<WriteRequest> ToWriteRequests(this IEnumerable<ChargeKeys> chargeIds)
+            => chargeIds.Select(c => new WriteRequest
             {
-                Key = new Dictionary<string, AttributeValue>
+                DeleteRequest = new DeleteRequest
                 {
-                    { "id", new AttributeValue { S = c.Id.ToString() } }
+                    Key = new Dictionary<string, AttributeValue>
+                    {
+                        { "id", new AttributeValue { S = c.Id.ToString() } },
+                        { "target_id", new AttributeValue { S = c.TargetId.ToString() } }
+                    }
                 }
-            }
-        });
+            });
 
         public static Dictionary<string, AttributeValue> ToQueryRequest(this Charge charge)
         {

@@ -194,7 +194,7 @@ namespace ChargesApi.V1.Gateways
             return result;
         }
 
-        public async Task DeleteBatchAsync(IEnumerable<Charge> charges)
+        public async Task DeleteBatchAsync(IEnumerable<ChargeKeys> chargeIds)
         {
             var request = new BatchWriteItemRequest
             {
@@ -203,7 +203,7 @@ namespace ChargesApi.V1.Gateways
                 {
                     {
                         Constants.ChargeTableName,
-                        charges.ToWriteRequests().ToList()
+                        chargeIds.ToWriteRequests().ToList()
                     }
                 }
             };
@@ -218,22 +218,28 @@ namespace ChargesApi.V1.Gateways
             while (response.UnprocessedItems.Count > 0);
         }
 
-        public async Task<IEnumerable<Charge>> ScanByYearGroupSubGroup(short chargeYear, string chargeGroup, string chargeSubGroup)
+        public async Task<IEnumerable<ChargeKeys>> ScanByYearGroupSubGroup(short chargeYear, string chargeGroup, string chargeSubGroup)
         {
-            var request = new ScanRequest
+            var scanRequest = new ScanRequest
             {
                 TableName = Constants.ChargeTableName,
+                FilterExpression = "charge_year = :charge_year and charge_group = :charge_group",
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
                     { ":charge_year", new AttributeValue { N = chargeYear.ToString() } },
-                    { ":charge_group", new AttributeValue { N = chargeGroup } },
-                    { ":charge_sub_group", new AttributeValue { N = chargeSubGroup } }
+                    { ":charge_group", new AttributeValue { S = chargeGroup } }
                 }
             };
 
-            var response = await _amazonDynamoDb.ScanAsync(request).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(chargeSubGroup))
+            {
+                scanRequest.FilterExpression += " and charge_sub_group = :charge_sub_group";
+                scanRequest.ExpressionAttributeValues.Add(":charge_sub_group", new AttributeValue { S = chargeSubGroup });
+            }
 
-            return response.Items.Select(i => i.ToDomain());
+            var response = await _amazonDynamoDb.ScanAsync(scanRequest).ConfigureAwait(false);
+
+            return response.Items.Select(i => i.GetChargeKeys());
         }
     }
 }

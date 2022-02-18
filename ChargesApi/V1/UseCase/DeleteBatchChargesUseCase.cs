@@ -1,5 +1,6 @@
 using ChargesApi.V1.Gateways;
 using ChargesApi.V1.UseCase.Interfaces;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ChargesApi.V1.UseCase
@@ -15,11 +16,15 @@ namespace ChargesApi.V1.UseCase
 
         public async Task ExecuteAsync(short chargeYear, string chargeGroup, string chargeSubGroup)
         {
-            var charges = await _chargesApiGateway.ScanByYearGroupSubGroup(chargeYear, chargeGroup, chargeSubGroup)
+            var chargeIdsToDelete = await _chargesApiGateway.ScanByYearGroupSubGroup(chargeYear, chargeGroup, chargeSubGroup)
                 .ConfigureAwait(false);
 
-            await _chargesApiGateway.DeleteBatchAsync(charges)
-                .ConfigureAwait(false);
+            if (chargeIdsToDelete == null || !chargeIdsToDelete.Any())
+            {
+                return;
+            }
+
+            await _chargesApiGateway.DeleteBatchAsync(chargeIdsToDelete).ConfigureAwait(false);
         }
     }
 }
