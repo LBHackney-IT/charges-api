@@ -8,7 +8,6 @@ namespace ChargesApi.V1.UseCase
 {
     public class DeleteBatchChargesUseCase : IDeleteBatchChargesUseCase
     {
-        private const int BatchCapacity = 25;
         private readonly IChargesApiGateway _chargesApiGateway;
 
         public DeleteBatchChargesUseCase(IChargesApiGateway chargesApiGateway)
@@ -26,7 +25,7 @@ namespace ChargesApi.V1.UseCase
                 return;
             }
 
-            await _chargesApiGateway.DeleteBatchAsync(chargeIdsToDelete, BatchCapacity).ConfigureAwait(false);
+            await _chargesApiGateway.DeleteBatchAsync(chargeIdsToDelete, Constants.PerBatchProcessingCount).ConfigureAwait(false);
         }
     }
 }

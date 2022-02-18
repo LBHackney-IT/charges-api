@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ChargesApi.V1.Gateways
@@ -130,6 +131,7 @@ namespace ChargesApi.V1.Gateways
                     var itemsToWrite = items.Skip(start * maxBatchCount).Take(maxBatchCount);
                     chargesBatch.AddPutItems(itemsToWrite);
                     await chargesBatch.ExecuteAsync().ConfigureAwait(false);
+                    Thread.Sleep(1000);
                 }
             }
             else
