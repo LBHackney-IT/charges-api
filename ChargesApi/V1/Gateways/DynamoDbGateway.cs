@@ -194,7 +194,21 @@ namespace ChargesApi.V1.Gateways
             return result;
         }
 
-        public async Task DeleteBatchAsync(IEnumerable<ChargeKeys> chargeIds)
+        public async Task DeleteBatchAsync(IEnumerable<ChargeKeys> chargeIds, int batchCapacity)
+        {
+            if (batchCapacity <= 0)
+            {
+                return;
+            }
+
+            for (int i = 0; i <= chargeIds.Count() / batchCapacity; i++)
+            {
+                await DeleteBatchAsync(chargeIds.Skip(i * batchCapacity).Take(batchCapacity))
+                    .ConfigureAwait(false);
+            }
+        }
+
+        private async Task DeleteBatchAsync(IEnumerable<ChargeKeys> chargeIds)
         {
             var request = new BatchWriteItemRequest
             {
