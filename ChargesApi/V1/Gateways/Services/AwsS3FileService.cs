@@ -51,6 +51,7 @@ namespace ChargesApi.V1.Gateways.Services
                         RelativePath = location,
                         BucketName = _s3Settings.BucketName,
                         StepNumber = 1,
+                        WriteIndex = 18,
                         FileUrl = null
                     };
                 }
