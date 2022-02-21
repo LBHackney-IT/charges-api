@@ -150,7 +150,7 @@ namespace ChargesApi.V1.UseCase
                     {
                         estimatesActual.Add(new EstimateActualCharge
                         {
-                            PaymentReferenceNumber= reader.GetValue(0).ToString(),
+                            PaymentReferenceNumber = reader.GetValue(0).ToString(),
                             PropertyReferenceNumber = reader.GetValue(1).ToString(),
                             TenureType = reader.GetValue(3).ToString(),
                             Name1 = reader.GetValue(8).ToString(),
