@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ChargesApi.V1.Domain
 {
-    public class EstimateActualCharge
+    public class PropertyChargesFile
     {
         public string PaymentReferenceNumber { get; set; }
         public string PropertyReferenceNumber { get; set; }
@@ -30,10 +33,5 @@ namespace ChargesApi.V1.Domain
         public decimal LiftMaintenance { get; set; }
         public decimal ManagementCharge { get; set; }
         public decimal ReserveFund { get; set; }
-        public string Name1 { get; set; }
-        public string AddressLine1 { get; set; }
-        public string AddressLine2 { get; set; }
-        public string AddressLine3 { get; set; }
-        public string AddressLine4 { get; set; }
     }
 }

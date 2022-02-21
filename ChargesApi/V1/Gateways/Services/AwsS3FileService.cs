@@ -121,5 +121,18 @@ namespace ChargesApi.V1.Gateways.Services
             var valuesType = taggingResponse.Tagging.Where(t => t.Key == "valuesType").Select(t => t.Value).FirstOrDefault();
             return (year, fileStatus, valuesType);
         }
+
+        public async Task<Stream> GetFile(string bucketName, string key)
+        {
+            try
+            {
+                var response = await _s3Client.GetObjectAsync(bucketName, key).ConfigureAwait(false);
+                return response.HttpStatusCode == System.Net.HttpStatusCode.OK ? response.ResponseStream : null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to download file from S3", ex.InnerException);
+            }
+        }
     }
 }

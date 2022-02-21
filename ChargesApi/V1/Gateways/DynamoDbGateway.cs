@@ -15,8 +15,6 @@ using System.Threading.Tasks;
 using ChargesApi.V1.Boundary.Request;
 using Microsoft.Extensions.Configuration;
 using ChargesApi.V1.Infrastructure.JWT;
-using Microsoft.Extensions.Logging;
-using Hackney.Core.Logging;
 
 namespace ChargesApi.V1.Gateways
 {
