@@ -72,7 +72,12 @@ namespace ChargesApi.V1.UseCase
                                 excelData.Add(new EstimateActualCharge
                                 {
                                     PropertyReferenceNumber = reader.GetValue(1).ToString(),
+                                    AssetAddress = reader.GetValue(2).ToString(),
                                     TenureType = reader.GetValue(3).ToString(),
+                                    BlockId = reader.GetValue(4).ToString(),
+                                    BlockAddress = reader.GetValue(5) != null ? reader.GetValue(5).ToString() : string.Empty,
+                                    EstateId = reader.GetValue(6) != null ? reader.GetValue(6).ToString() : string.Empty,
+                                    EstateAddress = reader.GetValue(7) != null ? reader.GetValue(7).ToString() : string.Empty,
                                     TotalCharge = GetChargeAmount(reader.GetValue(18)),
                                     BlockCCTVMaintenanceAndMonitoring = GetChargeAmount(reader.GetValue(19)),
                                     BlockCleaning = GetChargeAmount(reader.GetValue(20)),
