@@ -40,11 +40,14 @@ namespace ChargesApi.V1.UseCase
             var assetsList = await GetAssetsList(AssetType.Dwelling.ToString()).ConfigureAwait(false);
             var dwellingsListResult = assetsList.Item1;
 
-            // Get estimates file
             var bucketName = Environment.GetEnvironmentVariable("CHARGES_BUCKET_NAME");
-            string filePath = "";
-            var fileStream = await _awsS3FileService.GetFile(bucketName, filePath).ConfigureAwait(false);
 
+            // Gets the file list
+            var generatedFiles = await _awsS3FileService.GetProcessedFiles().ConfigureAwait(false);
+
+            // gets the path of latest estimate file
+            var filePath = generatedFiles.OrderByDescending(f => f.DateUploaded).Select(f => f.FileName).FirstOrDefault();
+            var fileStream = await _awsS3FileService.GetFile(bucketName, filePath).ConfigureAwait(false);
             var fileResponse = ReadFile(fileStream);
 
             var builder = new StringBuilder();
