@@ -14,6 +14,7 @@ using ChargesApi.V1.Domain;
 using ChargesApi.V1.Infrastructure;
 using Microsoft.AspNetCore.JsonPatch;
 using ChargesApi.V1.Factories;
+using ChargesApi.V1.Gateways.Services.Interfaces;
 using ChargesApi.V1.Infrastructure.Validators;
 using FluentValidation.Results;
 
@@ -328,9 +329,8 @@ namespace ChargesApi.V1.Controllers
                 return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest,
                     ModelState.GetErrorMessages()));
 
-            var propertyCharges = await _generatePropertyChargesFile.ExecuteAsync(queryParameters).ConfigureAwait(false);
-
-            return File(Encoding.UTF8.GetBytes(propertyCharges), "text/csv", "charges.csv");
+            await _generatePropertyChargesFile.ExecuteAsync(queryParameters).ConfigureAwait(false);
+            return Ok();
         }
     }
 }

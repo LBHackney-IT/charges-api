@@ -13,6 +13,7 @@ using ChargesApi.V1.Helpers;
 using ChargesApi.V1.UseCase.Interfaces;
 using ExcelDataReader;
 using Hackney.Shared.Asset.Domain;
+using Microsoft.AspNetCore.Http;
 
 namespace ChargesApi.V1.UseCase
 {
@@ -29,7 +30,7 @@ namespace ChargesApi.V1.UseCase
             _awsS3FileService = awsS3FileService;
         }
 
-        public async Task<string> ExecuteAsync(PropertyChargesQueryParameters queryParameters)
+        public async Task ExecuteAsync(PropertyChargesQueryParameters queryParameters)
         {
             var propertyCharges = await _getPropertyChargesUseCase.ExecuteAsync(queryParameters).ConfigureAwait(false);
 
@@ -57,17 +58,21 @@ namespace ChargesApi.V1.UseCase
 
             foreach (var propertyCharge in propertyCharges)
             {
-                //TODO check asset Id and target Id is same?
-                var estimateActualCharge = fileResponse.FirstOrDefault(x => x.AssetId == propertyCharge.TargetId);
+                var assetId = dwellingsListResult.FirstOrDefault(x => x.Id == propertyCharge.Id)?.AssetId;
+
+                var estimateActualCharge = fileResponse.FirstOrDefault(x =>
+                    x.PropertyReferenceNumber == assetId);
+
+                if (estimateActualCharge == null)
+                    continue;
 
                 // Update the charges value 
                 var tenureData = UpdateEstimateActualCharge(estimateActualCharge, propertyCharge.DetailedCharges);
 
                 builder.AppendLine(
+                    $"{propertyCharge.Id}," +
                     $"{tenureData.PaymentReferenceNumber}," +
                     $"{tenureData.PropertyReferenceNumber}," +
-                    $"{propertyCharge.TargetId}," +
-                    $"{propertyCharge.Id}," +
                     $"{propertyCharge.ChargeGroup}," +
                     $"{propertyCharge.ChargeYear}," +
                     $"{propertyCharge.ChargeSubGroup}," +
@@ -76,6 +81,7 @@ namespace ChargesApi.V1.UseCase
                     $"{tenureData?.AddressLine2}," +
                     $"{tenureData?.AddressLine3}," +
                     $"{tenureData?.AddressLine4}," +
+                    $"{tenureData?.TotalCharge}," +
                     $"{tenureData?.BlockCCTVMaintenanceAndMonitoring}," +
                     $"{tenureData?.BlockCleaning}," +
                     $"{tenureData?.BlockElectricity}," +
@@ -99,7 +105,14 @@ namespace ChargesApi.V1.UseCase
                     $"{tenureData?.ReserveFund}");
             }
 
-            return builder.ToString();
+            var csvFileStream = new MemoryStream(Encoding.UTF8.GetBytes(builder.ToString()));
+
+            var fileName = $"Charges{DateTime.Now:yyyyMMddHHmmssfff}.csv";
+            var formFile = new FormFile(csvFileStream, 0, csvFileStream.Length, "chargesFile", fileName)
+            {
+                ContentType = "text/csv"
+            };
+            await _awsS3FileService.UploadFile(formFile, formFile.FileName).ConfigureAwait(false);
         }
 
         private async Task<(List<Asset>, long)> GetAssetsList(string assetType)

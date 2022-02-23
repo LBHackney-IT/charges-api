@@ -10,6 +10,6 @@ namespace ChargesApi.V1.UseCase.Interfaces
 {
     public interface IGeneratePropertyChargesFileUseCase
     {
-        Task<string> ExecuteAsync(PropertyChargesQueryParameters queryParameters);
+        Task ExecuteAsync(PropertyChargesQueryParameters queryParameters);
     }
 }
