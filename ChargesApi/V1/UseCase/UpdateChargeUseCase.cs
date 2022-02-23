@@ -68,19 +68,19 @@ namespace ChargesApi.V1.UseCase
         {
             var detailChargesToUpdate = new List<DetailedChargesUpdateDomain>();
 
-            charge.DetailedCharges.ToList().ForEach( x =>
-            {
-                if (changeLogs.ContainsKey(x.SubType))
-                {
-                    var data = new DetailedChargesUpdateDomain
-                    {
-                        ChargeType = x.ChargeType,
-                        SubType = x.SubType,
-                        DifferenceAmount = changeLogs[x.SubType]
-                    };
-                    detailChargesToUpdate.Add(data);
-                }
-            });
+            charge.DetailedCharges.ToList().ForEach(x =>
+           {
+               if (changeLogs.ContainsKey(x.SubType))
+               {
+                   var data = new DetailedChargesUpdateDomain
+                   {
+                       ChargeType = x.ChargeType,
+                       SubType = x.SubType,
+                       DifferenceAmount = changeLogs[x.SubType]
+                   };
+                   detailChargesToUpdate.Add(data);
+               }
+           });
             return detailChargesToUpdate.AsEnumerable();
         }
     }
