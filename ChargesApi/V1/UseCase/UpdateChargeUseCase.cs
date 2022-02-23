@@ -39,6 +39,8 @@ namespace ChargesApi.V1.UseCase
             if (singleCharge == null)
                 throw new ArgumentNullException(nameof(chargesUpdateDomain));
 
+            var changeLogs = new Dictionary<string, decimal>();
+
             // Update the existing detailed charge
             foreach (var requestedDetailedCharge in chargesUpdateDomain.DetailedCharges)
             {
@@ -47,6 +49,7 @@ namespace ChargesApi.V1.UseCase
 
                 if (existingDetailedCharge != null)
                 {
+                    changeLogs.Add(existingDetailedCharge.SubType, (requestedDetailedCharge.Amount - existingDetailedCharge.Amount));
                     existingDetailedCharge.Amount = requestedDetailedCharge.Amount;
                 }
             }
@@ -55,11 +58,30 @@ namespace ChargesApi.V1.UseCase
             singleCharge.LastUpdatedAt = DateTime.UtcNow;
             await _chargesApiGateway.UpdateAsync(singleCharge).ConfigureAwait(false);
 
-            var charge = singleCharge.ToResponse();
-            var snsMessage = _snsFactory.Update(charge);
+            var updateList = GetDetailChargeChangeList(changeLogs, singleCharge);
+            var snsMessage = _snsFactory.Update(updateList, singleCharge.Id, singleCharge.TargetId);
             await _snsGateway.PublishUpdate(snsMessage).ConfigureAwait(false);
 
-            return charge;
+            return singleCharge?.ToResponse();
+        }
+        private static IEnumerable<DetailedChargesUpdateDomain> GetDetailChargeChangeList(Dictionary<string, decimal> changeLogs, Charge charge)
+        {
+            var detailChargesToUpdate = new List<DetailedChargesUpdateDomain>();
+
+            charge.DetailedCharges.ToList().ForEach( x =>
+            {
+                if (changeLogs.ContainsKey(x.SubType))
+                {
+                    var data = new DetailedChargesUpdateDomain
+                    {
+                        ChargeType = x.ChargeType,
+                        SubType = x.SubType,
+                        DifferenceAmount = changeLogs[x.SubType]
+                    };
+                    detailChargesToUpdate.Add(data);
+                }
+            });
+            return detailChargesToUpdate.AsEnumerable();
         }
     }
 }

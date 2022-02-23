@@ -11,6 +11,6 @@ namespace ChargesApi.V1.Domain
 
         public ChargeType ChargeType { get; set; }
 
-        public decimal Amount { get; set; }
+        public decimal DifferenceAmount { get; set; }
     }
 }
