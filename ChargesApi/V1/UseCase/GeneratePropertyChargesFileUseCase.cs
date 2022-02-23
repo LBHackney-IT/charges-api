@@ -112,7 +112,7 @@ namespace ChargesApi.V1.UseCase
             {
                 ContentType = "text/csv"
             };
-            await _awsS3FileService.UploadFile(formFile, formFile.FileName).ConfigureAwait(false);
+            await _awsS3FileService.UploadPrintRoomFile(formFile, formFile.FileName).ConfigureAwait(false);
         }
 
         private async Task<(List<Asset>, long)> GetAssetsList(string assetType)

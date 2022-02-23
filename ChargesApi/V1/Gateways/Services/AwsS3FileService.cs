@@ -136,5 +136,39 @@ namespace ChargesApi.V1.Gateways.Services
                 throw new Exception($"Failed to download file from S3", ex.InnerException);
             }
         }
+
+        public async Task<FileLocationResponse> UploadPrintRoomFile(IFormFile formFile, string fileName)
+        {
+            var location = $"uploads/{fileName}";
+            var bucketName = Environment.GetEnvironmentVariable("PRINT_ROOM_BUCKET_NAME");
+
+            using (var stream = formFile.OpenReadStream())
+            {
+                var putRequest = new PutObjectRequest
+                {
+                    Key = location,
+                    BucketName = bucketName,
+                    InputStream = stream,
+                    AutoCloseStream = true,
+                    ContentType = formFile.ContentType
+                };
+                try
+                {
+                    await _s3Client.PutObjectAsync(putRequest).ConfigureAwait(false);
+                    return new FileLocationResponse
+                    {
+                        RelativePath = location,
+                        BucketName = bucketName,
+                        StepNumber = 1,
+                        WriteIndex = 0,
+                        FileUrl = null
+                    };
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Failed to upload file to S3  {ex.Message}", ex.InnerException);
+                }
+            }
+        }
     }
 }
