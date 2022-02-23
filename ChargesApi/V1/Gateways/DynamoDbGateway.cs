@@ -82,7 +82,7 @@ namespace ChargesApi.V1.Gateways
             var request = new QueryRequest
             {
                 TableName = Constants.ChargeTableName,
-                FilterExpression = "charge_year = :V_charge_year and charge_group = :V_charge_group and charge_sub_group = :V_charge_sub_group and ",
+                FilterExpression = "charge_year = :V_charge_year and charge_group = :V_charge_group and charge_sub_group = :V_charge_sub_group",
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue> {
                     {":V_charge_year", new AttributeValue { S =  queryParameters.ChargeYear.ToString() }},
                     {":V_charge_group", new AttributeValue { S =  queryParameters.ChargeGroup.ToString() }},
