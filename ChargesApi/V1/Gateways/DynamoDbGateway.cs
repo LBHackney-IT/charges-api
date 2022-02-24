@@ -265,7 +265,7 @@ namespace ChargesApi.V1.Gateways
                 _logger.LogError($"TransactWriteItemsAsync: {ex.Message}");
                 throw;
             }
-          
+
             //var request = new BatchWriteItemRequest
             //{
             //    ReturnConsumedCapacity = ReturnConsumedCapacity.TOTAL,
