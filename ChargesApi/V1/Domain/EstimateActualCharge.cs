@@ -40,5 +40,6 @@ namespace ChargesApi.V1.Domain
         public string AddressLine2 { get; set; }
         public string AddressLine3 { get; set; }
         public string AddressLine4 { get; set; }
+        public string PropertyAddress { get; set; }
     }
 }

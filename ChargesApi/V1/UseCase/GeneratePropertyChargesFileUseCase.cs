@@ -95,6 +95,7 @@ namespace ChargesApi.V1.UseCase
                     $"{propertyCharge.ChargeYear}," +
                     $"{propertyCharge.ChargeSubGroup}," +
                     $"{tenureData?.Name1}," +
+                    $"{tenureData?.PropertyAddress}," +
                     $"{tenureData?.AddressLine1}," +
                     $"{tenureData?.AddressLine2}," +
                     $"{tenureData?.AddressLine3}," +
@@ -186,6 +187,7 @@ namespace ChargesApi.V1.UseCase
                         {
                             PaymentReferenceNumber = reader.GetValue(0).ToString(),
                             PropertyReferenceNumber = reader.GetValue(1).ToString(),
+                            PropertyAddress = reader.GetValue(2).ToString(),
                             TenureType = reader.GetValue(3).ToString(),
                             Name1 = reader.GetValue(8).ToString(),
                             AddressLine1 = reader.GetValue(9).ToString(),
