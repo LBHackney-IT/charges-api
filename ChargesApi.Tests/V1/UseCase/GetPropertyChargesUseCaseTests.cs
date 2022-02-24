@@ -32,8 +32,8 @@ namespace ChargesApi.Tests.V1.UseCase
                     {
                         new Charge
                         {
-                            Id = new Guid("271b9a38-e78f-4a3f-81c0-4541bc5acc2c"),
-                            TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
+                            Id = Guid.NewGuid(),
+                            TargetId = Guid.NewGuid(),
                             TargetType = TargetType.Block,
                             ChargeGroup = ChargeGroup.Tenants,
                             ChargeYear = 2022,
@@ -65,8 +65,8 @@ namespace ChargesApi.Tests.V1.UseCase
                         },
                         new Charge
                         {
-                            Id = new Guid("0f668265-1501-4722-8e37-77c7116dae2f"),
-                            TargetId = new Guid("cb501c6e-b51c-47b4-9a7e-dddb8cb575ff"),
+                            Id = Guid.NewGuid(),
+                            TargetId = Guid.NewGuid(),
                             TargetType = TargetType.Block,
                             ChargeGroup = ChargeGroup.Tenants,
                             DetailedCharges = new List<DetailedCharges>()
