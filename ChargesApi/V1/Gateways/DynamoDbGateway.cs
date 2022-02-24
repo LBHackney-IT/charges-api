@@ -298,18 +298,18 @@ namespace ChargesApi.V1.Gateways
             var scanRequest = new ScanRequest
             {
                 TableName = Constants.ChargeTableName,
-                FilterExpression = "charge_year = :charge_year and charge_group = :charge_group",
+                FilterExpression = "charge_year = :v_charge_year and charge_group = :v_charge_group",
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
-                    { ":charge_year", new AttributeValue { N = chargeYear.ToString() } },
-                    { ":charge_group", new AttributeValue { S = chargeGroup.ToString() } }
+                    { ":v_charge_year", new AttributeValue { N = chargeYear.ToString() } },
+                    { ":v_charge_group", new AttributeValue { S = chargeGroup.ToString() } }
                 }
             };
 
             if (chargeSubGroup != null)
             {
-                scanRequest.FilterExpression += " and charge_sub_group = :charge_sub_group";
-                scanRequest.ExpressionAttributeValues.Add(":charge_sub_group", new AttributeValue { S = chargeSubGroup.Value.ToString() });
+                scanRequest.FilterExpression += " and charge_sub_group = :v_charge_sub_group";
+                scanRequest.ExpressionAttributeValues.Add(":v_charge_sub_group", new AttributeValue { S = chargeSubGroup.Value.ToString() });
             }
             else
             {
