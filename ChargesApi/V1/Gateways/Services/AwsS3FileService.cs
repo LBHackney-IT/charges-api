@@ -83,7 +83,7 @@ namespace ChargesApi.V1.Gateways.Services
                 var fileUrl = GeneratePreSignedUrl(s3Object.Key);
                 filesList.Add(new FileProcessingLogResponse
                 {
-                    FileName = Path.GetFileNameWithoutExtension(s3Object.Key),
+                    FileName = s3Object.Key,
                     FileStatus = fileStatus,
                     FileUrl = new Uri(fileUrl),
                     DateUploaded = s3Object.LastModified,
@@ -124,11 +124,11 @@ namespace ChargesApi.V1.Gateways.Services
             return (year, fileStatus, valuesType);
         }
 
-        public async Task<Stream> GetFile(string bucketName, string key)
+        public async Task<Stream> GetFile(string key)
         {
             try
             {
-                var response = await _s3Client.GetObjectAsync(bucketName, key).ConfigureAwait(false);
+                var response = await _s3Client.GetObjectAsync(_s3Settings.BucketName, key).ConfigureAwait(false);
                 return response.HttpStatusCode == System.Net.HttpStatusCode.OK ? response.ResponseStream : null;
             }
             catch (Exception ex)

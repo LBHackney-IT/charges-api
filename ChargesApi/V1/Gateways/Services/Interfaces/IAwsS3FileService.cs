@@ -11,7 +11,7 @@ namespace ChargesApi.V1.Gateways.Services.Interfaces
     {
         Task<FileLocationResponse> UploadFile(IFormFile formFile, string fileName, IList<Tag> fileTags = null);
         Task<List<FileProcessingLogResponse>> GetProcessedFiles();
-        Task<Stream> GetFile(string bucketName, string key);
+        Task<Stream> GetFile(string key);
         Task<FileLocationResponse> UploadPrintRoomFile(IFormFile formFile, string fileName);
     }
 }

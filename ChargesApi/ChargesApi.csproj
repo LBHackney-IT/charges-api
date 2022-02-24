@@ -45,7 +45,6 @@
   <ItemGroup>
     <Folder Include="Documentation\" />
     <Folder Include="terraform\" />
-    <Folder Include="V1\Helpers\" />
   </ItemGroup>
 
 </Project>
