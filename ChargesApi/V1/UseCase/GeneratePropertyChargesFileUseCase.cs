@@ -9,7 +9,6 @@ using ChargesApi.V1.Boundary.Request;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Gateways.Services;
 using ChargesApi.V1.Gateways.Services.Interfaces;
-using ChargesApi.V1.Helpers;
 using ChargesApi.V1.UseCase.Interfaces;
 using ExcelDataReader;
 using Hackney.Shared.Asset.Domain;
@@ -54,7 +53,8 @@ namespace ChargesApi.V1.UseCase
             var builder = new StringBuilder();
 
             // Set header for csv file
-            builder.AppendLine(CsvFileConstants.FileHeader);
+            var fileHeader = Environment.GetEnvironmentVariable("PRINT_RENT_STATEMENTS_HEADER");
+            builder.AppendLine(fileHeader);
 
             foreach (var propertyCharge in propertyCharges)
             {
