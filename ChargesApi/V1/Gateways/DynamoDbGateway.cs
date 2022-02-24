@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -224,26 +225,69 @@ namespace ChargesApi.V1.Gateways
 
         private async Task DeleteBatchAsync(IEnumerable<ChargeKeys> chargeIds)
         {
-            var request = new BatchWriteItemRequest
+            var actions = new List<TransactWriteItem>();
+            _logger.LogInformation($"Items to delete {chargeIds.Count()}");
+            foreach (var charge in chargeIds)
             {
-                ReturnConsumedCapacity = ReturnConsumedCapacity.TOTAL,
-                RequestItems = new Dictionary<string, List<WriteRequest>>
+                //var columns = transaction.ToQueryRequest();
+
+                actions.Add(new TransactWriteItem
                 {
+                    Delete = new Delete()
                     {
-                        Constants.ChargeTableName,
-                        chargeIds.ToWriteRequests().ToList()
-                    }
-                }
-            };
-
-            BatchWriteItemResponse response;
-            do
-            {
-                response = await _amazonDynamoDb.BatchWriteItemAsync(request).ConfigureAwait(false);
-
-                request.RequestItems = response.UnprocessedItems;
+                        TableName = "Charges",
+                        Key = new Dictionary<string, AttributeValue>
+                        {
+                            {"target_id",new AttributeValue(charge.TargetId.ToString())},
+                            {"id",new AttributeValue(charge.Id.ToString())}
+                        },
+                        ReturnValuesOnConditionCheckFailure = ReturnValuesOnConditionCheckFailure.ALL_OLD
+                    },
+                });
             }
-            while (response.UnprocessedItems.Count > 0);
+
+            TransactWriteItemsRequest placeOrderCharge = new TransactWriteItemsRequest
+            {
+                TransactItems = actions,
+                ReturnConsumedCapacity = ReturnConsumedCapacity.TOTAL
+            };
+            try
+            {
+                _logger.LogInformation($"TransactWriteItemsAsync starting");
+                var writeResult = await _amazonDynamoDb.TransactWriteItemsAsync(placeOrderCharge).ConfigureAwait(false);
+                _logger.LogInformation($"TransactWriteItemsAsync completed");
+                if (writeResult.HttpStatusCode != HttpStatusCode.OK)
+                    throw new Exception(writeResult.ResponseMetadata.ToString());
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"TransactWriteItemsAsync: {ex.Message}");
+                throw;
+            }
+          
+            //var request = new BatchWriteItemRequest
+            //{
+            //    ReturnConsumedCapacity = ReturnConsumedCapacity.TOTAL,
+            //    RequestItems = new Dictionary<string, List<WriteRequest>>
+            //    {
+            //        {
+            //            Constants.ChargeTableName,
+            //            chargeIds.ToWriteRequests().ToList()
+            //        }
+            //    }
+            //};
+
+            //BatchWriteItemResponse response;
+            //do
+            //{
+            //    response = await _amazonDynamoDb.BatchWriteItemAsync(request).ConfigureAwait(false);
+
+            //    request.RequestItems = response.UnprocessedItems;
+            //}
+            //while (response.UnprocessedItems.Count > 0);
+
+
         }
 
         public async Task<IEnumerable<ChargeKeys>> ScanByYearGroupSubGroup(short chargeYear, ChargeGroup chargeGroup, ChargeSubGroup? chargeSubGroup)
