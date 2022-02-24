@@ -9,6 +9,7 @@ using ChargesApi.V1.Boundary.Request;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Gateways.Services;
 using ChargesApi.V1.Gateways.Services.Interfaces;
+using ChargesApi.V1.Helpers;
 using ChargesApi.V1.UseCase.Interfaces;
 using ExcelDataReader;
 using Hackney.Shared.Asset.Domain;
@@ -40,14 +41,31 @@ namespace ChargesApi.V1.UseCase
             var assetsList = await GetAssetsList(AssetType.Dwelling.ToString()).ConfigureAwait(false);
             var dwellingsListResult = assetsList.Item1;
 
-            var bucketName = Environment.GetEnvironmentVariable("CHARGES_BUCKET_NAME");
-
-            // Gets the file list
+            // Gets all the file list
             var generatedFiles = await _awsS3FileService.GetProcessedFiles().ConfigureAwait(false);
+            var orderedFiles = generatedFiles.OrderByDescending(f => f.DateUploaded);
+            var filePath = string.Empty;
 
-            // gets the path of latest estimate file
-            var filePath = generatedFiles.OrderByDescending(f => f.DateUploaded).Select(f => f.FileName).FirstOrDefault();
-            var fileStream = await _awsS3FileService.GetFile(bucketName, filePath).ConfigureAwait(false);
+            // Find the filtered estimated file by charge year and charge sub group
+            foreach (var file in orderedFiles)
+            {
+                // Check the file tag
+                if (file.Year == queryParameters.ChargeYear.ToString() && file.ValuesType == queryParameters.ChargeSubGroup.ToString())
+                {
+                    var stream = await _awsS3FileService.GetFile(file.FileName).ConfigureAwait(false);
+
+                    if (ReadHeader(stream, queryParameters.ChargeYear, queryParameters.ChargeSubGroup))
+                    {
+                        filePath = file.FileName;
+                    }
+                }
+            }
+
+            var fileStream = await _awsS3FileService.GetFile(filePath).ConfigureAwait(false);
+
+            if (fileStream == null)
+                throw new Exception("Cannot locate Estimate File");
+
             var fileResponse = ReadFile(fileStream);
 
             var builder = new StringBuilder();
@@ -64,7 +82,7 @@ namespace ChargesApi.V1.UseCase
                     x.PropertyReferenceNumber == assetId);
 
                 if (estimateActualCharge == null)
-                    continue;
+                    throw new Exception("Cannot locate the asset on estimate file");
 
                 // Update the charges value 
                 var tenureData = UpdateEstimateActualCharge(estimateActualCharge, propertyCharge.DetailedCharges);
@@ -174,28 +192,28 @@ namespace ChargesApi.V1.UseCase
                             AddressLine2 = reader.GetValue(10).ToString(),
                             AddressLine3 = reader.GetValue(11).ToString(),
                             AddressLine4 = reader.GetValue(12).ToString(),
-                            TotalCharge = GetChargeAmount(reader.GetValue(18)),
-                            BlockCCTVMaintenanceAndMonitoring = GetChargeAmount(reader.GetValue(19)),
-                            BlockCleaning = GetChargeAmount(reader.GetValue(20)),
-                            BlockElectricity = GetChargeAmount(reader.GetValue(21)),
-                            BlockRepairs = GetChargeAmount(reader.GetValue(22)),
-                            BuildingInsurancePremium = GetChargeAmount(reader.GetValue(23)),
-                            DoorEntry = GetChargeAmount(reader.GetValue(24)),
-                            CommunalTVAerialMaintenance = GetChargeAmount(reader.GetValue(25)),
-                            ConciergeService = GetChargeAmount(reader.GetValue(26)),
-                            EstateCCTVMaintenanceAndMonitoring = GetChargeAmount(reader.GetValue(27)),
-                            EstateCleaning = GetChargeAmount(reader.GetValue(28)),
-                            EstateElectricity = GetChargeAmount(reader.GetValue(29)),
-                            EstateRepairs = GetChargeAmount(reader.GetValue(30)),
-                            EstateRoadsFootpathsAndDrainage = GetChargeAmount(reader.GetValue(31)),
-                            GroundRent = GetChargeAmount(reader.GetValue(32)),
-                            GroundsMaintenance = GetChargeAmount(reader.GetValue(33)),
-                            HeatingOrHotWaterEnergy = GetChargeAmount(reader.GetValue(34)),
-                            HeatingOrHotWaterMaintenance = GetChargeAmount(reader.GetValue(35)),
-                            HeatingStandingCharge = GetChargeAmount(reader.GetValue(36)),
-                            LiftMaintenance = GetChargeAmount(reader.GetValue(37)),
-                            ManagementCharge = GetChargeAmount(reader.GetValue(38)),
-                            ReserveFund = GetChargeAmount(reader.GetValue(39))
+                            TotalCharge = FileReaderHelper.GetChargeAmount(reader.GetValue(18)),
+                            BlockCCTVMaintenanceAndMonitoring = FileReaderHelper.GetChargeAmount(reader.GetValue(19)),
+                            BlockCleaning = FileReaderHelper.GetChargeAmount(reader.GetValue(20)),
+                            BlockElectricity = FileReaderHelper.GetChargeAmount(reader.GetValue(21)),
+                            BlockRepairs = FileReaderHelper.GetChargeAmount(reader.GetValue(22)),
+                            BuildingInsurancePremium = FileReaderHelper.GetChargeAmount(reader.GetValue(23)),
+                            DoorEntry = FileReaderHelper.GetChargeAmount(reader.GetValue(24)),
+                            CommunalTVAerialMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(25)),
+                            ConciergeService = FileReaderHelper.GetChargeAmount(reader.GetValue(26)),
+                            EstateCCTVMaintenanceAndMonitoring = FileReaderHelper.GetChargeAmount(reader.GetValue(27)),
+                            EstateCleaning = FileReaderHelper.GetChargeAmount(reader.GetValue(28)),
+                            EstateElectricity = FileReaderHelper.GetChargeAmount(reader.GetValue(29)),
+                            EstateRepairs = FileReaderHelper.GetChargeAmount(reader.GetValue(30)),
+                            EstateRoadsFootpathsAndDrainage = FileReaderHelper.GetChargeAmount(reader.GetValue(31)),
+                            GroundRent = FileReaderHelper.GetChargeAmount(reader.GetValue(32)),
+                            GroundsMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(33)),
+                            HeatingOrHotWaterEnergy = FileReaderHelper.GetChargeAmount(reader.GetValue(34)),
+                            HeatingOrHotWaterMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(35)),
+                            HeatingStandingCharge = FileReaderHelper.GetChargeAmount(reader.GetValue(36)),
+                            LiftMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(37)),
+                            ManagementCharge = FileReaderHelper.GetChargeAmount(reader.GetValue(38)),
+                            ReserveFund = FileReaderHelper.GetChargeAmount(reader.GetValue(39))
                         });
                     }
                     catch (Exception e)
@@ -206,16 +224,6 @@ namespace ChargesApi.V1.UseCase
             }
 
             return estimatesActual;
-        }
-
-        private static decimal GetChargeAmount(object excelColumnValue)
-        {
-            decimal result;
-            if (excelColumnValue == null || excelColumnValue.ToString() == " ")
-                result = 0;
-            else
-                result = Convert.ToDecimal(excelColumnValue);
-            return result;
         }
 
         private static EstimateActualCharge UpdateEstimateActualCharge(EstimateActualCharge estimateActualCharge, IEnumerable<DetailedCharges> detailedCharges)
@@ -242,6 +250,54 @@ namespace ChargesApi.V1.UseCase
             }
 
             return estimateActualCharge;
+        }
+
+        private static bool ReadHeader(Stream fileStream, short chargeYear, ChargeSubGroup chargeSubGroup)
+        {
+            Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+            short fileHeaderChargeYear = 0;
+            var fileHeaderChargeSubGroup = string.Empty;
+            var recordsCount = 0;
+
+            if (fileStream == null)
+                return false;
+
+            // Read Excel
+            using (var stream = new MemoryStream())
+            {
+                fileStream.CopyTo(stream);
+                stream.Position = 1;
+                // Excel Read Process
+                using var reader = ExcelReaderFactory.CreateReader(stream);
+
+                while (reader.Read())
+                {
+                    try
+                    {
+                        if (recordsCount == 0)
+                        {
+                            fileHeaderChargeYear =
+                                Convert.ToInt16($"20{reader.GetValue(19).ToString()?.Substring(0, 2)}");
+                            fileHeaderChargeSubGroup = reader.GetValue(19).ToString().Substring(0, 3).EndsWith("E")
+                                ? Constants.EstimateTypeFile
+                                : Constants.ActualTypeFile;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception(e.Message);
+                    }
+                    recordsCount++;
+                }
+            }
+
+            if (fileHeaderChargeYear == chargeYear && fileHeaderChargeSubGroup == chargeSubGroup.ToString())
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
