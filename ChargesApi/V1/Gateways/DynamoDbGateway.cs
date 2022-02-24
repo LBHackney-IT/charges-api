@@ -13,6 +13,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using ChargesApi.V1.Gateways.Common;
 
 namespace ChargesApi.V1.Gateways
 {
@@ -204,12 +205,12 @@ namespace ChargesApi.V1.Gateways
                 return;
             }
 
-
             int loopCount;
             var chargeKeysEnumerable = chargeIds.ToList();
             var totalCount = chargeKeysEnumerable.ToList().Count;
 
-            _logger.LogInformation($"Items to delete {totalCount}");
+            LoggingHandler.LogInfo($"Items to delete {totalCount}");
+            //_logger.LogInformation($"Items to delete {totalCount}");
 
             if (totalCount % batchCapacity == 0)
                 loopCount = totalCount / batchCapacity;
@@ -253,9 +254,11 @@ namespace ChargesApi.V1.Gateways
             };
             try
             {
-                _logger.LogInformation($"TransactWriteItemsAsync starting");
+                LoggingHandler.LogInfo("TransactWriteItemsAsync starting.");
+                // _logger.LogInformation($"TransactWriteItemsAsync starting");
                 var writeResult = await _amazonDynamoDb.TransactWriteItemsAsync(placeOrderCharge).ConfigureAwait(false);
-                _logger.LogInformation($"TransactWriteItemsAsync completed");
+                LoggingHandler.LogInfo("TransactWriteItemsAsync completed.");
+                //_logger.LogInformation($"TransactWriteItemsAsync completed");
                 if (writeResult.HttpStatusCode != HttpStatusCode.OK)
                     throw new Exception(writeResult.ResponseMetadata.ToString());
 
@@ -314,8 +317,10 @@ namespace ChargesApi.V1.Gateways
             }
 
             var response = await _amazonDynamoDb.ScanAsync(scanRequest).ConfigureAwait(false);
-
+            LoggingHandler.LogInfo($"Total Count: {response.Count}.");
             return response.Items.Select(i => i.GetChargeKeys());
+
+
         }
     }
 }
