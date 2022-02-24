@@ -202,7 +202,7 @@ namespace ChargesApi.V1.Gateways
             {
                 return;
             }
-            
+
 
             int loopCount;
             var chargeKeysEnumerable = chargeIds.ToList();
