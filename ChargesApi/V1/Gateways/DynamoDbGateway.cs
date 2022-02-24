@@ -208,7 +208,7 @@ namespace ChargesApi.V1.Gateways
             var chargeKeysEnumerable = chargeIds.ToList();
             var totalCount = chargeKeysEnumerable.ToList().Count;
 
-            _logger.LogDebug($"Items to delete {totalCount}");
+            _logger.LogInformation($"Items to delete {totalCount}");
 
             if (totalCount % batchCapacity == 0)
                 loopCount = totalCount / batchCapacity;
