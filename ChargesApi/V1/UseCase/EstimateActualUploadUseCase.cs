@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using ChargesApi.V1.Helpers;
 
 namespace ChargesApi.V1.UseCase
 {
@@ -78,28 +79,28 @@ namespace ChargesApi.V1.UseCase
                                     BlockAddress = reader.GetValue(5) != null ? reader.GetValue(5).ToString() : string.Empty,
                                     EstateId = reader.GetValue(6) != null ? reader.GetValue(6).ToString() : string.Empty,
                                     EstateAddress = reader.GetValue(7) != null ? reader.GetValue(7).ToString() : string.Empty,
-                                    TotalCharge = GetChargeAmount(reader.GetValue(18)),
-                                    BlockCCTVMaintenanceAndMonitoring = GetChargeAmount(reader.GetValue(19)),
-                                    BlockCleaning = GetChargeAmount(reader.GetValue(20)),
-                                    BlockElectricity = GetChargeAmount(reader.GetValue(21)),
-                                    BlockRepairs = GetChargeAmount(reader.GetValue(22)),
-                                    BuildingInsurancePremium = GetChargeAmount(reader.GetValue(23)),
-                                    DoorEntry = GetChargeAmount(reader.GetValue(24)),
-                                    CommunalTVAerialMaintenance = GetChargeAmount(reader.GetValue(25)),
-                                    ConciergeService = GetChargeAmount(reader.GetValue(26)),
-                                    EstateCCTVMaintenanceAndMonitoring = GetChargeAmount(reader.GetValue(27)),
-                                    EstateCleaning = GetChargeAmount(reader.GetValue(28)),
-                                    EstateElectricity = GetChargeAmount(reader.GetValue(29)),
-                                    EstateRepairs = GetChargeAmount(reader.GetValue(30)),
-                                    EstateRoadsFootpathsAndDrainage = GetChargeAmount(reader.GetValue(31)),
-                                    GroundRent = GetChargeAmount(reader.GetValue(32)),
-                                    GroundsMaintenance = GetChargeAmount(reader.GetValue(33)),
-                                    HeatingOrHotWaterEnergy = GetChargeAmount(reader.GetValue(34)),
-                                    HeatingOrHotWaterMaintenance = GetChargeAmount(reader.GetValue(35)),
-                                    HeatingStandingCharge = GetChargeAmount(reader.GetValue(36)),
-                                    LiftMaintenance = GetChargeAmount(reader.GetValue(37)),
-                                    ManagementCharge = GetChargeAmount(reader.GetValue(38)),
-                                    ReserveFund = GetChargeAmount(reader.GetValue(39))
+                                    TotalCharge = FileReaderHelper.GetChargeAmount(reader.GetValue(18)),
+                                    BlockCCTVMaintenanceAndMonitoring = FileReaderHelper.GetChargeAmount(reader.GetValue(19)),
+                                    BlockCleaning = FileReaderHelper.GetChargeAmount(reader.GetValue(20)),
+                                    BlockElectricity = FileReaderHelper.GetChargeAmount(reader.GetValue(21)),
+                                    BlockRepairs = FileReaderHelper.GetChargeAmount(reader.GetValue(22)),
+                                    BuildingInsurancePremium = FileReaderHelper.GetChargeAmount(reader.GetValue(23)),
+                                    DoorEntry = FileReaderHelper.GetChargeAmount(reader.GetValue(24)),
+                                    CommunalTVAerialMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(25)),
+                                    ConciergeService = FileReaderHelper.GetChargeAmount(reader.GetValue(26)),
+                                    EstateCCTVMaintenanceAndMonitoring = FileReaderHelper.GetChargeAmount(reader.GetValue(27)),
+                                    EstateCleaning = FileReaderHelper.GetChargeAmount(reader.GetValue(28)),
+                                    EstateElectricity = FileReaderHelper.GetChargeAmount(reader.GetValue(29)),
+                                    EstateRepairs = FileReaderHelper.GetChargeAmount(reader.GetValue(30)),
+                                    EstateRoadsFootpathsAndDrainage = FileReaderHelper.GetChargeAmount(reader.GetValue(31)),
+                                    GroundRent = FileReaderHelper.GetChargeAmount(reader.GetValue(32)),
+                                    GroundsMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(33)),
+                                    HeatingOrHotWaterEnergy = FileReaderHelper.GetChargeAmount(reader.GetValue(34)),
+                                    HeatingOrHotWaterMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(35)),
+                                    HeatingStandingCharge = FileReaderHelper.GetChargeAmount(reader.GetValue(36)),
+                                    LiftMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(37)),
+                                    ManagementCharge = FileReaderHelper.GetChargeAmount(reader.GetValue(38)),
+                                    ReserveFund = FileReaderHelper.GetChargeAmount(reader.GetValue(39))
                                 });
                             }
                             catch (Exception e)
@@ -136,16 +137,6 @@ namespace ChargesApi.V1.UseCase
                 return true;
             else
                 return false;
-        }
-
-        private static decimal GetChargeAmount(object excelColumnValue)
-        {
-            decimal result;
-            if (excelColumnValue == null || excelColumnValue.ToString() == " ")
-                result = 0;
-            else
-                result = Convert.ToDecimal(excelColumnValue);
-            return result;
         }
     }
 }

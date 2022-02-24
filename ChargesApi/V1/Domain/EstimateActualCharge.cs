@@ -4,6 +4,7 @@ namespace ChargesApi.V1.Domain
 {
     public class EstimateActualCharge
     {
+        public string PaymentReferenceNumber { get; set; }
         public string PropertyReferenceNumber { get; set; }
         public Guid AssetId { get; set; }
         public string AssetAddress { get; set; }
@@ -34,5 +35,11 @@ namespace ChargesApi.V1.Domain
         public decimal LiftMaintenance { get; set; }
         public decimal ManagementCharge { get; set; }
         public decimal ReserveFund { get; set; }
+        public string Name1 { get; set; }
+        public string AddressLine1 { get; set; }
+        public string AddressLine2 { get; set; }
+        public string AddressLine3 { get; set; }
+        public string AddressLine4 { get; set; }
+        public string PropertyAddress { get; set; }
     }
 }

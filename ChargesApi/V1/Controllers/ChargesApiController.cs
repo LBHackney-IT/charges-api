@@ -5,15 +5,18 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
+using ChargesApi.V1.Domain;
 using ChargesApi.V1.Infrastructure;
 using Microsoft.AspNetCore.JsonPatch;
 using ChargesApi.V1.Factories;
+using ChargesApi.V1.Gateways.Services.Interfaces;
 using ChargesApi.V1.Infrastructure.Validators;
 using FluentValidation.Results;
-using ChargesApi.V1.Domain;
 
 namespace ChargesApi.V1.Controllers
 {
@@ -31,6 +34,7 @@ namespace ChargesApi.V1.Controllers
         private readonly IAddBatchUseCase _addBatchUseCase;
         private readonly IUpdateChargeUseCase _updateChargeUseCase;
         private readonly IDeleteBatchChargesUseCase _deleteBatchChargesUseCase;
+        private readonly IGeneratePropertyChargesFileUseCase _generatePropertyChargesFile;
 
         public ChargesApiController(
             IGetAllUseCase getAllUseCase,
@@ -40,7 +44,8 @@ namespace ChargesApi.V1.Controllers
             IUpdateUseCase updateUseCase,
             IAddBatchUseCase addBatchUseCase,
             IUpdateChargeUseCase updateChargeUseCase,
-            IDeleteBatchChargesUseCase deleteBatchChargesUseCase)
+            IDeleteBatchChargesUseCase deleteBatchChargesUseCase,
+            IGeneratePropertyChargesFileUseCase generatePropertyChargesFile)
         {
             _getAllUseCase = getAllUseCase;
             _getByIdUseCase = getByIdUseCase;
@@ -50,6 +55,7 @@ namespace ChargesApi.V1.Controllers
             _addBatchUseCase = addBatchUseCase;
             _updateChargeUseCase = updateChargeUseCase;
             _deleteBatchChargesUseCase = deleteBatchChargesUseCase;
+            _generatePropertyChargesFile = generatePropertyChargesFile;
         }
 
         /// <summary>
@@ -303,6 +309,28 @@ namespace ChargesApi.V1.Controllers
                 .ConfigureAwait(false);
 
             return Ok("Deleted");
+        }
+
+        /// <summary>
+        /// Returns the Property Charges Csv File
+        /// </summary>
+        /// <param name="queryParameters">Search parameters to filter property charges</param>
+        /// <response code="204">Success. File generated successfully</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="404">Property Charge with provided parameters cannot be found</response>
+        [ProducesResponseType(typeof(File), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
+        [HttpGet("file")]
+        public async Task<ActionResult> DownloadPropertyChargesFile([FromQuery] PropertyChargesQueryParameters queryParameters)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest,
+                    ModelState.GetErrorMessages()));
+
+            await _generatePropertyChargesFile.ExecuteAsync(queryParameters).ConfigureAwait(false);
+            return Ok();
         }
     }
 }
