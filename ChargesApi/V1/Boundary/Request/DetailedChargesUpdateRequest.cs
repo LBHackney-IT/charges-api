@@ -10,7 +10,7 @@ namespace ChargesApi.V1.Boundary.Request
 {
     public class DetailedChargesUpdateRequest
     {
-        /// <example>Estates Cleaning</example>
+        /// <example>Estate Cleaning</example>
         [Required]
         public string SubType { get; set; }
 
