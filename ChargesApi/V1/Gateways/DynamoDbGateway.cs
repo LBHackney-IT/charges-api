@@ -202,10 +202,22 @@ namespace ChargesApi.V1.Gateways
             {
                 return;
             }
-            _logger.LogDebug($"Items to delete {chargeIds.Count()}");
-            for (int i = 0; i <= chargeIds.Count() / batchCapacity; i++)
+            
+
+            int loopCount;
+            var chargeKeysEnumerable = chargeIds.ToList();
+            var totalCount = chargeKeysEnumerable.ToList().Count;
+
+            _logger.LogDebug($"Items to delete {totalCount}");
+
+            if (totalCount % batchCapacity == 0)
+                loopCount = totalCount / batchCapacity;
+            else
+                loopCount = (totalCount / batchCapacity) + 1;
+
+            for (var i = 0; i < loopCount; i++)
             {
-                await DeleteBatchAsync(chargeIds.Skip(i * batchCapacity).Take(batchCapacity))
+                await DeleteBatchAsync(chargeKeysEnumerable.Skip(i * batchCapacity).Take(batchCapacity))
                     .ConfigureAwait(false);
             }
         }
