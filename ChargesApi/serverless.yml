@@ -132,6 +132,7 @@ resources:
                     - "dynamodb:Query"
                     - "dynamodb:Scan"
                     - "dynamodb:UpdateItem"
+                    - "dynamodb:BatchWriteItem"
                   Resource:
                     - 'Fn::Join':
                         - ':'
