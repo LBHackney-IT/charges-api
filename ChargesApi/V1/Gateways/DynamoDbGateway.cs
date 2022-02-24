@@ -255,7 +255,7 @@ namespace ChargesApi.V1.Gateways
             try
             {
                 LoggingHandler.LogInfo("TransactWriteItemsAsync starting.");
-               // _logger.LogInformation($"TransactWriteItemsAsync starting");
+                // _logger.LogInformation($"TransactWriteItemsAsync starting");
                 var writeResult = await _amazonDynamoDb.TransactWriteItemsAsync(placeOrderCharge).ConfigureAwait(false);
                 LoggingHandler.LogInfo("TransactWriteItemsAsync completed.");
                 //_logger.LogInformation($"TransactWriteItemsAsync completed");
@@ -320,7 +320,7 @@ namespace ChargesApi.V1.Gateways
             LoggingHandler.LogInfo($"Total Count: {response.Count}.");
             return response.Items.Select(i => i.GetChargeKeys());
 
-           
+
         }
     }
 }
