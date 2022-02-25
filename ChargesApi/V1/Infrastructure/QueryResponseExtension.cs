@@ -61,5 +61,42 @@ namespace ChargesApi.V1.Infrastructure
 
             return chargesList;
         }
+
+        public static List<Charge> ToChargeDomain(this ScanResponse response)
+        {
+            var chargesList = new List<Charge>();
+            foreach (Dictionary<string, AttributeValue> item in response.Items)
+            {
+                var detailCharges = new List<DetailedCharges>();
+                var innerItem = item["detailed_charges"].L;
+                foreach (var detail in innerItem)
+                {
+                    detailCharges.Add(new DetailedCharges
+                    {
+                        Amount = Convert.ToDecimal(detail.M["amount"].N, CultureInfo.InvariantCulture),
+                        ChargeCode = detail.M["chargeCode"].S,
+                        ChargeType = Enum.Parse<ChargeType>(detail.M["chargeType"].S),
+                        Type = detail.M["type"].S,
+                        SubType = detail.M["subType"].S,
+                        Frequency = detail.M["frequency"].S,
+                        StartDate = DateTime.Parse(detail.M["startDate"].S),
+                        EndDate = DateTime.Parse(detail.M["endDate"].S)
+                    });
+                }
+
+                chargesList.Add(new Charge
+                {
+                    Id = Guid.Parse(item["id"].S),
+                    TargetId = Guid.Parse(item["target_id"].S),
+                    ChargeGroup = Enum.Parse<ChargeGroup>(item["charge_group"].S),
+                    ChargeSubGroup = item.ContainsKey("charge_sub_group") ? Enum.Parse<ChargeSubGroup>(item["charge_sub_group"].S) : ((ChargeSubGroup?) null),
+                    TargetType = Enum.Parse<TargetType>(item["target_type"].S),
+                    ChargeYear = Convert.ToInt16(item["charge_year"].N),
+                    DetailedCharges = detailCharges
+                });
+            }
+
+            return chargesList;
+        }
     }
 }
