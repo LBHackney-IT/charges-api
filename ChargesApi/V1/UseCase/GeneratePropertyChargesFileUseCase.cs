@@ -127,10 +127,8 @@ namespace ChargesApi.V1.UseCase
             var csvFileStream = new MemoryStream(Encoding.UTF8.GetBytes(builder.ToString()));
 
             var fileName = $"Charges{DateTime.Now:yyyyMMddHHmmssfff}.csv";
-            var formFile = new FormFile(csvFileStream, 0, csvFileStream.Length, "chargesFile", fileName)
-            {
-                ContentType = "text/csv"
-            };
+            var formFile = new FormFile(csvFileStream, 0, csvFileStream.Length, "chargesFile", fileName);
+
             await _awsS3FileService.UploadPrintRoomFile(formFile, formFile.FileName).ConfigureAwait(false);
         }
 
@@ -168,7 +166,7 @@ namespace ChargesApi.V1.UseCase
         private static List<EstimateActualCharge> ReadFile(Stream fileStream)
         {
             Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-
+            var recordsCount = 0;
             var estimatesActual = new List<EstimateActualCharge>();
             // Read Excel
             using (var stream = new MemoryStream())
@@ -181,47 +179,56 @@ namespace ChargesApi.V1.UseCase
 
                 while (reader.Read())
                 {
-                    try
+                    if (recordsCount > 0)
                     {
-                        estimatesActual.Add(new EstimateActualCharge
+                        try
                         {
-                            PaymentReferenceNumber = reader.GetValue(0).ToString(),
-                            PropertyReferenceNumber = reader.GetValue(1).ToString(),
-                            PropertyAddress = reader.GetValue(2).ToString(),
-                            TenureType = reader.GetValue(3).ToString(),
-                            Name1 = reader.GetValue(8).ToString(),
-                            AddressLine1 = reader.GetValue(9).ToString(),
-                            AddressLine2 = reader.GetValue(10).ToString(),
-                            AddressLine3 = reader.GetValue(11).ToString(),
-                            AddressLine4 = reader.GetValue(12).ToString(),
-                            TotalCharge = FileReaderHelper.GetChargeAmount(reader.GetValue(18)),
-                            BlockCCTVMaintenanceAndMonitoring = FileReaderHelper.GetChargeAmount(reader.GetValue(19)),
-                            BlockCleaning = FileReaderHelper.GetChargeAmount(reader.GetValue(20)),
-                            BlockElectricity = FileReaderHelper.GetChargeAmount(reader.GetValue(21)),
-                            BlockRepairs = FileReaderHelper.GetChargeAmount(reader.GetValue(22)),
-                            BuildingInsurancePremium = FileReaderHelper.GetChargeAmount(reader.GetValue(23)),
-                            DoorEntry = FileReaderHelper.GetChargeAmount(reader.GetValue(24)),
-                            CommunalTVAerialMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(25)),
-                            ConciergeService = FileReaderHelper.GetChargeAmount(reader.GetValue(26)),
-                            EstateCCTVMaintenanceAndMonitoring = FileReaderHelper.GetChargeAmount(reader.GetValue(27)),
-                            EstateCleaning = FileReaderHelper.GetChargeAmount(reader.GetValue(28)),
-                            EstateElectricity = FileReaderHelper.GetChargeAmount(reader.GetValue(29)),
-                            EstateRepairs = FileReaderHelper.GetChargeAmount(reader.GetValue(30)),
-                            EstateRoadsFootpathsAndDrainage = FileReaderHelper.GetChargeAmount(reader.GetValue(31)),
-                            GroundRent = FileReaderHelper.GetChargeAmount(reader.GetValue(32)),
-                            GroundsMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(33)),
-                            HeatingOrHotWaterEnergy = FileReaderHelper.GetChargeAmount(reader.GetValue(34)),
-                            HeatingOrHotWaterMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(35)),
-                            HeatingStandingCharge = FileReaderHelper.GetChargeAmount(reader.GetValue(36)),
-                            LiftMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(37)),
-                            ManagementCharge = FileReaderHelper.GetChargeAmount(reader.GetValue(38)),
-                            ReserveFund = FileReaderHelper.GetChargeAmount(reader.GetValue(39))
-                        });
+                            estimatesActual.Add(new EstimateActualCharge
+                            {
+                                PaymentReferenceNumber = reader.GetValue(0).ToString(),
+                                PropertyReferenceNumber = reader.GetValue(1).ToString(),
+                                PropertyAddress = reader.GetValue(2).ToString(),
+                                TenureType = reader.GetValue(3).ToString(),
+                                Name1 = reader.GetValue(8).ToString(),
+                                AddressLine1 = reader.GetValue(9).ToString(),
+                                AddressLine2 = reader.GetValue(10).ToString(),
+                                AddressLine3 = reader.GetValue(11).ToString(),
+                                AddressLine4 = reader.GetValue(12).ToString(),
+                                TotalCharge = FileReaderHelper.GetChargeAmount(reader.GetValue(18)),
+                                BlockCCTVMaintenanceAndMonitoring =
+                                    FileReaderHelper.GetChargeAmount(reader.GetValue(19)),
+                                BlockCleaning = FileReaderHelper.GetChargeAmount(reader.GetValue(20)),
+                                BlockElectricity = FileReaderHelper.GetChargeAmount(reader.GetValue(21)),
+                                BlockRepairs = FileReaderHelper.GetChargeAmount(reader.GetValue(22)),
+                                BuildingInsurancePremium = FileReaderHelper.GetChargeAmount(reader.GetValue(23)),
+                                DoorEntry = FileReaderHelper.GetChargeAmount(reader.GetValue(24)),
+                                CommunalTVAerialMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(25)),
+                                ConciergeService = FileReaderHelper.GetChargeAmount(reader.GetValue(26)),
+                                EstateCCTVMaintenanceAndMonitoring =
+                                    FileReaderHelper.GetChargeAmount(reader.GetValue(27)),
+                                EstateCleaning = FileReaderHelper.GetChargeAmount(reader.GetValue(28)),
+                                EstateElectricity = FileReaderHelper.GetChargeAmount(reader.GetValue(29)),
+                                EstateRepairs = FileReaderHelper.GetChargeAmount(reader.GetValue(30)),
+                                EstateRoadsFootpathsAndDrainage =
+                                    FileReaderHelper.GetChargeAmount(reader.GetValue(31)),
+                                GroundRent = FileReaderHelper.GetChargeAmount(reader.GetValue(32)),
+                                GroundsMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(33)),
+                                HeatingOrHotWaterEnergy = FileReaderHelper.GetChargeAmount(reader.GetValue(34)),
+                                HeatingOrHotWaterMaintenance =
+                                    FileReaderHelper.GetChargeAmount(reader.GetValue(35)),
+                                HeatingStandingCharge = FileReaderHelper.GetChargeAmount(reader.GetValue(36)),
+                                LiftMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(37)),
+                                ManagementCharge = FileReaderHelper.GetChargeAmount(reader.GetValue(38)),
+                                ReserveFund = FileReaderHelper.GetChargeAmount(reader.GetValue(39))
+                            });
+                        }
+                        catch (Exception e)
+                        {
+                            throw new Exception(e.Message);
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        throw new Exception(e.Message);
-                    }
+
+                    recordsCount++;
                 }
             }
 
