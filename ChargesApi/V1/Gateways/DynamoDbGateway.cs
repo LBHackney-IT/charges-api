@@ -81,19 +81,19 @@ namespace ChargesApi.V1.Gateways
 
         public async Task<IList<Charge>> GetChargesAsync(PropertyChargesQueryParameters queryParameters)
         {
-            var request = new QueryRequest
+            var scanRequest = new ScanRequest
             {
                 TableName = Constants.ChargeTableName,
-                FilterExpression = "charge_year = :V_charge_year and charge_group = :V_charge_group and charge_sub_group = :V_charge_sub_group",
-                ExpressionAttributeValues = new Dictionary<string, AttributeValue> {
-                    {":V_charge_year", new AttributeValue { S =  queryParameters.ChargeYear.ToString() }},
-                    {":V_charge_group", new AttributeValue { S =  queryParameters.ChargeGroup.ToString() }},
-                    {":V_charge_sub_group", new AttributeValue { S =  queryParameters.ChargeSubGroup.ToString() }}
-                },
-                ScanIndexForward = true
+                FilterExpression = "charge_year = :v_charge_year and charge_group = :v_charge_group and charge_sub_group = :v_charge_sub_group",
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                    { ":v_charge_year", new AttributeValue { N = queryParameters.ChargeYear.ToString() } },
+                    { ":v_charge_group", new AttributeValue { S = queryParameters.ChargeGroup.ToString() } },
+                    { ":v_charge_sub_group", new AttributeValue { S = queryParameters.ChargeSubGroup.ToString() } },
+                }
             };
 
-            var chargesLists = await _amazonDynamoDb.QueryAsync(request).ConfigureAwait(false);
+            var chargesLists = await _amazonDynamoDb.ScanAsync(scanRequest).ConfigureAwait(false);
 
             return chargesLists?.ToChargeDomain();
         }
