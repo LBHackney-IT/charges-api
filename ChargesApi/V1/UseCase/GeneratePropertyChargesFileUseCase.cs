@@ -89,6 +89,9 @@ namespace ChargesApi.V1.UseCase
 
                 _logger.LogInformation($"Asset Id: {assetId}");
 
+                // TODO FK: Due to assets information is not synced with production, assign hardcoded assetId to bypass it on dev and staging. Will be removed after test.
+                if (assetId == null) assetId = "00038233";
+
                 var estimateActualCharge = fileResponse.FirstOrDefault(x =>
                     x.PropertyReferenceNumber == assetId);
 
