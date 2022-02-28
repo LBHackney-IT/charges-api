@@ -150,7 +150,7 @@ namespace ChargesApi.V1.Gateways.Services
                     BucketName = bucketName,
                     InputStream = stream,
                     AutoCloseStream = true,
-                    ContentType = formFile.ContentType
+                    ContentType = "text/csv"
                 };
                 try
                 {
