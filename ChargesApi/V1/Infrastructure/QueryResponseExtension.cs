@@ -68,7 +68,7 @@ namespace ChargesApi.V1.Infrastructure
             foreach (Dictionary<string, AttributeValue> item in response.Items)
             {
                 var detailCharges = new List<DetailedCharges>();
-                var innerItem = item.ContainsKey("detailed_charges")? item["detailed_charges"].L: null;
+                var innerItem = item.ContainsKey("detailed_charges") ? item["detailed_charges"].L : null;
 
                 if (innerItem != null)
                 {
