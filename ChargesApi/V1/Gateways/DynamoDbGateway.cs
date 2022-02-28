@@ -114,7 +114,8 @@ namespace ChargesApi.V1.Gateways
                     resultList.AddRange(filteredList);
             } while (scanResult != null && scanResult.Any());
 
-
+            LoggingHandler.LogInfo("Scan completed");
+            LoggingHandler.LogInfo($"Total Items Count {resultList.Count}");
             //ScanRequest request = new ScanRequest(Constants.ChargeTableName)
             //{
             //    Limit = 940,
