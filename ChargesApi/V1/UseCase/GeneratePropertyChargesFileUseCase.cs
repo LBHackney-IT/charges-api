@@ -38,6 +38,8 @@ namespace ChargesApi.V1.UseCase
         {
             var propertyCharges = await _getPropertyChargesUseCase.ExecuteAsync(queryParameters).ConfigureAwait(false);
 
+            _logger.LogInformation($"Property charge count: {propertyCharges.Count}");
+
             if (propertyCharges is null)
                 throw new Exception("charges not found");
 
@@ -81,7 +83,7 @@ namespace ChargesApi.V1.UseCase
 
             foreach (var propertyCharge in propertyCharges)
             {
-                var assetId = dwellingsListResult.FirstOrDefault(x => x.Id == propertyCharge.Id)?.AssetId;
+                var assetId = dwellingsListResult.FirstOrDefault(x => x.Id == propertyCharge.TargetId)?.AssetId;
 
                 var estimateActualCharge = fileResponse.FirstOrDefault(x =>
                     x.PropertyReferenceNumber == assetId);
