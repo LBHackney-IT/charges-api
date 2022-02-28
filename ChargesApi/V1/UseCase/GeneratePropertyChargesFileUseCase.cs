@@ -72,6 +72,8 @@ namespace ChargesApi.V1.UseCase
                 }
             }
 
+            _logger.LogInformation($"File row count: {fileResponse.Count}");
+
             if (fileResponse.Count == 0)
                 throw new Exception("Cannot locate Estimate File");
 
@@ -84,6 +86,8 @@ namespace ChargesApi.V1.UseCase
             foreach (var propertyCharge in propertyCharges)
             {
                 var assetId = dwellingsListResult.FirstOrDefault(x => x.Id == propertyCharge.TargetId)?.AssetId;
+
+                _logger.LogInformation($"Asset Id: {assetId}");
 
                 var estimateActualCharge = fileResponse.FirstOrDefault(x =>
                     x.PropertyReferenceNumber == assetId);
