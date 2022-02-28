@@ -168,7 +168,7 @@ namespace ChargesApi.V1.UseCase
             return (filteredList, totalPropertiesCount);
         }
 
-        private static List<EstimateActualCharge> ReadFile(Stream fileStream,short chargeYear, ChargeSubGroup chargeSubGroup)
+        private static List<EstimateActualCharge> ReadFile(Stream fileStream, short chargeYear, ChargeSubGroup chargeSubGroup)
         {
             Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             var recordsCount = 0;
