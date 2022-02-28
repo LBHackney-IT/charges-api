@@ -81,21 +81,50 @@ namespace ChargesApi.V1.Gateways
 
         public async Task<IList<Charge>> GetChargesAsync(PropertyChargesQueryParameters queryParameters)
         {
-            var scanRequest = new ScanRequest
+            var resultList = new List<Charge>();
+            var scanResult = new List<Charge>();
+
+
+
+            Dictionary<string, AttributeValue> lastEvaluatedKey = null;
+            do
             {
-                TableName = Constants.ChargeTableName,
-                FilterExpression = "charge_year = :v_charge_year and charge_group = :v_charge_group and charge_sub_group = :v_charge_sub_group",
-                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                var scanRequest = new ScanRequest
                 {
-                    { ":v_charge_year", new AttributeValue { N = queryParameters.ChargeYear.ToString() } },
-                    { ":v_charge_group", new AttributeValue { S = queryParameters.ChargeGroup.ToString() } },
-                    { ":v_charge_sub_group", new AttributeValue { S = queryParameters.ChargeSubGroup.ToString() } },
-                }
-            };
+                    TableName = Constants.ChargeTableName,
+                    //FilterExpression = "charge_year = :v_charge_year and charge_group = :v_charge_group and charge_sub_group = :v_charge_sub_group",
+                    //ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                    //{
+                    //    { ":v_charge_year", new AttributeValue { N = queryParameters.ChargeYear.ToString() } },
+                    //    { ":v_charge_group", new AttributeValue { S = queryParameters.ChargeGroup.ToString() } },
+                    //    { ":v_charge_sub_group", new AttributeValue { S = queryParameters.ChargeSubGroup.ToString() } },
+                    //},
+                    ExclusiveStartKey = lastEvaluatedKey
+                };
+                var chargesLists = await _amazonDynamoDb.ScanAsync(scanRequest).ConfigureAwait(false);
+                lastEvaluatedKey = chargesLists.LastEvaluatedKey;
 
-            var chargesLists = await _amazonDynamoDb.ScanAsync(scanRequest).ConfigureAwait(false);
+                scanResult = chargesLists?.ToChargeDomain();
+                var filteredList = scanResult?.Where(x => x.ChargeYear == queryParameters.ChargeYear
+                                                          && x.ChargeGroup == queryParameters.ChargeGroup
+                                                          && x.ChargeSubGroup == queryParameters.ChargeSubGroup);
 
-            return chargesLists?.ToChargeDomain();
+                LoggingHandler.LogInfo($"Items Count {filteredList.Count()}");
+                if (filteredList != null && filteredList.Any())
+                    resultList.AddRange(filteredList);
+            } while (scanResult != null && scanResult.Any());
+
+
+            //ScanRequest request = new ScanRequest(Constants.ChargeTableName)
+            //{
+            //    Limit = 940,
+            //    FilterExpression = "charge_year = :v_charge_year and charge_group = :v_charge_group and charge_sub_group = :v_charge_sub_group",
+            //    ExclusiveStartKey = lastEvaluatedKey
+            //};
+
+
+
+            return resultList;
         }
 
         public async Task<Charge> GetChargeByIdAsync(Guid id, Guid targetId)
