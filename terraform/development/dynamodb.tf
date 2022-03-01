@@ -5,6 +5,16 @@ resource "aws_dynamodb_table" "chargesapi_dynamodb_table" {
     write_capacity        = 100
     hash_key              = "target_id"
     range_key             = "id"
+    autoscaling_enabled   = true
+
+    autoscaling_read = {
+        max_capacity      = 600
+      }
+
+   autoscaling_write = {
+        max_capacity      = 600
+      }
+
 
     attribute {
         name              = "id"
