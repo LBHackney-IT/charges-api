@@ -92,7 +92,7 @@ namespace ChargesApi.V1.Gateways
                 var scanRequest = new ScanRequest
                 {
                     TableName = Constants.ChargeTableName,
-                    Limit = 940,
+                    Limit = 600,
                     //FilterExpression = "charge_year = :v_charge_year and charge_group = :v_charge_group and charge_sub_group = :v_charge_sub_group",
                     //ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                     //{
