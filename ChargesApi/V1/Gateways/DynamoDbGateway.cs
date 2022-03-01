@@ -106,11 +106,13 @@ namespace ChargesApi.V1.Gateways
                 lastEvaluatedKey = chargesLists.LastEvaluatedKey;
 
                 scanResult = chargesLists?.ToChargeDomain();
+
+                LoggingHandler.LogInfo($"Total Scanned Items Count : {scanResult.Count}");
                 var filteredList = scanResult?.Where(x => x.ChargeYear == queryParameters.ChargeYear
                                                           && x.ChargeGroup == queryParameters.ChargeGroup
                                                           && x.ChargeSubGroup == queryParameters.ChargeSubGroup);
 
-                LoggingHandler.LogInfo($"Items Count {filteredList.Count()}");
+                LoggingHandler.LogInfo($"Filtered Items Count {filteredList.Count()}");
                 if (filteredList != null && filteredList.Any())
                     resultList.AddRange(filteredList);
             } while (scanResult != null && scanResult.Any());
