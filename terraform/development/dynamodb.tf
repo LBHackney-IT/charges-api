@@ -29,7 +29,7 @@ resource "aws_dynamodb_table" "chargesapi_dynamodb_table" {
 }
 
 resource "aws_appautoscaling_target" "dynamodb_table_read_target" {
-  max_capacity       = 600
+  max_capacity       = 1200
   min_capacity       = 100
   resource_id        = "table/${aws_dynamodb_table.chargesapi_dynamodb_table.name}"
   scalable_dimension = "dynamodb:table:ReadCapacityUnits"
