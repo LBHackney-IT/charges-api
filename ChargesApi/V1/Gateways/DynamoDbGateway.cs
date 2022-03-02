@@ -83,7 +83,7 @@ namespace ChargesApi.V1.Gateways
 
         public async Task<IList<Charge>> GetChargesAsync(PropertyChargesQueryParameters queryParameters)
         {
-            int totalSegments = 10;
+            int totalSegments = 5;
             var finalResult = new List<Charge>();
             LoggingHandler.LogInfo($"*** Creating {totalSegments} Parallel Scan Tasks to scan {Constants.ChargeTableName}");
             Task[] tasks = new Task[totalSegments];
