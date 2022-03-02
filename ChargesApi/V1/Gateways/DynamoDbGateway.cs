@@ -83,59 +83,61 @@ namespace ChargesApi.V1.Gateways
 
         public async Task<IList<Charge>> GetChargesAsync(PropertyChargesQueryParameters queryParameters)
         {
-            var resultList = new List<ChargeDbEntity>();
-            //var scanResult = new List<Charge>();
+            var resultList = new List<Charge>();
+            var scanResult = new List<Charge>();
 
-
-
-            //Dictionary<string, AttributeValue> lastEvaluatedKey = null;
-            //do
-            //{
-            //var scanRequest = new ScanRequest
-            //{
-            //    TableName = Constants.ChargeTableName,
-            //    Limit = 600,
-            //    //FilterExpression = "charge_year = :v_charge_year and charge_group = :v_charge_group and charge_sub_group = :v_charge_sub_group",
-            //    //ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-            //    //{
-            //    //    { ":v_charge_year", new AttributeValue { N = queryParameters.ChargeYear.ToString() } },
-            //    //    { ":v_charge_group", new AttributeValue { S = queryParameters.ChargeGroup.ToString() } },
-            //    //    { ":v_charge_sub_group", new AttributeValue { S = queryParameters.ChargeSubGroup.ToString() } },
-            //    //},
-            //    ExclusiveStartKey = lastEvaluatedKey
-            //};
-
+            Dictionary<string, AttributeValue> lastEvaluatedKey = null;
             do
             {
-
-
-                var threadTable = Table.LoadTable(_amazonDynamoDb, Constants.ChargeTableName);
-
-                var scanFilter = new ScanFilter();
-
-                scanFilter.AddCondition("charge_year", ScanOperator.Equal, queryParameters.ChargeYear);
-                scanFilter.AddCondition("charge_group", ScanOperator.Equal, queryParameters.ChargeGroup.ToString());
-                scanFilter.AddCondition("charge_sub_group", ScanOperator.Equal,
-                    queryParameters.ChargeSubGroup.ToString());
-
-
-                var search = threadTable.Scan(scanFilter);
-                PaginationToken = search.PaginationToken;
-                var resultsSet = await search.GetNextSetAsync().ConfigureAwait(false);
-
-                LoggingHandler.LogInfo($"Result Set Items Count {resultsSet.Count}");
-                if (resultsSet.Any())
+                var scanRequest = new ScanRequest
                 {
-                    resultList.AddRange(_dynamoDbContext.FromDocuments<ChargeDbEntity>(resultsSet));
+                    TableName = Constants.ChargeTableName, Limit = 1200, ExclusiveStartKey = lastEvaluatedKey
+                };
+                var scanResponse = await _amazonDynamoDb.ScanAsync(scanRequest).ConfigureAwait(false);
+                lastEvaluatedKey = scanResponse.LastEvaluatedKey;
+                
+                scanResult = scanResponse?.ToChargeDomain();
+                LoggingHandler.LogInfo($"Scanned Items Count {scanResult.Count}");
+                var filteredList = scanResult?.Where(x => x.ChargeYear == queryParameters.ChargeYear
+                                                          && x.ChargeGroup == queryParameters.ChargeGroup
+                                                          && x.ChargeSubGroup == queryParameters.ChargeSubGroup);
 
-                }
-            } while (!string.Equals(PaginationToken, "{}", StringComparison.Ordinal));
+                LoggingHandler.LogInfo($"Filtered Items Count {filteredList.Count()}");
+                if (filteredList != null && filteredList.Any())
+                    resultList.AddRange(filteredList);
 
-            //lastEvaluatedKey = chargesLists;
+                LoggingHandler.LogInfo($"Total Stored Items Count {resultList.Count}");
+            } while (lastEvaluatedKey != null && scanResult.Any());
 
-            //scanResult = chargesLists?.ToChargeDomain();
+            //do
+            //{
 
-            LoggingHandler.LogInfo($"Total Scanned Items Count : {resultList.Count}");
+
+                //    var threadTable = Table.LoadTable(_amazonDynamoDb, Constants.ChargeTableName);
+
+                //    var scanFilter = new ScanFilter();
+
+                //    scanFilter.AddCondition("charge_year", ScanOperator.Equal, queryParameters.ChargeYear);
+                //    scanFilter.AddCondition("charge_group", ScanOperator.Equal, queryParameters.ChargeGroup.ToString());
+                //    scanFilter.AddCondition("charge_sub_group", ScanOperator.Equal,
+                //        queryParameters.ChargeSubGroup.ToString());
+
+
+                //    var search = threadTable.Scan(scanFilter);
+                //    PaginationToken = search.PaginationToken;
+                //    var resultsSet = await search.GetNextSetAsync().ConfigureAwait(false);
+
+                //    LoggingHandler.LogInfo($"Result Set Items Count {resultsSet.Count}");
+                //    if (resultsSet.Any())
+                //    {
+                //        resultList.AddRange(_dynamoDbContext.FromDocuments<ChargeDbEntity>(resultsSet));
+
+                //    }
+                //} while (!string.Equals(PaginationToken, "{}", StringComparison.Ordinal));
+
+
+
+                //LoggingHandler.LogInfo($"Total Scanned Items Count : {resultList.Count}");
             //var filteredList = scanResult?.Where(x => x.ChargeYear == queryParameters.ChargeYear
             //                                          && x.ChargeGroup == queryParameters.ChargeGroup
             //                                          && x.ChargeSubGroup == queryParameters.ChargeSubGroup);
@@ -154,7 +156,7 @@ namespace ChargesApi.V1.Gateways
             //    ExclusiveStartKey = lastEvaluatedKey
             //};
 
-            return resultList.Select(_ => _.ToDomain()).ToList();
+            return resultList;
         }
 
         public async Task<Charge> GetChargeByIdAsync(Guid id, Guid targetId)
