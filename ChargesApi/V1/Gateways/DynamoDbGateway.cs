@@ -99,7 +99,7 @@ namespace ChargesApi.V1.Gateways
             }
 
             LoggingHandler.LogInfo("All scan tasks are created, waiting for them to complete.");
-            await Task.WhenAll(tasks).ConfigureAwait(false);
+            await Task.WhenAll(tasks).ConfigureAwait(true);
 
             LoggingHandler.LogInfo("All scan tasks are completed.");
             LoggingHandler.LogInfo($"*** Completed Count:  {finalResult.Count} ");
