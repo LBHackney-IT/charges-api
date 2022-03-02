@@ -92,7 +92,9 @@ namespace ChargesApi.V1.Gateways
                 int tmpSegment = segment;
                 Task task = await Task.Factory.StartNew(async () =>
                 {
-                    finalResult = await ScanSegment(totalSegments, tmpSegment, queryParameters).ConfigureAwait(false);
+                    var scanSegmentResult = await ScanSegment(totalSegments, tmpSegment, queryParameters).ConfigureAwait(false);
+
+                    finalResult.AddRange(scanSegmentResult);
                 }).ConfigureAwait(false);
 
                 tasks[segment] = task;
