@@ -13,6 +13,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Amazon.DynamoDBv2.DocumentModel;
 using ChargesApi.V1.Boundary.Request;
 using Microsoft.Extensions.Configuration;
 using ChargesApi.V1.Infrastructure.JWT;
@@ -25,6 +26,7 @@ namespace ChargesApi.V1.Gateways
         private readonly IDynamoDBContext _dynamoDbContext;
         private readonly IAmazonDynamoDB _amazonDynamoDb;
         private readonly ILogger<IChargesApiGateway> _logger;
+        public string PaginationToken { get; set; } = "{}";
 
         public DynamoDbGateway(IDynamoDBContext dynamoDbContext,
             IAmazonDynamoDB amazonDynamoDb,
@@ -81,41 +83,66 @@ namespace ChargesApi.V1.Gateways
 
         public async Task<IList<Charge>> GetChargesAsync(PropertyChargesQueryParameters queryParameters)
         {
-            var resultList = new List<Charge>();
-            var scanResult = new List<Charge>();
+            var resultList = new List<ChargeDbEntity>();
+            //var scanResult = new List<Charge>();
 
 
 
-            Dictionary<string, AttributeValue> lastEvaluatedKey = null;
+            //Dictionary<string, AttributeValue> lastEvaluatedKey = null;
+            //do
+            //{
+            //var scanRequest = new ScanRequest
+            //{
+            //    TableName = Constants.ChargeTableName,
+            //    Limit = 600,
+            //    //FilterExpression = "charge_year = :v_charge_year and charge_group = :v_charge_group and charge_sub_group = :v_charge_sub_group",
+            //    //ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+            //    //{
+            //    //    { ":v_charge_year", new AttributeValue { N = queryParameters.ChargeYear.ToString() } },
+            //    //    { ":v_charge_group", new AttributeValue { S = queryParameters.ChargeGroup.ToString() } },
+            //    //    { ":v_charge_sub_group", new AttributeValue { S = queryParameters.ChargeSubGroup.ToString() } },
+            //    //},
+            //    ExclusiveStartKey = lastEvaluatedKey
+            //};
+
             do
             {
-                var scanRequest = new ScanRequest
+
+
+                var threadTable = Table.LoadTable(_amazonDynamoDb, Constants.ChargeTableName);
+
+                var scanFilter = new ScanFilter();
+
+                scanFilter.AddCondition("charge_year", ScanOperator.Equal, queryParameters.ChargeYear);
+                scanFilter.AddCondition("charge_group", ScanOperator.Equal, queryParameters.ChargeGroup.ToString());
+                scanFilter.AddCondition("charge_sub_group", ScanOperator.Equal,
+                    queryParameters.ChargeSubGroup.ToString());
+
+
+                var search = threadTable.Scan(scanFilter);
+                PaginationToken = search.PaginationToken;
+                var resultsSet = await search.GetNextSetAsync().ConfigureAwait(false);
+
+                if (resultsSet.Any())
                 {
-                    TableName = Constants.ChargeTableName,
-                    Limit = 600,
-                    //FilterExpression = "charge_year = :v_charge_year and charge_group = :v_charge_group and charge_sub_group = :v_charge_sub_group",
-                    //ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-                    //{
-                    //    { ":v_charge_year", new AttributeValue { N = queryParameters.ChargeYear.ToString() } },
-                    //    { ":v_charge_group", new AttributeValue { S = queryParameters.ChargeGroup.ToString() } },
-                    //    { ":v_charge_sub_group", new AttributeValue { S = queryParameters.ChargeSubGroup.ToString() } },
-                    //},
-                    ExclusiveStartKey = lastEvaluatedKey
-                };
-                var chargesLists = await _amazonDynamoDb.ScanAsync(scanRequest).ConfigureAwait(false);
-                lastEvaluatedKey = chargesLists.LastEvaluatedKey;
+                    resultList.AddRange(_dynamoDbContext.FromDocuments<ChargeDbEntity>(resultsSet));
 
-                scanResult = chargesLists?.ToChargeDomain();
+                }
+            } while (!string.Equals(PaginationToken, "{}", StringComparison.Ordinal));
 
-                LoggingHandler.LogInfo($"Total Scanned Items Count : {scanResult.Count}");
-                var filteredList = scanResult?.Where(x => x.ChargeYear == queryParameters.ChargeYear
-                                                          && x.ChargeGroup == queryParameters.ChargeGroup
-                                                          && x.ChargeSubGroup == queryParameters.ChargeSubGroup);
+            //lastEvaluatedKey = chargesLists;
 
-                LoggingHandler.LogInfo($"Filtered Items Count {filteredList.Count()}");
-                if (filteredList != null && filteredList.Any())
-                    resultList.AddRange(filteredList);
-            } while (scanResult != null && scanResult.Any());
+            //scanResult = chargesLists?.ToChargeDomain();
+
+            LoggingHandler.LogInfo($"Total Scanned Items Count : {resultList.Count}");
+            //var filteredList = scanResult?.Where(x => x.ChargeYear == queryParameters.ChargeYear
+            //                                          && x.ChargeGroup == queryParameters.ChargeGroup
+            //                                          && x.ChargeSubGroup == queryParameters.ChargeSubGroup);
+
+            // LoggingHandler.LogInfo($"Filtered Items Count {resultList.Count()}");
+            //if (filteredList != null && filteredList.Any())
+            //    resultList.AddRange(filteredList);
+            //} while (scanResult != null && scanResult.Any());
 
             LoggingHandler.LogInfo("Scan completed");
             LoggingHandler.LogInfo($"Total Items Count {resultList.Count}");
@@ -126,9 +153,7 @@ namespace ChargesApi.V1.Gateways
             //    ExclusiveStartKey = lastEvaluatedKey
             //};
 
-
-
-            return resultList;
+            return resultList.Select(_ => _.ToDomain()).ToList();
         }
 
         public async Task<Charge> GetChargeByIdAsync(Guid id, Guid targetId)
