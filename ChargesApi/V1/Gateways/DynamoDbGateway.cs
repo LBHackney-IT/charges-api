@@ -26,7 +26,7 @@ namespace ChargesApi.V1.Gateways
         private readonly IDynamoDBContext _dynamoDbContext;
         private readonly IAmazonDynamoDB _amazonDynamoDb;
         private readonly ILogger<IChargesApiGateway> _logger;
-        public string PaginationToken { get; set; } = "{}";
+
 
         public DynamoDbGateway(IDynamoDBContext dynamoDbContext,
             IAmazonDynamoDB amazonDynamoDb,
@@ -83,33 +83,58 @@ namespace ChargesApi.V1.Gateways
 
         public async Task<IList<Charge>> GetChargesAsync(PropertyChargesQueryParameters queryParameters)
         {
-            var resultList = new List<Charge>();
-            var scanResult = new List<Charge>();
-
-            Dictionary<string, AttributeValue> lastEvaluatedKey = null;
-            do
+            int totalSegments = 10;
+            var finalResult = new List<Charge>();
+            LoggingHandler.LogInfo($"*** Creating {totalSegments} Parallel Scan Tasks to scan {Constants.ChargeTableName}");
+            Task[] tasks = new Task[totalSegments];
+            for (int segment = 0; segment < totalSegments; segment++)
             {
-                var scanRequest = new ScanRequest
+                int tmpSegment = segment;
+                Task task = Task.Factory.StartNew(async () =>
                 {
-                    TableName = Constants.ChargeTableName,
-                    Limit = 1200,
-                    ExclusiveStartKey = lastEvaluatedKey
-                };
-                var scanResponse = await _amazonDynamoDb.ScanAsync(scanRequest).ConfigureAwait(false);
-                lastEvaluatedKey = scanResponse.LastEvaluatedKey;
+                    finalResult = await ScanSegment(totalSegments, tmpSegment, queryParameters).ConfigureAwait(false);
+                });
 
-                scanResult = scanResponse?.ToChargeDomain();
-                LoggingHandler.LogInfo($"Scanned Items Count {scanResult.Count}");
-                var filteredList = scanResult?.Where(x => x.ChargeYear == queryParameters.ChargeYear
-                                                          && x.ChargeGroup == queryParameters.ChargeGroup
-                                                          && x.ChargeSubGroup == queryParameters.ChargeSubGroup);
+                tasks[segment] = task;
+            }
 
-                LoggingHandler.LogInfo($"Filtered Items Count {filteredList.Count()}");
-                if (filteredList != null && filteredList.Any())
-                    resultList.AddRange(filteredList);
+            LoggingHandler.LogInfo("All scan tasks are created, waiting for them to complete.");
+            await Task.WhenAll(tasks).ConfigureAwait(false);
 
-                LoggingHandler.LogInfo($"Total Stored Items Count {resultList.Count}");
-            } while (lastEvaluatedKey != null && scanResult.Any());
+            LoggingHandler.LogInfo("All scan tasks are completed.");
+            LoggingHandler.LogInfo($"*** Completed Count:  {finalResult.Count} ");
+
+
+
+            //var resultList = new List<Charge>();
+            //var scanResult = new List<Charge>();
+
+            //Dictionary<string, AttributeValue> lastEvaluatedKey = null;
+            //do
+            //{
+            //    var scanRequest = new ScanRequest
+            //    {
+            //        TableName = Constants.ChargeTableName,
+            //        Limit = 1200,
+            //        ExclusiveStartKey = lastEvaluatedKey
+
+
+            //    };
+            //    var scanResponse = await _amazonDynamoDb.ScanAsync(scanRequest).ConfigureAwait(false);
+            //    lastEvaluatedKey = scanResponse.LastEvaluatedKey;
+
+            //    scanResult = scanResponse?.ToChargeDomain();
+            //    LoggingHandler.LogInfo($"Scanned Items Count {scanResult.Count}");
+            //    var filteredList = scanResult?.Where(x => x.ChargeYear == queryParameters.ChargeYear
+            //                                              && x.ChargeGroup == queryParameters.ChargeGroup
+            //                                              && x.ChargeSubGroup == queryParameters.ChargeSubGroup);
+
+            //    LoggingHandler.LogInfo($"Filtered Items Count {filteredList.Count()}");
+            //    if (filteredList != null && filteredList.Any())
+            //        resultList.AddRange(filteredList);
+
+            //    LoggingHandler.LogInfo($"Total Stored Items Count {resultList.Count}");
+            //} while (lastEvaluatedKey != null && scanResult.Any());
 
             //do
             //{
@@ -150,7 +175,7 @@ namespace ChargesApi.V1.Gateways
             //} while (scanResult != null && scanResult.Any());
 
             LoggingHandler.LogInfo("Scan completed");
-            LoggingHandler.LogInfo($"Total Items Count {resultList.Count}");
+            //LoggingHandler.LogInfo($"Total Items Count {resultList.Count}");
             //ScanRequest request = new ScanRequest(Constants.ChargeTableName)
             //{
             //    Limit = 940,
@@ -158,8 +183,51 @@ namespace ChargesApi.V1.Gateways
             //    ExclusiveStartKey = lastEvaluatedKey
             //};
 
+            return finalResult;
+        }
+
+        private async Task<List<Charge>> ScanSegment(int totalSegments, int segment, PropertyChargesQueryParameters queryParameters)
+        {
+            var resultList = new List<Charge>();
+
+            LoggingHandler.LogInfo($"*** Starting to Scan Segment {segment} of {Constants.ChargeTableName} out of {totalSegments} total segments ***");
+            Dictionary<string, AttributeValue> lastEvaluatedKey = null;
+            int totalScannedItemCount = 0;
+            int totalScanRequestCount = 0;
+            do
+            {
+                var request = new ScanRequest
+                {
+                    TableName = Constants.ChargeTableName,
+                    Limit = 1200,
+                    ExclusiveStartKey = lastEvaluatedKey,
+                    Segment = segment,
+                    TotalSegments = totalSegments
+                };
+
+                var response = await _amazonDynamoDb.ScanAsync(request).ConfigureAwait(false);
+                lastEvaluatedKey = response.LastEvaluatedKey;
+                totalScanRequestCount++;
+                totalScannedItemCount += response.ScannedCount;
+                //foreach (var item in response.ToChargeDomain())
+                //{
+
+                //    //LoggingHandler.LogInfo("Segment: {segment}, Scanned Item with Title: {1}", segment, item["Title"].S);
+                //}
+                var scannedResult = response.ToChargeDomain();
+                LoggingHandler.LogInfo($"*** Completed Scan Count : {scannedResult.Count} ");
+                var filteredList = scannedResult?.Where(x => x.ChargeYear == queryParameters.ChargeYear
+                                                             && x.ChargeGroup == queryParameters.ChargeGroup
+                                                             && x.ChargeSubGroup == queryParameters.ChargeSubGroup);
+
+                resultList.AddRange(filteredList);
+                LoggingHandler.LogInfo($"*** Completed Filtered Count:  {resultList.Count} ");
+            } while (lastEvaluatedKey.Count != 0);
+
+            LoggingHandler.LogInfo($"*** Completed Scan Segment {segment} of {Constants.ChargeTableName}. TotalScanRequestCount: {totalScanRequestCount}, TotalScannedItemCount: {totalScannedItemCount} ***");
             return resultList;
         }
+
 
         public async Task<Charge> GetChargeByIdAsync(Guid id, Guid targetId)
         {
