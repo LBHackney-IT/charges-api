@@ -144,6 +144,7 @@ namespace ChargesApi.V1.Gateways
 
                 resultList.AddRange(filteredList);
                 LoggingHandler.LogInfo($"*** Completed Filtered Count:  {resultList.Count} ");
+                Thread.Sleep(1000);
             } while (lastEvaluatedKey.Count != 0);
 
             LoggingHandler.LogInfo($"*** Completed Scan Segment {segment} of {Constants.ChargeTableName}. TotalScanRequestCount: {totalScanRequestCount}, TotalScannedItemCount: {totalScannedItemCount} ***");
