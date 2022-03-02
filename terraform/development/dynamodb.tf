@@ -1,7 +1,7 @@
 resource "aws_dynamodb_table" "chargesapi_dynamodb_table" {
   name           = "Charges"
   billing_mode   = "PROVISIONED"
-  read_capacity  = 100
+  read_capacity  = 243
   write_capacity = 100
   hash_key       = "target_id"
   range_key      = "id"
@@ -48,7 +48,7 @@ resource "aws_appautoscaling_policy" "dynamodb_table_read_policy" {
       predefined_metric_type = "DynamoDBReadCapacityUtilization"
     }
 
-    target_value = 70
+    target_value = 80
   }
 }
 
