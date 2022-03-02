@@ -123,6 +123,7 @@ namespace ChargesApi.V1.Gateways
                 PaginationToken = search.PaginationToken;
                 var resultsSet = await search.GetNextSetAsync().ConfigureAwait(false);
 
+                LoggingHandler.LogInfo($"Result Set Items Count {resultsSet.Count}");
                 if (resultsSet.Any())
                 {
                     resultList.AddRange(_dynamoDbContext.FromDocuments<ChargeDbEntity>(resultsSet));
