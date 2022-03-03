@@ -6,6 +6,7 @@ using Hackney.Core.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -56,6 +57,23 @@ namespace ChargesApi.V1.Controllers
             {
                 return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, ModelState.GetErrorMessages()));
             }
+        }
+
+        /// <summary>
+        /// Gets latest file processing logs.
+        /// </summary>
+        /// <param name="useCase">The use case.</param>
+        /// <response code="200">List of processed files</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="500">Internal Server Error</response>
+        [ProducesResponseType(typeof(List<FileProcessingLogResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
+        [HttpGet("file-processing-logs")]
+        [LogCall(LogLevel.Information)]
+        public async Task<ActionResult<List<FileProcessingLogResponse>>> GetAllFileProcessingLogsAsync([FromServices] IGetFileProcessingLogUseCase useCase)
+        {
+            var response = await useCase.ExecuteAsync().ConfigureAwait(false);
+            return Ok(response);
         }
     }
 }

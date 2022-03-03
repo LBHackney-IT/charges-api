@@ -1,3 +1,4 @@
+using Amazon.S3.Model;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Factories;
 using ChargesApi.V1.Gateways;
@@ -11,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using ChargesApi.V1.Helpers;
 
 namespace ChargesApi.V1.UseCase
 {
@@ -54,53 +56,61 @@ namespace ChargesApi.V1.UseCase
 
                 while (reader.Read())
                 {
-                    if (recordsCount == 0)
+                    if (reader.GetValue(1) != null)
                     {
-                        chargeYear = Convert.ToInt16($"20{reader.GetValue(19).ToString().Substring(0, 2)}");
-                        chargeSubGroup = reader.GetValue(19).ToString().Substring(0, 3).EndsWith("E")
-                                           ? Constants.EstimateTypeFile
-                                           : Constants.ActualTypeFile;
-                        _logger.LogDebug($"Extracted the ChargeYear for Estimates Upload as {chargeYear}");
-                    }
-                    else
-                    {
-                        try
+                        if (recordsCount == 0)
                         {
-                            excelData.Add(new EstimateActualCharge
+                            chargeYear = Convert.ToInt16($"20{reader.GetValue(19).ToString().Substring(0, 2)}");
+                            chargeSubGroup = reader.GetValue(19).ToString().Substring(0, 3).EndsWith("E")
+                                               ? Constants.EstimateTypeFile
+                                               : Constants.ActualTypeFile;
+                            _logger.LogDebug($"Extracted the ChargeYear for Estimates Upload as {chargeYear}");
+                        }
+                        else
+                        {
+                            try
                             {
-                                PropertyReferenceNumber = reader.GetValue(1).ToString(),
-                                TenureType = reader.GetValue(3).ToString(),
-                                TotalCharge = GetChargeAmount(reader.GetValue(18)),
-                                BlockCCTVMaintenanceAndMonitoring = GetChargeAmount(reader.GetValue(19)),
-                                BlockCleaning = GetChargeAmount(reader.GetValue(20)),
-                                BlockElectricity = GetChargeAmount(reader.GetValue(21)),
-                                BlockRepairs = GetChargeAmount(reader.GetValue(22)),
-                                BuildingInsurancePremium = GetChargeAmount(reader.GetValue(23)),
-                                DoorEntry = GetChargeAmount(reader.GetValue(24)),
-                                CommunalTVAerialMaintenance = GetChargeAmount(reader.GetValue(25)),
-                                ConciergeService = GetChargeAmount(reader.GetValue(26)),
-                                EstateCCTVMaintenanceAndMonitoring = GetChargeAmount(reader.GetValue(27)),
-                                EstateCleaning = GetChargeAmount(reader.GetValue(28)),
-                                EstateElectricity = GetChargeAmount(reader.GetValue(29)),
-                                EstateRepairs = GetChargeAmount(reader.GetValue(30)),
-                                EstateRoadsFootpathsAndDrainage = GetChargeAmount(reader.GetValue(31)),
-                                GroundRent = GetChargeAmount(reader.GetValue(32)),
-                                GroundsMaintenance = GetChargeAmount(reader.GetValue(33)),
-                                HeatingOrHotWaterEnergy = GetChargeAmount(reader.GetValue(34)),
-                                HeatingOrHotWaterMaintenance = GetChargeAmount(reader.GetValue(35)),
-                                HeatingStandingCharge = GetChargeAmount(reader.GetValue(36)),
-                                LiftMaintenance = GetChargeAmount(reader.GetValue(37)),
-                                ManagementCharge = GetChargeAmount(reader.GetValue(38)),
-                                ReserveFund = GetChargeAmount(reader.GetValue(39))
-                            });
+                                excelData.Add(new EstimateActualCharge
+                                {
+                                    PropertyReferenceNumber = reader.GetValue(1).ToString(),
+                                    AssetAddress = reader.GetValue(2).ToString(),
+                                    TenureType = reader.GetValue(3).ToString(),
+                                    BlockId = reader.GetValue(4).ToString(),
+                                    BlockAddress = reader.GetValue(5) != null ? reader.GetValue(5).ToString() : string.Empty,
+                                    EstateId = reader.GetValue(6) != null ? reader.GetValue(6).ToString() : string.Empty,
+                                    EstateAddress = reader.GetValue(7) != null ? reader.GetValue(7).ToString() : string.Empty,
+                                    TotalCharge = FileReaderHelper.GetChargeAmount(reader.GetValue(18)),
+                                    BlockCCTVMaintenanceAndMonitoring = FileReaderHelper.GetChargeAmount(reader.GetValue(19)),
+                                    BlockCleaning = FileReaderHelper.GetChargeAmount(reader.GetValue(20)),
+                                    BlockElectricity = FileReaderHelper.GetChargeAmount(reader.GetValue(21)),
+                                    BlockRepairs = FileReaderHelper.GetChargeAmount(reader.GetValue(22)),
+                                    BuildingInsurancePremium = FileReaderHelper.GetChargeAmount(reader.GetValue(23)),
+                                    DoorEntry = FileReaderHelper.GetChargeAmount(reader.GetValue(24)),
+                                    CommunalTVAerialMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(25)),
+                                    ConciergeService = FileReaderHelper.GetChargeAmount(reader.GetValue(26)),
+                                    EstateCCTVMaintenanceAndMonitoring = FileReaderHelper.GetChargeAmount(reader.GetValue(27)),
+                                    EstateCleaning = FileReaderHelper.GetChargeAmount(reader.GetValue(28)),
+                                    EstateElectricity = FileReaderHelper.GetChargeAmount(reader.GetValue(29)),
+                                    EstateRepairs = FileReaderHelper.GetChargeAmount(reader.GetValue(30)),
+                                    EstateRoadsFootpathsAndDrainage = FileReaderHelper.GetChargeAmount(reader.GetValue(31)),
+                                    GroundRent = FileReaderHelper.GetChargeAmount(reader.GetValue(32)),
+                                    GroundsMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(33)),
+                                    HeatingOrHotWaterEnergy = FileReaderHelper.GetChargeAmount(reader.GetValue(34)),
+                                    HeatingOrHotWaterMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(35)),
+                                    HeatingStandingCharge = FileReaderHelper.GetChargeAmount(reader.GetValue(36)),
+                                    LiftMaintenance = FileReaderHelper.GetChargeAmount(reader.GetValue(37)),
+                                    ManagementCharge = FileReaderHelper.GetChargeAmount(reader.GetValue(38)),
+                                    ReserveFund = FileReaderHelper.GetChargeAmount(reader.GetValue(39))
+                                });
+                            }
+                            catch (Exception e)
+                            {
+                                _logger.LogDebug($"Exception occurred while reading the Estimates Excel Sheet: {e.Message}");
+                                throw new Exception(e.Message);
+                            }
                         }
-                        catch (Exception e)
-                        {
-                            _logger.LogDebug($"Exception occurred while reading the Estimates Excel Sheet: {e.Message}");
-                            throw new Exception(e.Message);
-                        }
+                        recordsCount++;
                     }
-                    recordsCount++;
                 }
                 _logger.LogDebug($"Reading Estimates Excel Sheet successful with total record count : {recordsCount - 1}");
             }
@@ -111,7 +121,12 @@ namespace ChargesApi.V1.UseCase
                 DateTime.Now.ToString("yyyyMMddHHmmssfff"),
                 Path.GetExtension(file.FileName)
             );
-            var uploadResponse = await _s3FileService.UploadFile(file, fileName).ConfigureAwait(false);
+            var fileTags = new List<Tag>()
+            {
+                new Tag {Key = "year", Value = $"{chargeYear}"},
+                new Tag {Key = "valuesType", Value = $"{chargeSubGroup}"}
+            };
+            var uploadResponse = await _s3FileService.UploadFile(file, fileName, fileTags).ConfigureAwait(false);
             var snsMessage = _snsFactory.CreateFileUploadMessage(uploadResponse);
             await _snsGateway.Publish(snsMessage).ConfigureAwait(false);
 
@@ -122,16 +137,6 @@ namespace ChargesApi.V1.UseCase
                 return true;
             else
                 return false;
-        }
-
-        private static decimal GetChargeAmount(object excelColumnValue)
-        {
-            decimal result;
-            if (excelColumnValue == null || excelColumnValue.ToString() == " ")
-                result = 0;
-            else
-                result = Convert.ToDecimal(excelColumnValue);
-            return result;
         }
     }
 }

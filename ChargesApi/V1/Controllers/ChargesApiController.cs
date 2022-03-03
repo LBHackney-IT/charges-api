@@ -5,12 +5,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
+using ChargesApi.V1.Domain;
 using ChargesApi.V1.Infrastructure;
 using Microsoft.AspNetCore.JsonPatch;
 using ChargesApi.V1.Factories;
+using ChargesApi.V1.Gateways.Services.Interfaces;
 using ChargesApi.V1.Infrastructure.Validators;
 using FluentValidation.Results;
 
@@ -28,6 +32,9 @@ namespace ChargesApi.V1.Controllers
         private readonly IRemoveUseCase _removeUseCase;
         private readonly IUpdateUseCase _updateUseCase;
         private readonly IAddBatchUseCase _addBatchUseCase;
+        private readonly IUpdateChargeUseCase _updateChargeUseCase;
+        private readonly IDeleteBatchChargesUseCase _deleteBatchChargesUseCase;
+        private readonly IGeneratePropertyChargesFileUseCase _generatePropertyChargesFile;
 
         public ChargesApiController(
             IGetAllUseCase getAllUseCase,
@@ -35,8 +42,10 @@ namespace ChargesApi.V1.Controllers
             IAddUseCase addUseCase,
             IRemoveUseCase removeUseCase,
             IUpdateUseCase updateUseCase,
-            IAddBatchUseCase addBatchUseCase
-        )
+            IAddBatchUseCase addBatchUseCase,
+            IUpdateChargeUseCase updateChargeUseCase,
+            IDeleteBatchChargesUseCase deleteBatchChargesUseCase,
+            IGeneratePropertyChargesFileUseCase generatePropertyChargesFile)
         {
             _getAllUseCase = getAllUseCase;
             _getByIdUseCase = getByIdUseCase;
@@ -44,6 +53,9 @@ namespace ChargesApi.V1.Controllers
             _removeUseCase = removeUseCase;
             _updateUseCase = updateUseCase;
             _addBatchUseCase = addBatchUseCase;
+            _updateChargeUseCase = updateChargeUseCase;
+            _deleteBatchChargesUseCase = deleteBatchChargesUseCase;
+            _generatePropertyChargesFile = generatePropertyChargesFile;
         }
 
         /// <summary>
@@ -248,6 +260,77 @@ namespace ChargesApi.V1.Controllers
             }
 
             return NoContent();
+        }
+
+        /// <summary>
+        /// Update existing charge model
+        /// </summary>
+        /// <param name="token">The jwt token value</param>
+        /// <param name="targetId">The value by which we are looking for charge</param>
+        /// <param name="chargesUpdateRequest">Charge model for update</param>
+        /// <response code="200">Success. Charge models was updated successfully</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="404">Charge with provided id cannot be found</response>
+        /// <response code="500">Internal Server Error</response>
+        [ProducesResponseType(typeof(ChargeResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
+        [HttpPut]
+        public async Task<IActionResult> Update([FromHeader(Name = "Authorization")] string token, [FromQuery] Guid targetId,
+                                             [FromBody] ChargesUpdateRequest chargesUpdateRequest)
+        {
+            if (chargesUpdateRequest == null)
+            {
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "Charge model cannot be null!"));
+            }
+
+            await _updateChargeUseCase.ExecuteAsync(targetId, chargesUpdateRequest.ToDomain(), token).ConfigureAwait(false);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Delete all charges for specified year, ChargeGroup and ChargeSubGroup
+        /// </summary>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteBatch([FromQuery] short chargeYear, [FromQuery] ChargeGroup chargeGroup, [FromQuery] ChargeSubGroup? chargeSubGroup)
+        {
+            if (chargeGroup == ChargeGroup.Leaseholders && !chargeSubGroup.HasValue)
+            {
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest, "ChargeSubGroup is required if ChargeGroup is Leaseholders!"));
+            }
+
+            await _deleteBatchChargesUseCase.ExecuteAsync(chargeYear, chargeGroup, chargeSubGroup)
+                .ConfigureAwait(false);
+
+            return Ok("Deleted");
+        }
+
+        /// <summary>
+        /// Returns the Property Charges Csv File
+        /// </summary>
+        /// <param name="queryParameters">Search parameters to filter property charges</param>
+        /// <response code="204">Success. File generated successfully</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="404">Property Charge with provided parameters cannot be found</response>
+        [ProducesResponseType(typeof(File), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
+        [HttpGet("file")]
+        public async Task<ActionResult> DownloadPropertyChargesFile([FromQuery] PropertyChargesQueryParameters queryParameters)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest,
+                    ModelState.GetErrorMessages()));
+
+            await _generatePropertyChargesFile.ExecuteAsync(queryParameters).ConfigureAwait(false);
+            return Ok();
         }
     }
 }

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
+using System.Collections.Generic;
+using Amazon.S3.Model;
 using ChargesApi.V1.Boundary.Response;
 using ChargesApi.V1.Factories;
 
@@ -33,7 +35,7 @@ namespace ChargesApi.Tests.V1.UseCase
             _mockSnsGateway = new Mock<ISnsGateway>();
             _mockSnsFactory = new Mock<ISnsFactory>();
 
-            _mockS3FileService.Setup(s => s.UploadFile(It.IsAny<IFormFile>(), It.IsAny<string>()))
+            _mockS3FileService.Setup(s => s.UploadFile(It.IsAny<IFormFile>(), It.IsAny<string>(), It.IsAny<List<Tag>>()))
                 .ReturnsAsync(new FileLocationResponse
                 {
                     RelativePath = $"uploads/{Guid.NewGuid()}.xslx",

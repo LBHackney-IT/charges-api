@@ -45,5 +45,17 @@ namespace ChargesApi.V1.Gateways
             };
             await _amazonSimpleNotificationService.PublishAsync(request).ConfigureAwait(false);
         }
+
+        public async Task PublishUpdate(ChargesUpdateSns chargesUpdateSns)
+        {
+            string message = JsonSerializer.Serialize(chargesUpdateSns, _jsonOptions);
+            var request = new PublishRequest
+            {
+                Message = message,
+                TopicArn = Environment.GetEnvironmentVariable("CHARGES_SNS_ARN"),
+                MessageGroupId = "ChargesSnsGroupId"
+            };
+            await _amazonSimpleNotificationService.PublishAsync(request).ConfigureAwait(false);
+        }
     }
 }

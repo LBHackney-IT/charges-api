@@ -1,16 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Amazon.DynamoDBv2.Model;
 using ChargesApi.V1.Boundary.Request;
 using ChargesApi.V1.Boundary.Response;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Infrastructure.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ChargesApi.V1.Factories
 {
     public static class ChargeFactory
     {
+        public static ChargeKeys GetChargeKeys(this Dictionary<string, AttributeValue> scanResponseItem)
+            => new ChargeKeys(Guid.Parse(scanResponseItem["id"].S), Guid.Parse(scanResponseItem["target_id"].S));
+
         public static Charge ToDomain(this ChargeDbEntity chargeEntity)
         {
             if (chargeEntity == null)
@@ -114,6 +117,24 @@ namespace ChargesApi.V1.Factories
             return charges.Select(item => item.ToDomain()).ToList();
         }
 
+        /// <summary>
+        /// Returns a list of WriteRequest objects with [id] attributes only
+        /// </summary>
+        /// <param name="chargeIds"></param>
+        /// <returns></returns>
+        public static IEnumerable<WriteRequest> ToWriteRequests(this IEnumerable<ChargeKeys> chargeIds)
+            => chargeIds.Select(c => new WriteRequest
+            {
+                DeleteRequest = new DeleteRequest
+                {
+                    Key = new Dictionary<string, AttributeValue>
+                    {
+                        { "id", new AttributeValue { S = c.Id.ToString() } },
+                        { "target_id", new AttributeValue { S = c.TargetId.ToString() } }
+                    }
+                }
+            });
+
         public static Dictionary<string, AttributeValue> ToQueryRequest(this Charge charge)
         {
             return new Dictionary<string, AttributeValue>()
@@ -148,6 +169,21 @@ namespace ChargesApi.V1.Factories
                 },
                 {"created_by", new AttributeValue {S = charge.CreatedBy}},
                 {"created_at", new AttributeValue {S = charge.CreatedAt.ToString("F")}}
+            };
+        }
+
+        public static ChargesUpdateDomain ToDomain(this ChargesUpdateRequest chargesUpdateRequest)
+        {
+            if (chargesUpdateRequest == null)
+            {
+                return null;
+            }
+
+            return new ChargesUpdateDomain
+            {
+                ChargeSubGroup = chargesUpdateRequest.ChargeSubGroup,
+                ChargeYear = chargesUpdateRequest.ChargeYear,
+                DetailedCharges = chargesUpdateRequest.DetailedCharges
             };
         }
     }

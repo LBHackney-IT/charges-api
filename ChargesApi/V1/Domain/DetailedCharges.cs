@@ -10,7 +10,7 @@ namespace ChargesApi.V1.Domain
         [Required]
         public string Type { get; set; }
 
-        /// <example>Estates Cleaning</example>
+        /// <example>Estate Cleaning</example>
         [Required]
         public string SubType { get; set; }
 
@@ -25,7 +25,7 @@ namespace ChargesApi.V1.Domain
         public string Frequency { get; set; }
 
         /// <example>50</example>
-        [Range(0, (double) decimal.MaxValue, ErrorMessage = "The amount value is wrong")]
+        [Range((double) decimal.MinValue, (double) decimal.MaxValue, ErrorMessage = "The amount value is wrong")]
         public decimal Amount { get; set; }
 
         /// <example>2022-02-09T12:41:15.583Z</example>

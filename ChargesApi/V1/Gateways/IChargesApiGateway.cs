@@ -2,6 +2,7 @@ using ChargesApi.V1.Domain;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ChargesApi.V1.Boundary.Request;
 
 namespace ChargesApi.V1.Gateways
 {
@@ -27,5 +28,10 @@ namespace ChargesApi.V1.Gateways
         public Task<bool> AddBatchAsync(List<Charge> charges);
 
         public Task<bool> AddTransactionBatchAsync(List<Charge> charges);
+
+        public Task DeleteBatchAsync(IEnumerable<ChargeKeys> chargeIds, int batchCapacity);
+
+        Task<IEnumerable<ChargeKeys>> ScanByYearGroupSubGroup(short chargeYear, ChargeGroup chargeGroup, ChargeSubGroup? chargeSubGroup);
+        Task<IList<Charge>> GetChargesAsync(PropertyChargesQueryParameters queryParameters);
     }
 }

@@ -233,6 +233,11 @@ namespace ChargesApi
             services.AddScoped<IGetChargesSummaryUseCase, GetChargesSummaryUseCase>();
             services.AddScoped<IAddBatchUseCase, AddBatchUseCase>();
             services.AddScoped<IEstimateActualUploadUseCase, EstimateActualUploadUseCase>();
+            services.AddScoped<IGetFileProcessingLogUseCase, GetFileProcessingLogUseCase>();
+            services.AddScoped<IUpdateChargeUseCase, UpdateChargeUseCase>();
+            services.AddScoped<IDeleteBatchChargesUseCase, DeleteBatchChargesUseCase>();
+            services.AddScoped<IGetPropertyChargesUseCase, GetPropertyChargesUseCase>();
+            services.AddScoped<IGeneratePropertyChargesFileUseCase, GeneratePropertyChargesFileUseCase>();
         }
 
         private static void RegisterValidators(IServiceCollection services)
