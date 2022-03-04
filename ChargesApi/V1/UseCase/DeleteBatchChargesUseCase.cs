@@ -3,6 +3,8 @@ using ChargesApi.V1.Gateways;
 using ChargesApi.V1.UseCase.Interfaces;
 using System.Linq;
 using System.Threading.Tasks;
+using ChargesApi.V1.Boundary.Request;
+using ChargesApi.V1.Infrastructure;
 
 namespace ChargesApi.V1.UseCase
 {
@@ -17,15 +19,25 @@ namespace ChargesApi.V1.UseCase
 
         public async Task ExecuteAsync(short chargeYear, ChargeGroup chargeGroup, ChargeSubGroup? chargeSubGroup)
         {
-            var chargeIdsToDelete = await _chargesApiGateway.ScanByYearGroupSubGroup(chargeYear, chargeGroup, chargeSubGroup)
-                .ConfigureAwait(false);
-
-            if (chargeIdsToDelete == null || !chargeIdsToDelete.Any())
+            if (chargeSubGroup != null)
             {
-                return;
-            }
+                var request = new PropertyChargesQueryParameters
+                {
+                    ChargeGroup = chargeGroup,
+                    ChargeSubGroup = chargeSubGroup.Value,
+                    ChargeYear = chargeYear
+                };
+                var chargeIdsToDelete = await _chargesApiGateway.GetChargesAsync(request)
+                    .ConfigureAwait(false);
 
-            await _chargesApiGateway.DeleteBatchAsync(chargeIdsToDelete, Constants.PerBatchProcessingCount).ConfigureAwait(false);
+                if (chargeIdsToDelete == null || !chargeIdsToDelete.Any())
+                {
+                    return;
+                }
+
+                var chargeKeys = chargeIdsToDelete.Select(x => x.GetChargeKeys()).AsEnumerable();
+                await _chargesApiGateway.DeleteBatchAsync(chargeKeys, Constants.PerBatchProcessingCount).ConfigureAwait(false);
+            }
         }
     }
 }

@@ -286,7 +286,6 @@ namespace ChargesApi.V1.Gateways
             var totalCount = chargeKeysEnumerable.ToList().Count;
 
             LoggingHandler.LogInfo($"Items to delete {totalCount}");
-            //_logger.LogInformation($"Items to delete {totalCount}");
 
             if (totalCount % batchCapacity == 0)
                 loopCount = totalCount / batchCapacity;
@@ -306,8 +305,6 @@ namespace ChargesApi.V1.Gateways
             _logger.LogInformation($"Items to delete {chargeIds.Count()}");
             foreach (var charge in chargeIds)
             {
-                //var columns = transaction.ToQueryRequest();
-
                 actions.Add(new TransactWriteItem
                 {
                     Delete = new Delete()
@@ -331,10 +328,8 @@ namespace ChargesApi.V1.Gateways
             try
             {
                 LoggingHandler.LogInfo("TransactWriteItemsAsync starting.");
-                // _logger.LogInformation($"TransactWriteItemsAsync starting");
                 var writeResult = await _amazonDynamoDb.TransactWriteItemsAsync(placeOrderCharge).ConfigureAwait(false);
                 LoggingHandler.LogInfo("TransactWriteItemsAsync completed.");
-                //_logger.LogInformation($"TransactWriteItemsAsync completed");
                 if (writeResult.HttpStatusCode != HttpStatusCode.OK)
                     throw new Exception(writeResult.ResponseMetadata.ToString());
 
@@ -344,59 +339,6 @@ namespace ChargesApi.V1.Gateways
                 _logger.LogError($"TransactWriteItemsAsync: {ex.Message}");
                 throw;
             }
-
-            //var request = new BatchWriteItemRequest
-            //{
-            //    ReturnConsumedCapacity = ReturnConsumedCapacity.TOTAL,
-            //    RequestItems = new Dictionary<string, List<WriteRequest>>
-            //    {
-            //        {
-            //            Constants.ChargeTableName,
-            //            chargeIds.ToWriteRequests().ToList()
-            //        }
-            //    }
-            //};
-
-            //BatchWriteItemResponse response;
-            //do
-            //{
-            //    response = await _amazonDynamoDb.BatchWriteItemAsync(request).ConfigureAwait(false);
-
-            //    request.RequestItems = response.UnprocessedItems;
-            //}
-            //while (response.UnprocessedItems.Count > 0);
-
-
-        }
-
-        public async Task<IEnumerable<ChargeKeys>> ScanByYearGroupSubGroup(short chargeYear, ChargeGroup chargeGroup, ChargeSubGroup? chargeSubGroup)
-        {
-            var scanRequest = new ScanRequest
-            {
-                TableName = Constants.ChargeTableName,
-                FilterExpression = "charge_year = :v_charge_year and charge_group = :v_charge_group",
-                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-                {
-                    { ":v_charge_year", new AttributeValue { N = chargeYear.ToString() } },
-                    { ":v_charge_group", new AttributeValue { S = chargeGroup.ToString() } }
-                }
-            };
-
-            if (chargeSubGroup != null)
-            {
-                scanRequest.FilterExpression += " and charge_sub_group = :v_charge_sub_group";
-                scanRequest.ExpressionAttributeValues.Add(":v_charge_sub_group", new AttributeValue { S = chargeSubGroup.Value.ToString() });
-            }
-            else
-            {
-                scanRequest.FilterExpression += " and attribute_not_exists(charge_sub_group)";
-            }
-
-            var response = await _amazonDynamoDb.ScanAsync(scanRequest).ConfigureAwait(false);
-            LoggingHandler.LogInfo($"Total Count: {response.Count}.");
-            return response.Items.Select(i => i.GetChargeKeys());
-
-
         }
     }
 }
