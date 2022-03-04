@@ -14,6 +14,6 @@ namespace ChargesApi.V1
         public const int Page = 1;
         public const int PerBatchProcessingCount = 10;
         public const string UtcDateFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'";
-       
+
     }
 }

@@ -24,7 +24,7 @@ namespace ChargesApi.V1.UseCase
                 var request = new PropertyChargesQueryParameters
                 {
                     ChargeGroup = chargeGroup,
-                    ChargeSubGroup = chargeSubGroup.Value ,
+                    ChargeSubGroup = chargeSubGroup.Value,
                     ChargeYear = chargeYear
                 };
                 var chargeIdsToDelete = await _chargesApiGateway.GetChargesAsync(request)
