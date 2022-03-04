@@ -1,8 +1,8 @@
 resource "aws_dynamodb_table" "chargesapi_dynamodb_table" {
   name           = "Charges"
   billing_mode   = "PROVISIONED"
-  read_capacity  = 555
-  write_capacity = 100
+  read_capacity  = 400
+  write_capacity = 200
   hash_key       = "target_id"
   range_key      = "id"
 
@@ -30,7 +30,7 @@ resource "aws_dynamodb_table" "chargesapi_dynamodb_table" {
 
 resource "aws_appautoscaling_target" "dynamodb_table_read_target" {
   max_capacity       = 1200
-  min_capacity       = 100
+  min_capacity       = 400
   resource_id        = "table/${aws_dynamodb_table.chargesapi_dynamodb_table.name}"
   scalable_dimension = "dynamodb:table:ReadCapacityUnits"
   service_namespace  = "dynamodb"
@@ -53,8 +53,8 @@ resource "aws_appautoscaling_policy" "dynamodb_table_read_policy" {
 }
 
 resource "aws_appautoscaling_target" "dynamodb_table_write_target" {
-  max_capacity       = 600
-  min_capacity       = 100
+  max_capacity       = 1200
+  min_capacity       = 200
   resource_id        = "table/${aws_dynamodb_table.chargesapi_dynamodb_table.name}"
   scalable_dimension = "dynamodb:table:WriteCapacityUnits"
   service_namespace  = "dynamodb"
@@ -72,7 +72,7 @@ resource "aws_appautoscaling_policy" "dynamodb_table_write_policy" {
       predefined_metric_type = "DynamoDBWriteCapacityUtilization"
     }
 
-    target_value = 70
+    target_value = 80
   }
 }
 
