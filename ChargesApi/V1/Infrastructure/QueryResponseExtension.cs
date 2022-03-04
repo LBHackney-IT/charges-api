@@ -61,6 +61,8 @@ namespace ChargesApi.V1.Infrastructure
 
             return chargesList;
         }
+        public static ChargeKeys GetChargeKeys(this Charge charge)
+            => new ChargeKeys(charge.Id, charge.TargetId);
 
         public static List<Charge> ToChargeDomain(this ScanResponse response)
         {
