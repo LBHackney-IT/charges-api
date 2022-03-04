@@ -132,7 +132,7 @@ namespace ChargesApi.V1.UseCase
 
             _logger.LogDebug($"File successfully pushed to S3 bucket");
 
-            // All Steps Evaluation
+            // All Steps Evaluation Result
             if (chargeYear > 0 && !string.IsNullOrEmpty(chargeSubGroup) && excelData.Count == recordsCount - 1)
                 return true;
             else
