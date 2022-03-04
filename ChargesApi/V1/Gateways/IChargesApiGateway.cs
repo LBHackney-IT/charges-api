@@ -31,7 +31,6 @@ namespace ChargesApi.V1.Gateways
 
         public Task DeleteBatchAsync(IEnumerable<ChargeKeys> chargeIds, int batchCapacity);
 
-        Task<IEnumerable<ChargeKeys>> ScanByYearGroupSubGroup(short chargeYear, ChargeGroup chargeGroup, ChargeSubGroup? chargeSubGroup);
         Task<IList<Charge>> GetChargesAsync(PropertyChargesQueryParameters queryParameters);
     }
 }
