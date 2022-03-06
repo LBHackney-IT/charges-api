@@ -34,7 +34,7 @@ namespace ChargesApi.Tests.V1.Gateways
             _dynamoDb = new Mock<IDynamoDBContext>();
             _amazonDynamoDb = new Mock<IAmazonDynamoDB>();
             _logger = new Mock<ILogger<DynamoDbGateway>>();
-            _gateway = new DynamoDbGateway(_dynamoDb.Object, _amazonDynamoDb.Object, _logger.Object);
+            _gateway = new DynamoDbGateway(_dynamoDb.Object, _amazonDynamoDb.Object);
         }
         [Fact]
         public async Task GetChargeByIdReturnsNullIfEntityDoesntExist()

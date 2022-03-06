@@ -324,14 +324,12 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpDelete("range-delete")]
-        public async Task<IActionResult> DeleteRange([FromBody] List<ChargeKeys> keys)
+        public async Task<IActionResult> DeleteRange([FromBody] List<Guid> targetIds)
         {
-            if (keys == null) throw new ArgumentNullException(nameof(keys));
-            if (keys.Count == 0) throw new ArgumentException("Value cannot be an empty collection.", nameof(keys));
-            for (int i = 0; i < keys.Count / 25; i++)
-            {
-                await _removeRangeUseCase.ExecuteAsync(keys.Skip(25 * i).Take(25).ToList()).ConfigureAwait(false);
-            }
+            if (targetIds == null) throw new ArgumentNullException(nameof(targetIds));
+            if (targetIds.Count == 0) throw new ArgumentException("Value cannot be an empty collection.", nameof(targetIds));
+
+            await new LambdaHandler().DeleteRange(targetIds).ConfigureAwait(false);
 
             return Ok($"Operation done.");
         }
