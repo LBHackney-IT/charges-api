@@ -24,8 +24,8 @@ namespace ChargesApi.V1.Gateways
 
         public DynamoDbGateway(IDynamoDBContext dynamoDbContext, IAmazonDynamoDB amazonDynamoDb)
         {
-            _dynamoDbContext = dynamoDbContext;// ?? throw new ArgumentNullException(nameof(dynamoDbContext));
-            _amazonDynamoDb = amazonDynamoDb;// ?? throw new ArgumentNullException(nameof(amazonDynamoDb));
+            _dynamoDbContext = dynamoDbContext ?? throw new ArgumentNullException(nameof(dynamoDbContext));
+            _amazonDynamoDb = amazonDynamoDb ?? throw new ArgumentNullException(nameof(amazonDynamoDb));
         }
 
         public void Add(Charge charge)
