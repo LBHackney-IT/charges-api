@@ -45,11 +45,11 @@ functions:
             managedExternally: true
           private: true
           cors: true
-  deleteBatch:
-    name: ${self:service}-${self:provider.stage}-batch-delete
-    description: "Batch delete the cgharges"
+  deleteRange:
+    name: ${self:service}-${self:provider.stage}-batch-range
+    description: "Delete range of combination keys of cgharges"
     timeout: 900
-    handler: ChargesApi::ChargesApi.ChargesApiController::DeleteBatch
+    handler: ChargesApi::ChargesApi.ChargesApiController::DeleteRange
     reservedConcurrency: 1
     role: lambdaExecutionRole
 resources:
