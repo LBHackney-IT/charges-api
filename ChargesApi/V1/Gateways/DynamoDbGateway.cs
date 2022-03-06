@@ -25,16 +25,13 @@ namespace ChargesApi.V1.Gateways
     {
         private readonly IDynamoDBContext _dynamoDbContext;
         private readonly IAmazonDynamoDB _amazonDynamoDb;
-        private readonly ILogger<IChargesApiGateway> _logger;
 
 
         public DynamoDbGateway(IDynamoDBContext dynamoDbContext,
-            IAmazonDynamoDB amazonDynamoDb,
-            ILogger<IChargesApiGateway> logger)
+            IAmazonDynamoDB amazonDynamoDb)
         {
             _dynamoDbContext = dynamoDbContext;
             _amazonDynamoDb = amazonDynamoDb;
-            _logger = logger;
         }
 
         public void Add(Charge charge)
@@ -172,7 +169,7 @@ namespace ChargesApi.V1.Gateways
         public async Task RemoveRangeAsync(List<ChargeKeys> keys)
         {
             var actions = new List<TransactWriteItem>();
-            _logger.LogInformation($"RemoveRange started, keys count is:{keys.Count}");
+            LoggingHandler.LogInfo($"RemoveRange started, keys count is:{keys.Count}");
             foreach (var key in keys)
             {
                 actions.Add(new TransactWriteItem
@@ -206,8 +203,8 @@ namespace ChargesApi.V1.Gateways
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{keys}");
-                _logger.LogError($"TransactWriteItemsAsync: {ex.Message}");
+                LoggingHandler.LogInfo($"{keys}");
+                LoggingHandler.LogInfo($"TransactWriteItemsAsync: {ex.Message}");
             }
         }
 
@@ -282,19 +279,19 @@ namespace ChargesApi.V1.Gateways
             }
             catch (ResourceNotFoundException rnf)
             {
-                _logger.LogDebug($"One of the table involved in the transaction is not found: {rnf.Message}");
+                LoggingHandler.LogWarning($"One of the table involved in the transaction is not found: {rnf.Message}");
             }
             catch (InternalServerErrorException ise)
             {
-                _logger.LogDebug($"Internal Server Error: {ise.Message}");
+                LoggingHandler.LogWarning(($"Internal Server Error: {ise.Message}");
             }
             catch (TransactionCanceledException tce)
             {
-                _logger.LogDebug($"Transaction Canceled: {tce.Message}");
+                LoggingHandler.LogWarning(($"Transaction Canceled: {tce.Message}");
             }
             catch (Exception e)
             {
-                _logger.LogDebug($"Transaction Canceled: {e.Message}");
+                LoggingHandler.LogWarning(($"Transaction Canceled: {e.Message}");
                 throw new Exception(e.Message);
             }
             return result;
@@ -328,7 +325,7 @@ namespace ChargesApi.V1.Gateways
         private async Task DeleteBatchAsync(IEnumerable<ChargeKeys> chargeIds)
         {
             var actions = new List<TransactWriteItem>();
-            _logger.LogInformation($"Items to delete {chargeIds.Count()}");
+            LoggingHandler.LogInfo($"Items to delete {chargeIds.Count()}");
             foreach (var charge in chargeIds)
             {
                 actions.Add(new TransactWriteItem
@@ -362,7 +359,7 @@ namespace ChargesApi.V1.Gateways
             }
             catch (Exception ex)
             {
-                _logger.LogError($"TransactWriteItemsAsync: {ex.Message}");
+                LoggingHandler.LogError($"TransactWriteItemsAsync: {ex.Message}");
                 throw;
             }
         }

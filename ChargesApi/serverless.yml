@@ -49,7 +49,7 @@ functions:
     name: ${self:service}-${self:provider.stage}-batch-range
     description: "Delete range of combination keys of cgharges"
     timeout: 900
-    handler: ChargesApi::ChargesApi.ChargesApiController::DeleteRange
+    handler: ChargesApi::ChargesApi.LambdaHandler::DeleteRange
     reservedConcurrency: 1
     role: lambdaExecutionRole
 resources:
