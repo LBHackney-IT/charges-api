@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
@@ -8,6 +9,7 @@ using Amazon.Lambda.Core;
 using ChargesApi.V1.Boundary.Response;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Gateways;
+using ChargesApi.V1.Gateways.Common;
 using ChargesApi.V1.UseCase;
 using ChargesApi.V1.UseCase.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +27,8 @@ namespace ChargesApi
         {
             IAmazonDynamoDB amazonDynamoDb = CreateAmazonDynamoDbClient();
             IDynamoDBContext dynamoDbContext = new DynamoDBContext(amazonDynamoDb);
+
+            LoggingHandler.LogInfo($"{amazonDynamoDb}\r\n{dynamoDbContext}");
 
             IChargesApiGateway apiGateway = new DynamoDbGateway(dynamoDbContext, amazonDynamoDb);
 
