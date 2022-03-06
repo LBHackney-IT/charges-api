@@ -20,20 +20,9 @@ namespace ChargesApi
 {
     public class LambdaHandler
     {
-        private readonly IGetAllUseCase _getAllUseCase;
-        private readonly IRemoveRangeUseCase _removeRangeUseCase;
-
         public LambdaHandler()
         {
-            IAmazonDynamoDB amazonDynamoDb = CreateAmazonDynamoDbClient();
-            IDynamoDBContext dynamoDbContext = new DynamoDBContext(amazonDynamoDb);
 
-            LoggingHandler.LogInfo($"{amazonDynamoDb}\r\n{dynamoDbContext}");
-
-            IChargesApiGateway apiGateway = new DynamoDbGateway(dynamoDbContext, amazonDynamoDb);
-
-            _getAllUseCase = new GetAllUseCase(apiGateway);
-            _removeRangeUseCase = new RemoveRangeUseCase(apiGateway);
         }
 
         public async Task<StepResponse> DeleteRange([FromBody] List<Guid> targetIds)
@@ -41,10 +30,19 @@ namespace ChargesApi
             if (targetIds == null) throw new ArgumentNullException(nameof(targetIds));
             if (targetIds.Count == 0) throw new ArgumentException("Value cannot be an empty collection.", nameof(targetIds));
 
+            #region Initilization
+            IAmazonDynamoDB amazonDynamoDb = CreateAmazonDynamoDbClient();
+            IDynamoDBContext dynamoDbContext = new DynamoDBContext(amazonDynamoDb);
+            IChargesApiGateway apiGateway = new DynamoDbGateway(dynamoDbContext, amazonDynamoDb);
+
+            IGetAllUseCase getAllUseCase = new GetAllUseCase(apiGateway);
+            IRemoveRangeUseCase removeRangeUseCase = new RemoveRangeUseCase(apiGateway); 
+            #endregion
+
             List<ChargeKeys> keysList = new List<ChargeKeys>();
             foreach (var targetId in targetIds)
             {
-                var charges = await _getAllUseCase.ExecuteAsync(targetId).ConfigureAwait(false);
+                var charges = await getAllUseCase.ExecuteAsync(targetId).ConfigureAwait(false);
                 charges.ForEach(c =>
                 {
                     keysList.Add(new ChargeKeys(c.Id, c.TargetId));
@@ -52,7 +50,7 @@ namespace ChargesApi
             }
 
             for (int i = 0; i <= keysList.Count / 25; i++)
-                await _removeRangeUseCase.ExecuteAsync(keysList.Skip(i * 25).Take(25).ToList()).ConfigureAwait(false);
+                await removeRangeUseCase.ExecuteAsync(keysList.Skip(i * 25).Take(25).ToList()).ConfigureAwait(false);
 
             return new StepResponse()
             {
