@@ -283,15 +283,15 @@ namespace ChargesApi.V1.Gateways
             }
             catch (InternalServerErrorException ise)
             {
-                LoggingHandler.LogWarning(($"Internal Server Error: {ise.Message}");
+                LoggingHandler.LogWarning(($"Internal Server Error: {ise.Message}"));
             }
             catch (TransactionCanceledException tce)
             {
-                LoggingHandler.LogWarning(($"Transaction Canceled: {tce.Message}");
+                LoggingHandler.LogWarning(($"Transaction Canceled: {tce.Message}"));
             }
             catch (Exception e)
             {
-                LoggingHandler.LogWarning(($"Transaction Canceled: {e.Message}");
+                LoggingHandler.LogWarning(($"Transaction Canceled: {e.Message}"));
                 throw new Exception(e.Message);
             }
             return result;
