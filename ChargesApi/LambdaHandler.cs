@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
@@ -9,7 +8,6 @@ using Amazon.Lambda.Core;
 using ChargesApi.V1.Boundary.Response;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Gateways;
-using ChargesApi.V1.Gateways.Common;
 using ChargesApi.V1.UseCase;
 using ChargesApi.V1.UseCase.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +23,7 @@ namespace ChargesApi
 
         }
 
-        public async Task<StepResponse> DeleteRange([FromBody] List<Guid> targetIds)
+        public static async Task<StepResponse> DeleteRange([FromBody] List<Guid> targetIds)
         {
             if (targetIds == null) throw new ArgumentNullException(nameof(targetIds));
             if (targetIds.Count == 0) throw new ArgumentException("Value cannot be an empty collection.", nameof(targetIds));
@@ -36,7 +34,7 @@ namespace ChargesApi
             IChargesApiGateway apiGateway = new DynamoDbGateway(dynamoDbContext, amazonDynamoDb);
 
             IGetAllUseCase getAllUseCase = new GetAllUseCase(apiGateway);
-            IRemoveRangeUseCase removeRangeUseCase = new RemoveRangeUseCase(apiGateway); 
+            IRemoveRangeUseCase removeRangeUseCase = new RemoveRangeUseCase(apiGateway);
             #endregion
 
             List<ChargeKeys> keysList = new List<ChargeKeys>();

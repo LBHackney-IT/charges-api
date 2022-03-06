@@ -329,7 +329,7 @@ namespace ChargesApi.V1.Controllers
             if (targetIds == null) throw new ArgumentNullException(nameof(targetIds));
             if (targetIds.Count == 0) throw new ArgumentException("Value cannot be an empty collection.", nameof(targetIds));
 
-            await new LambdaHandler().DeleteRange(targetIds).ConfigureAwait(false);
+            await LambdaHandler.DeleteRange(targetIds).ConfigureAwait(false);
 
             return Ok($"Operation done.");
         }
