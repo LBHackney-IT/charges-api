@@ -25,6 +25,7 @@ namespace ChargesApi
         {
             IAmazonDynamoDB amazonDynamoDb = CreateAmazonDynamoDbClient();
             IDynamoDBContext dynamoDbContext = new DynamoDBContext(amazonDynamoDb);
+
             IChargesApiGateway apiGateway = new DynamoDbGateway(dynamoDbContext, amazonDynamoDb);
 
             _getAllUseCase = new GetAllUseCase(apiGateway);
