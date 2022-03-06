@@ -182,8 +182,8 @@ namespace ChargesApi.V1.Gateways
                         TableName = "Charges",
                         Key = new Dictionary<string, AttributeValue>
                         {
-                            {"target_id",new AttributeValue(key.TargetId.ToString())}/*,
-                            {"id",new AttributeValue(key.Id.ToString())}*/
+                            {"target_id",new AttributeValue(key.TargetId.ToString())},
+                            {"id",new AttributeValue(key.Id.ToString())}
                         },
                         ReturnValuesOnConditionCheckFailure = ReturnValuesOnConditionCheckFailure.ALL_OLD
                     },
