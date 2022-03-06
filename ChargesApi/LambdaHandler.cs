@@ -8,7 +8,6 @@ using Amazon.Lambda.Core;
 using ChargesApi.V1.Boundary.Response;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Gateways;
-using ChargesApi.V1.Gateways.Common;
 using ChargesApi.V1.UseCase;
 using ChargesApi.V1.UseCase.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +25,7 @@ namespace ChargesApi
         {
             IAmazonDynamoDB amazonDynamoDb = CreateAmazonDynamoDbClient();
             IDynamoDBContext dynamoDbContext = new DynamoDBContext(amazonDynamoDb);
+            IChargeMaintenanceApiGateway chargeMaintenanceApiGateway = new ChargeMaintenanceGateway(dynamoDbContext);
             IChargesApiGateway apiGateway = new DynamoDbGateway(dynamoDbContext, amazonDynamoDb);
 
             _getAllUseCase = new GetAllUseCase(apiGateway);
@@ -59,7 +59,7 @@ namespace ChargesApi
 
         private static AmazonDynamoDBClient CreateAmazonDynamoDbClient()
         {
-            /*bool result = bool.Parse(value: Environment.GetEnvironmentVariable("DynamoDb_LocalMode") ?? "false");
+            bool result = bool.Parse(value: Environment.GetEnvironmentVariable("DynamoDb_LocalMode") ?? "false");
             if (result)
             {
                 string url = Environment.GetEnvironmentVariable("DynamoDb_LocalServiceUrl");
@@ -67,7 +67,7 @@ namespace ChargesApi
                 {
                     ServiceURL = url
                 });
-            }*/
+            }
             return new AmazonDynamoDBClient();
         }
 
