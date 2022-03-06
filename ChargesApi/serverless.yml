@@ -45,7 +45,7 @@ functions:
             managedExternally: true
           private: true
           cors: true
-  downloadTenureToIfs:
+  deleteBatch:
     name: ${self:service}-${self:provider.stage}-batch-delete
     description: "Batch delete the cgharges"
     timeout: 900
