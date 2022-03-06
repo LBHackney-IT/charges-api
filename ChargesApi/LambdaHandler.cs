@@ -24,9 +24,7 @@ namespace ChargesApi
         public LambdaHandler()
         {
             IAmazonDynamoDB amazonDynamoDb = CreateAmazonDynamoDbClient();
-            IDynamoDBContext dynamoDbContext = new DynamoDBContext(amazonDynamoDb);
-            DynamoDbGateway apiGateway = new DynamoDbGateway(dynamoDbContext, amazonDynamoDb);
-
+            IChargesApiGateway apiGateway = new ChargesApiGateway(amazonDynamoDb);
             _getAllUseCase = new GetAllUseCase(apiGateway);
             _removeRangeUseCase = new RemoveRangeUseCase(apiGateway);
         }
