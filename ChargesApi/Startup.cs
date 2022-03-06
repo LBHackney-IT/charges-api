@@ -222,6 +222,7 @@ namespace ChargesApi
             services.AddScoped<IGetByIdUseCase, GetByIdUseCase>();
             services.AddScoped<IAddUseCase, AddUseCase>();
             services.AddScoped<IRemoveUseCase, RemoveUseCase>();
+            services.AddScoped<IRemoveRangeUseCase, RemoveRangeUseCase>();
             services.AddScoped<IUpdateUseCase, UpdateUseCase>();
             services.AddScoped<IAddChargeMaintenanceUseCase, AddChargeMaintenanceUseCase>();
             services.AddScoped<IGetByIdChargeMaintenanceUseCase, GetByIdChargeMaintenanceUseCase>();

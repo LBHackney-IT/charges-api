@@ -12,15 +12,10 @@ namespace ChargesApi.V1.Gateways
 
         public Task<List<Charge>> GetAllChargesAsync(Guid targetId);
 
-        public void Add(Charge charge);
         public Task AddAsync(Charge charge);
-        public void AddRange(List<Charge> charges);
-        public Task AddRangeAsync(List<Charge> charges);
 
-        public void Remove(Charge charge);
         public Task RemoveAsync(Charge charge);
-        public void RemoveRange(List<Charge> charges);
-        public Task RemoveRangeAsync(List<Charge> charges);
+        public Task RemoveRangeAsync(List<ChargeKeys> keys);
 
         public void Update(Charge charge);
         public Task UpdateAsync(Charge charge);
