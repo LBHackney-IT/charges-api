@@ -97,7 +97,7 @@ namespace ChargesApi.Tests.V1.E2ETests
             HttpResponseMessage response;
             using var stringContent = new StringContent(body);
             stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            
+
             response = await Client.PostAsync(uri, stringContent).ConfigureAwait(false);
 
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);

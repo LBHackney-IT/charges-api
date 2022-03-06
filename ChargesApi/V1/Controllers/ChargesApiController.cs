@@ -323,8 +323,8 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
-        [HttpDelete]
-        public async Task<IActionResult> DeleteRange(List<ChargeKeys> keys)
+        [HttpDelete("range-delete")]
+        public async Task<IActionResult> DeleteRange([FromBody] List<ChargeKeys> keys)
         {
             if (keys == null) throw new ArgumentNullException(nameof(keys));
             if (keys.Count == 0) throw new ArgumentException("Value cannot be an empty collection.", nameof(keys));

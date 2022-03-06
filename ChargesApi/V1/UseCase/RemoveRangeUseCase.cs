@@ -8,9 +8,9 @@ namespace ChargesApi.V1.UseCase
 {
     public class RemoveRangeUseCase : IRemoveRangeUseCase
     {
-        private readonly DynamoDbGateway _gateway;
+        private readonly IChargesApiGateway _gateway;
 
-        public RemoveRangeUseCase(DynamoDbGateway gateway)
+        public RemoveRangeUseCase(IChargesApiGateway gateway)
         {
             _gateway = gateway;
         }
