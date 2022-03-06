@@ -169,19 +169,45 @@ namespace ChargesApi.V1.Gateways
             await _dynamoDbContext.DeleteAsync(charge.ToDatabase()).ConfigureAwait(false);
         }
 
-        public void RemoveRange(List<Charge> charges)
+        public async Task RemoveRangeAsync(List<ChargeKeys> keys)
         {
-            charges.ForEach(c =>
+            var actions = new List<TransactWriteItem>();
+            _logger.LogInformation($"RemoveRange started, keys count is:{keys.Count}");
+            foreach (var key in keys)
             {
-                Remove(c);
-            });
-        }
+                actions.Add(new TransactWriteItem
+                {
+                    Delete = new Delete()
+                    {
+                        TableName = "Charges",
+                        Key = new Dictionary<string, AttributeValue>
+                        {
+                            {"target_id",new AttributeValue(key.TargetId.ToString())},
+                            {"id",new AttributeValue(key.Id.ToString())}
+                        },
+                        ReturnValuesOnConditionCheckFailure = ReturnValuesOnConditionCheckFailure.ALL_OLD
+                    },
+                });
+            }
 
-        public async Task RemoveRangeAsync(List<Charge> charges)
-        {
-            foreach (Charge c in charges)
+            TransactWriteItemsRequest placeOrderCharge = new TransactWriteItemsRequest
             {
-                await RemoveAsync(c).ConfigureAwait(false);
+                TransactItems = actions,
+                ReturnConsumedCapacity = ReturnConsumedCapacity.TOTAL
+            };
+            try
+            {
+                LoggingHandler.LogInfo("TransactWriteItemsAsync starting.");
+                var writeResult = await _amazonDynamoDb.TransactWriteItemsAsync(placeOrderCharge).ConfigureAwait(false);
+                LoggingHandler.LogInfo("TransactWriteItemsAsync completed.");
+                if (writeResult.HttpStatusCode != HttpStatusCode.OK)
+                    throw new Exception(writeResult.ResponseMetadata.ToString());
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{keys}");
+                _logger.LogError($"TransactWriteItemsAsync: {ex.Message}");
             }
         }
 

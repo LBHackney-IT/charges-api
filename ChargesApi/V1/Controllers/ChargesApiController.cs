@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Amazon.Runtime.Internal.Util;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Infrastructure;
 using Microsoft.AspNetCore.JsonPatch;
@@ -35,6 +36,7 @@ namespace ChargesApi.V1.Controllers
         private readonly IUpdateChargeUseCase _updateChargeUseCase;
         private readonly IDeleteBatchChargesUseCase _deleteBatchChargesUseCase;
         private readonly IGeneratePropertyChargesFileUseCase _generatePropertyChargesFile;
+        private readonly IRemoveRangeUseCase _removeRangeUseCase;
 
         public ChargesApiController(
             IGetAllUseCase getAllUseCase,
@@ -45,7 +47,8 @@ namespace ChargesApi.V1.Controllers
             IAddBatchUseCase addBatchUseCase,
             IUpdateChargeUseCase updateChargeUseCase,
             IDeleteBatchChargesUseCase deleteBatchChargesUseCase,
-            IGeneratePropertyChargesFileUseCase generatePropertyChargesFile)
+            IGeneratePropertyChargesFileUseCase generatePropertyChargesFile,
+            IRemoveRangeUseCase removeRangeUseCase)
         {
             _getAllUseCase = getAllUseCase;
             _getByIdUseCase = getByIdUseCase;
@@ -56,6 +59,7 @@ namespace ChargesApi.V1.Controllers
             _updateChargeUseCase = updateChargeUseCase;
             _deleteBatchChargesUseCase = deleteBatchChargesUseCase;
             _generatePropertyChargesFile = generatePropertyChargesFile;
+            _removeRangeUseCase = removeRangeUseCase;
         }
 
         /// <summary>
@@ -309,6 +313,27 @@ namespace ChargesApi.V1.Controllers
                 .ConfigureAwait(false);
 
             return Ok("Deleted");
+        }
+
+        /// <summary>
+        /// Delete all charges for a range of combinations of id and target id
+        /// </summary>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteRange(List<ChargeKeys> keys)
+        {
+            if (keys == null) throw new ArgumentNullException(nameof(keys));
+            if (keys.Count == 0) throw new ArgumentException("Value cannot be an empty collection.", nameof(keys));
+            for (int i = 0; i < keys.Count / 25; i++)
+            {
+                await _removeRangeUseCase.ExecuteAsync(keys.Skip(25 * i).Take(25).ToList()).ConfigureAwait(false);
+            }
+
+            return Ok($"Operation done.");
         }
 
         /// <summary>

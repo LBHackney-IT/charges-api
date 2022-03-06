@@ -10,7 +10,8 @@ namespace ChargesApi.Tests
 {
     public class DynamoDbIntegrationTests<TStartup> : IDisposable where TStartup : class
     {
-        private const string Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTIyNDE2MjU4ODQ1MjgxMDQxNDAiLCJlbWFpbCI6ImRlbmlzZS5udWRnZUBoYWNrbmV5Lmdvdi51ayIsImlzcyI6IkhhY2tuZXkiLCJuYW1lIjoiRGVuaXNlIE51ZGdlIiwiZ3JvdXBzIjpbInNvbWUtdmFsaWQtZ29vZ2xlLWdyb3VwIl0sImlhdCI6MTYzOTQxNzE4OX0.Rai_olTwhVugBY8L8bpyhSGxX3lLB-ZLqxlSDQh96nE";
+        //private const string Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTIyNDE2MjU4ODQ1MjgxMDQxNDAiLCJlbWFpbCI6ImRlbmlzZS5udWRnZUBoYWNrbmV5Lmdvdi51ayIsImlzcyI6IkhhY2tuZXkiLCJuYW1lIjoiRGVuaXNlIE51ZGdlIiwiZ3JvdXBzIjpbInNvbWUtdmFsaWQtZ29vZ2xlLWdyb3VwIl0sImlhdCI6MTYzOTQxNzE4OX0.Rai_olTwhVugBY8L8bpyhSGxX3lLB-ZLqxlSDQh96nE";
+        private const string Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJncm91cHMiOlsiZTJlLXRlc3RpbmctZGV2ZWxvcG1lbnQiLCJlMmUtYXBpcy10ZXN0aW5nLWRldmVsb3BtZW50Il0sImVtYWlsIjoiZTJlLXRlc3RpbmctZGV2ZWxvcG1lbnRAaGFja25leS5nb3YudWsiLCJuYW1lIjoiZTJlLXRlc3RpbmctZGV2ZWxvcG1lbnQiLCJuYmYiOjE2MjQ4ODc5MzMsImV4cCI6MTk0MDQyMDczMywiaWF0IjoxNjI0ODg3OTMzfQ.3BbK2nCvqkkMI96PoFzkJG7bHmHIxYqizW9dbUFfG6Q";
         protected HttpClient Client { get; private set; }
         private readonly DynamoDbMockWebApplicationFactory<TStartup> _factory;
         protected IDynamoDBContext DynamoDbContext => _factory?.DynamoDbContext;
