@@ -8,6 +8,7 @@ using Amazon.Lambda.Core;
 using ChargesApi.V1.Boundary.Response;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Gateways;
+using ChargesApi.V1.Gateways.Common;
 using ChargesApi.V1.UseCase;
 using ChargesApi.V1.UseCase.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -18,29 +19,28 @@ namespace ChargesApi
 {
     public class LambdaHandler
     {
+        private readonly IGetAllUseCase _getAllUseCase;
+        private readonly IRemoveRangeUseCase _removeRangeUseCase;
+
         public LambdaHandler()
         {
-
-        }
-
-        public static async Task<StepResponse> DeleteRange([FromBody] List<Guid> targetIds)
-        {
-            if (targetIds == null) throw new ArgumentNullException(nameof(targetIds));
-            if (targetIds.Count == 0) throw new ArgumentException("Value cannot be an empty collection.", nameof(targetIds));
-
-            #region Initilization
             IAmazonDynamoDB amazonDynamoDb = CreateAmazonDynamoDbClient();
             IDynamoDBContext dynamoDbContext = new DynamoDBContext(amazonDynamoDb);
             IChargesApiGateway apiGateway = new DynamoDbGateway(dynamoDbContext, amazonDynamoDb);
 
-            IGetAllUseCase getAllUseCase = new GetAllUseCase(apiGateway);
-            IRemoveRangeUseCase removeRangeUseCase = new RemoveRangeUseCase(apiGateway);
-            #endregion
+            _getAllUseCase = new GetAllUseCase(apiGateway);
+            _removeRangeUseCase = new RemoveRangeUseCase(apiGateway);
+        }
+
+        public async Task<StepResponse> DeleteRange([FromBody] List<Guid> targetIds)
+        {
+            if (targetIds == null) throw new ArgumentNullException(nameof(targetIds));
+            if (targetIds.Count == 0) throw new ArgumentException("Value cannot be an empty collection.", nameof(targetIds));
 
             List<ChargeKeys> keysList = new List<ChargeKeys>();
             foreach (var targetId in targetIds)
             {
-                var charges = await getAllUseCase.ExecuteAsync(targetId).ConfigureAwait(false);
+                var charges = await _getAllUseCase.ExecuteAsync(targetId).ConfigureAwait(false);
                 charges.ForEach(c =>
                 {
                     keysList.Add(new ChargeKeys(c.Id, c.TargetId));
@@ -48,7 +48,7 @@ namespace ChargesApi
             }
 
             for (int i = 0; i <= keysList.Count / 25; i++)
-                await removeRangeUseCase.ExecuteAsync(keysList.Skip(i * 25).Take(25).ToList()).ConfigureAwait(false);
+                await _removeRangeUseCase.ExecuteAsync(keysList.Skip(i * 25).Take(25).ToList()).ConfigureAwait(false);
 
             return new StepResponse()
             {
@@ -59,7 +59,7 @@ namespace ChargesApi
 
         private static AmazonDynamoDBClient CreateAmazonDynamoDbClient()
         {
-            bool result = bool.Parse(value: Environment.GetEnvironmentVariable("DynamoDb_LocalMode") ?? "false");
+            /*bool result = bool.Parse(value: Environment.GetEnvironmentVariable("DynamoDb_LocalMode") ?? "false");
             if (result)
             {
                 string url = Environment.GetEnvironmentVariable("DynamoDb_LocalServiceUrl");
@@ -67,7 +67,7 @@ namespace ChargesApi
                 {
                     ServiceURL = url
                 });
-            }
+            }*/
             return new AmazonDynamoDBClient();
         }
 
