@@ -60,7 +60,8 @@ namespace ChargesApi.V1.Infrastructure
                             ? Enum.Parse<ChargeSubGroup>(item["charge_sub_group"].S)
                             : ((ChargeSubGroup?) null),
                     TargetType = Enum.Parse<TargetType>(item["target_type"].S),
-                    ChargeYear = Convert.ToInt16(item["charge_year"].N)
+                    ChargeYear = (item.ContainsKey("charge_year") && !item["charge_year"].NULL)
+                    ? Convert.ToInt16(item["charge_year"].N) : (short) 0
                 };
 
                 if (detailCharges.Count > 0)
