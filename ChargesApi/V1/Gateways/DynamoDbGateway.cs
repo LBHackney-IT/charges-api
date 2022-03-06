@@ -6,17 +6,13 @@ using ChargesApi.V1.Factories;
 using ChargesApi.V1.Infrastructure;
 using ChargesApi.V1.Infrastructure.Entities;
 using Hackney.Core.Logging;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Amazon.DynamoDBv2.DocumentModel;
 using ChargesApi.V1.Boundary.Request;
-using Microsoft.Extensions.Configuration;
-using ChargesApi.V1.Infrastructure.JWT;
 using ChargesApi.V1.Gateways.Common;
 
 namespace ChargesApi.V1.Gateways
@@ -26,9 +22,7 @@ namespace ChargesApi.V1.Gateways
         private readonly IDynamoDBContext _dynamoDbContext;
         private readonly IAmazonDynamoDB _amazonDynamoDb;
 
-
-        public DynamoDbGateway(IDynamoDBContext dynamoDbContext,
-            IAmazonDynamoDB amazonDynamoDb)
+        public DynamoDbGateway(IDynamoDBContext dynamoDbContext, IAmazonDynamoDB amazonDynamoDb)
         {
             _dynamoDbContext = dynamoDbContext;
             _amazonDynamoDb = amazonDynamoDb;

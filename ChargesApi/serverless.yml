@@ -46,7 +46,7 @@ functions:
           private: true
           cors: true
   deleteRange:
-    name: ${self:service}-${self:provider.stage}-batch-range
+    name: ${self:service}-${self:provider.stage}-delete-range
     description: "Delete range of combination keys of cgharges"
     timeout: 900
     handler: ChargesApi::ChargesApi.LambdaHandler::DeleteRange
