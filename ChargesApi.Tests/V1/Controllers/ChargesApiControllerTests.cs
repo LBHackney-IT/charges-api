@@ -22,7 +22,7 @@ namespace ChargesApi.Tests.V1.Controllers
 {
     public class ChargesApiControllerTests
     {
-        private const string Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMTc2ODcwMzYyODczNTU5MDUwMDMiLCJlbWFpbCI6ImhhbWlkLmpvbGFueUBoYWNrbmV5Lmdvdi51ayIsImlzcyI6IkhhY2tuZXkiLCJuYW1lIjoiSGFtaWQgSm9sYW55IiwiZ3JvdXBzIjpbIkhhY2tuZXlBbGwiLCJtbWgtZ2VuZXJhbC11c2VyLWFjY2VzcyIsInNhbWwtYXdzLWRhc2hib2FyZC1hY2Nlc3MiLCJzYW1sLWF3cy1kZXZlbG9wZXIiLCJzYW1sLWF3cy1tdGZoLWRldmVsb3BlciJdLCJpYXQiOjE2NDYyMTAyOTl9.cKvpryE6RFLG3BoVC3TA-dCo1uOhZENXzSHzSYqcqYo";
+        private const string Token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZXN0IiwiaWF0IjoxNjM5NDIyNzE4LCJleHAiOjE5ODY1Nzc5MTgsImF1ZCI6InRlc3QiLCJzdWIiOiJ0ZXN0IiwiZ3JvdXBzIjpbInNvbWUtdmFsaWQtZ29vZ2xlLWdyb3VwIiwic29tZS1vdGhlci12YWxpZC1nb29nbGUtZ3JvdXAiXSwibmFtZSI6InRlc3RpbmcifQ.IcpQ00PGVgksXkR_HFqWOakgbQ_PwW9dTVQu4w77tmU";
 
         private readonly ChargesApiController _chargeController;
         private readonly ControllerContext _controllerContext;
