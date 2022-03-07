@@ -8,6 +8,7 @@ using Amazon.Lambda.Core;
 using ChargesApi.V1.Boundary.Response;
 using ChargesApi.V1.Domain;
 using ChargesApi.V1.Gateways;
+using ChargesApi.V1.Gateways.Common;
 using ChargesApi.V1.UseCase;
 using ChargesApi.V1.UseCase.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +35,8 @@ namespace ChargesApi
             if (targetIds == null) throw new ArgumentNullException(nameof(targetIds));
             if (targetIds.Count == 0) throw new ArgumentException("Value cannot be an empty collection.", nameof(targetIds));
 
+            LoggingHandler.LogInfo($"targetId Count Is: {targetIds.Count}");
+
             List<ChargeKeys> keysList = new List<ChargeKeys>();
             foreach (var targetId in targetIds)
             {
@@ -43,6 +46,8 @@ namespace ChargesApi
                     keysList.Add(new ChargeKeys(c.Id, c.TargetId));
                 });
             }
+
+            LoggingHandler.LogInfo($"keysList Count Is: {keysList.Count}");
 
             for (int i = 0; i <= keysList.Count / 25; i++)
                 await _removeRangeUseCase.ExecuteAsync(keysList.Skip(i * 25).Take(25).ToList()).ConfigureAwait(false);

@@ -316,16 +316,16 @@ namespace ChargesApi.V1.Gateways
 
             for (var i = 0; i < loopCount; i++)
             {
-                await DeleteBatchAsync(chargeKeysEnumerable.Skip(i * batchCapacity).Take(batchCapacity))
+                await DeleteBatchAsync(chargeKeysEnumerable.Skip(i * batchCapacity).Take(batchCapacity).ToList())
                     .ConfigureAwait(false);
             }
         }
 
-        private async Task DeleteBatchAsync(IEnumerable<ChargeKeys> chargeIds)
+        private async Task DeleteBatchAsync(List<ChargeKeys> chargeIds)
         {
             var actions = new List<TransactWriteItem>();
-            LoggingHandler.LogInfo($"Items to delete {chargeIds.Count()}");
-            foreach (var charge in chargeIds)
+            LoggingHandler.LogInfo($"Items to delete {chargeIds.Count}");
+            foreach (var charge in chargeIds.ToList())
             {
                 actions.Add(new TransactWriteItem
                 {
