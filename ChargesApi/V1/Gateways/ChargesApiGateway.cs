@@ -17,15 +17,20 @@ using ChargesApi.V1.Gateways.Common;
 
 namespace ChargesApi.V1.Gateways
 {
-    public class DynamoDbGateway : IChargesApiGateway
+    public class ChargesApiGateway : IChargesApiGateway
     {
         private readonly IDynamoDBContext _dynamoDbContext;
         private readonly IAmazonDynamoDB _amazonDynamoDb;
 
-        public DynamoDbGateway(IDynamoDBContext dynamoDbContext, IAmazonDynamoDB amazonDynamoDb)
+        public ChargesApiGateway(IAmazonDynamoDB amazonDynamoDb)
         {
-            _dynamoDbContext = dynamoDbContext;// ?? throw new ArgumentNullException(nameof(dynamoDbContext));
-            _amazonDynamoDb = amazonDynamoDb;// ?? throw new ArgumentNullException(nameof(amazonDynamoDb));
+            _amazonDynamoDb = amazonDynamoDb ?? throw new ArgumentNullException(nameof(amazonDynamoDb));
+        }
+
+        public ChargesApiGateway(IDynamoDBContext dynamoDbContext, IAmazonDynamoDB amazonDynamoDb)
+        {
+            _dynamoDbContext = dynamoDbContext ?? throw new ArgumentNullException(nameof(dynamoDbContext));
+            _amazonDynamoDb = amazonDynamoDb ?? throw new ArgumentNullException(nameof(amazonDynamoDb));
         }
 
         public void Add(Charge charge)
