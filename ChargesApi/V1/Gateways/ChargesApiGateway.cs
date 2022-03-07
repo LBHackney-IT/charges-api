@@ -242,7 +242,7 @@ namespace ChargesApi.V1.Gateways
 
             return true;
         }
-        [LogCall]
+
         public async Task<bool> AddTransactionBatchAsync(List<Charge> charges)
         {
             bool result = false;
