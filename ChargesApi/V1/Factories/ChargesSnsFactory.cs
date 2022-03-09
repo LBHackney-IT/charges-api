@@ -83,5 +83,25 @@ namespace ChargesApi.V1.Factories
                 User = new User { Name = EventCreationConstants.NAME, Email = EventCreationConstants.EMAIL }
             };
         }
+
+        public ChargesSns UploadPrintRentRoomMessage(PropertyChargesQueryParameters queryParameters)
+        {
+            return new ChargesSns
+            {
+                CorrelationId = Guid.NewGuid(),
+                DateTime = DateTime.UtcNow,
+                EntityId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
+                EventType = PrintRentRoomUploadConstants.EVENTTYPE,
+                Version = PrintRentRoomUploadConstants.V1VERSION,
+                SourceDomain = EventCreationConstants.SOURCEDOMAIN,
+                SourceSystem = EventCreationConstants.SOURCESYSTEM,
+                EventData = new EventData
+                {
+                    NewData = queryParameters
+                },
+                User = new User { Name = EventCreationConstants.NAME, Email = EventCreationConstants.EMAIL }
+            };
+        }
     }
 }

@@ -12,5 +12,6 @@ namespace ChargesApi.V1.Factories
         ChargesSns Create(AddChargesUpdateRequest chargeUpdate);
         ChargesSns CreateFileUploadMessage(FileLocationResponse location);
         ChargesUpdateSns Update(IEnumerable<DetailedChargesUpdateDomain> chargeMessage, Guid chargeId, Guid targetId);
+        ChargesSns UploadPrintRentRoomMessage(PropertyChargesQueryParameters queryParameters);
     }
 }
