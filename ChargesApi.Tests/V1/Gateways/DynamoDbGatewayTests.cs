@@ -24,8 +24,8 @@ namespace ChargesApi.Tests.V1.Gateways
     {
         private readonly Mock<IDynamoDBContext> _dynamoDb;
         private readonly Mock<IAmazonDynamoDB> _amazonDynamoDb;
-        private readonly DynamoDbGateway _gateway;
-        private readonly Mock<ILogger<DynamoDbGateway>> _logger;
+        private readonly ChargesApiGateway _gateway;
+        private readonly Mock<ILogger<ChargesApiGateway>> _logger;
         private readonly Fixture _fixture;
 
         public DynamoDbGatewayTests()
@@ -33,8 +33,8 @@ namespace ChargesApi.Tests.V1.Gateways
             _fixture = new Fixture();
             _dynamoDb = new Mock<IDynamoDBContext>();
             _amazonDynamoDb = new Mock<IAmazonDynamoDB>();
-            _logger = new Mock<ILogger<DynamoDbGateway>>();
-            _gateway = new DynamoDbGateway(_dynamoDb.Object, _amazonDynamoDb.Object);
+            _logger = new Mock<ILogger<ChargesApiGateway>>();
+            _gateway = new ChargesApiGateway(_dynamoDb.Object, _amazonDynamoDb.Object);
         }
         [Fact]
         public async Task GetChargeByIdReturnsNullIfEntityDoesntExist()

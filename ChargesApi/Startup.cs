@@ -193,7 +193,7 @@ namespace ChargesApi
 
         private static void RegisterGateways(IServiceCollection services)
         {
-            services.AddScoped<IChargesApiGateway, DynamoDbGateway>();
+            services.AddScoped<IChargesApiGateway, ChargesApiGateway>();
             services.AddScoped<IChargeMaintenanceApiGateway, ChargeMaintenanceGateway>();
             services.AddScoped<IChargesListApiGateway, ChargesListApiGateway>();
             services.AddScoped<ISnsGateway, ChargesSnsGateway>();

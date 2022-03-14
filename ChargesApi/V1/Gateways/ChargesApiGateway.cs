@@ -17,12 +17,17 @@ using ChargesApi.V1.Gateways.Common;
 
 namespace ChargesApi.V1.Gateways
 {
-    public class DynamoDbGateway : IChargesApiGateway
+    public class ChargesApiGateway : IChargesApiGateway
     {
         private readonly IDynamoDBContext _dynamoDbContext;
         private readonly IAmazonDynamoDB _amazonDynamoDb;
 
-        public DynamoDbGateway(IDynamoDBContext dynamoDbContext, IAmazonDynamoDB amazonDynamoDb)
+        public ChargesApiGateway(IAmazonDynamoDB amazonDynamoDb)
+        {
+            _amazonDynamoDb = amazonDynamoDb ?? throw new ArgumentNullException(nameof(amazonDynamoDb));
+        }
+
+        public ChargesApiGateway(IDynamoDBContext dynamoDbContext, IAmazonDynamoDB amazonDynamoDb)
         {
             _dynamoDbContext = dynamoDbContext ?? throw new ArgumentNullException(nameof(dynamoDbContext));
             _amazonDynamoDb = amazonDynamoDb ?? throw new ArgumentNullException(nameof(amazonDynamoDb));
@@ -237,7 +242,7 @@ namespace ChargesApi.V1.Gateways
 
             return true;
         }
-        [LogCall]
+
         public async Task<bool> AddTransactionBatchAsync(List<Charge> charges)
         {
             bool result = false;
@@ -311,16 +316,16 @@ namespace ChargesApi.V1.Gateways
 
             for (var i = 0; i < loopCount; i++)
             {
-                await DeleteBatchAsync(chargeKeysEnumerable.Skip(i * batchCapacity).Take(batchCapacity))
+                await DeleteBatchAsync(chargeKeysEnumerable.Skip(i * batchCapacity).Take(batchCapacity).ToList())
                     .ConfigureAwait(false);
             }
         }
 
-        private async Task DeleteBatchAsync(IEnumerable<ChargeKeys> chargeIds)
+        private async Task DeleteBatchAsync(List<ChargeKeys> chargeIds)
         {
             var actions = new List<TransactWriteItem>();
-            LoggingHandler.LogInfo($"Items to delete {chargeIds.Count()}");
-            foreach (var charge in chargeIds)
+            LoggingHandler.LogInfo($"Items to delete {chargeIds.Count}");
+            foreach (var charge in chargeIds.ToList())
             {
                 actions.Add(new TransactWriteItem
                 {
