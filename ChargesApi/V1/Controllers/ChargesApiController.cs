@@ -355,21 +355,5 @@ namespace ChargesApi.V1.Controllers
             await _generatePropertyChargesFile.ExecuteAsync(queryParameters).ConfigureAwait(false);
             return Ok();
         }
-
-        /// <summary>
-        /// Gets latest file processing logs for print rent room.
-        /// </summary>
-        /// <param name="useCase">The use case.</param>
-        /// <response code="200">List of processed files</response>
-        /// <response code="400">Bad Request</response>
-        /// <response code="500">Internal Server Error</response>
-        [ProducesResponseType(typeof(List<FileProcessingLogResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
-        [HttpGet("file-processing-logs")]
-        public async Task<ActionResult<List<FileProcessingLogResponse>>> GetAllFileProcessingLogsAsync([FromServices] IGetFileProcessingLogUseCase useCase)
-        {
-            var response = await useCase.ExecuteAsync(Constants.PrintRentRoom).ConfigureAwait(false);
-            return Ok(response);
-        }
     }
 }

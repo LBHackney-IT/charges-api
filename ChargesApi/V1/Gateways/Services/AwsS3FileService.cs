@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ChargesApi.V1.Domain;
 
 namespace ChargesApi.V1.Gateways.Services
 {
@@ -62,9 +63,23 @@ namespace ChargesApi.V1.Gateways.Services
             }
         }
 
-        public async Task<List<FileProcessingLogResponse>> GetProcessedFiles(string prefix)
+        public async Task<List<FileProcessingLogResponse>> GetProcessedFiles(FileType fileType)
         {
-            //var prefix = "uploads/";
+            string prefix;
+            switch (fileType)
+            {
+                case FileType.Estimate:
+                    prefix = Constants.EstimateUpload;
+                    break;
+
+                case FileType.PrintRoom:
+                    prefix = Constants.PrintRentRoom;
+                    break;
+
+                default:
+                    throw new ArgumentException(
+                        $"Unknown file type: {fileType}");
+            }
 
             var request = new ListObjectsV2Request()
             {
@@ -79,7 +94,7 @@ namespace ChargesApi.V1.Gateways.Services
 
             foreach (var s3Object in s3ObjectList)
             {
-                var (year, fileStatus, valuesType, fileType) = await GetObjectTags(s3Object.Key).ConfigureAwait(false);
+                var (year, fileStatus, valuesType, fileTypeTag) = await GetObjectTags(s3Object.Key).ConfigureAwait(false);
                 var fileUrl = GeneratePreSignedUrl(s3Object.Key);
                 filesList.Add(new FileProcessingLogResponse
                 {
@@ -89,7 +104,7 @@ namespace ChargesApi.V1.Gateways.Services
                     DateUploaded = s3Object.LastModified,
                     Year = year,
                     ValuesType = valuesType,
-                    FileType = fileType
+                    FileType = fileTypeTag
                 });
             }
 
