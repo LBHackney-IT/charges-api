@@ -335,7 +335,7 @@ namespace ChargesApi.V1.Controllers
         }
 
         /// <summary>
-        /// Returns the Property Charges Csv File
+        /// Generate print rent room csv file
         /// </summary>
         /// <param name="queryParameters">Search parameters to filter property charges</param>
         /// <response code="204">Success. File generated successfully</response>
@@ -345,8 +345,8 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
-        [HttpGet("file")]
-        public async Task<ActionResult> DownloadPropertyChargesFile([FromQuery] PropertyChargesQueryParameters queryParameters)
+        [HttpGet("generate-file")]
+        public async Task<ActionResult> GeneratePropertyChargesFile([FromQuery] PropertyChargesQueryParameters queryParameters)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest,
@@ -354,6 +354,22 @@ namespace ChargesApi.V1.Controllers
 
             await _generatePropertyChargesFile.ExecuteAsync(queryParameters).ConfigureAwait(false);
             return Ok();
+        }
+
+        /// <summary>
+        /// Gets latest file processing logs for print rent room.
+        /// </summary>
+        /// <param name="useCase">The use case.</param>
+        /// <response code="200">List of processed files</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="500">Internal Server Error</response>
+        [ProducesResponseType(typeof(List<FileProcessingLogResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
+        [HttpGet("file-processing-logs")]
+        public async Task<ActionResult<List<FileProcessingLogResponse>>> GetAllFileProcessingLogsAsync([FromServices] IGetFileProcessingLogUseCase useCase)
+        {
+            var response = await useCase.ExecuteAsync(Constants.PrintRentRoom).ConfigureAwait(false);
+            return Ok(response);
         }
     }
 }
