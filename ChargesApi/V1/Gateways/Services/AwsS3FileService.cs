@@ -30,7 +30,11 @@ namespace ChargesApi.V1.Gateways.Services
             var location = $"uploads/{fileName}";
             using (var stream = formFile.OpenReadStream())
             {
-                var tagSet = new List<Tag> { new Tag { Key = "status", Value = "Uploaded" } };
+                var tagSet = new List<Tag>
+                {
+                    new Tag { Key = "status", Value = "Uploaded" },
+                    new Tag { Key = "fileType", Value = "Estimate"}
+                };
                 if (fileTags != null && fileTags.Count > 0)
                 {
                     tagSet.AddRange(fileTags);
