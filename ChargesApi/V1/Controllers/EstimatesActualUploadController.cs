@@ -72,7 +72,7 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpGet("file-processing-logs")]
         [LogCall(LogLevel.Information)]
-        public async Task<ActionResult<List<FileProcessingLogResponse>>> GetAllFileProcessingLogsAsync([FromServices] IGetFileProcessingLogUseCase useCase, FileType fileType)
+        public async Task<ActionResult<List<FileProcessingLogResponse>>> GetAllFileProcessingLogsAsync([FromServices] IGetFileProcessingLogUseCase useCase, [FromQuery] FileType fileType)
         {
             var response = await useCase.ExecuteAsync(fileType).ConfigureAwait(false);
             return Ok(response);
