@@ -59,4 +59,10 @@ namespace ChargesApi.V1.Domain
         Estimate,
         Actual
     }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum FileType
+    {
+        EstimateOrActual,
+        PrintRoom
+    }
 }
