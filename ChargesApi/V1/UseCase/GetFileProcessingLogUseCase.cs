@@ -15,9 +15,9 @@ namespace ChargesApi.V1.UseCase
             _s3FileService = s3FileService;
         }
 
-        public async Task<List<FileProcessingLogResponse>> ExecuteAsync()
+        public async Task<List<FileProcessingLogResponse>> ExecuteAsync(string prefix)
         {
-            var response = await _s3FileService.GetProcessedFiles().ConfigureAwait(false);
+            var response = await _s3FileService.GetProcessedFiles(prefix).ConfigureAwait(false);
             return response;
         }
     }

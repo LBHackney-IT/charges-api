@@ -72,7 +72,7 @@ namespace ChargesApi.V1.Controllers
         [LogCall(LogLevel.Information)]
         public async Task<ActionResult<List<FileProcessingLogResponse>>> GetAllFileProcessingLogsAsync([FromServices] IGetFileProcessingLogUseCase useCase)
         {
-            var response = await useCase.ExecuteAsync().ConfigureAwait(false);
+            var response = await useCase.ExecuteAsync(Constants.EstimateUpload).ConfigureAwait(false);
             return Ok(response);
         }
     }

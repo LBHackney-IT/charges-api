@@ -6,6 +6,6 @@ namespace ChargesApi.V1.UseCase.Interfaces
 {
     public interface IGetFileProcessingLogUseCase
     {
-        Task<List<FileProcessingLogResponse>> ExecuteAsync();
+        Task<List<FileProcessingLogResponse>> ExecuteAsync(string prefix);
     }
 }

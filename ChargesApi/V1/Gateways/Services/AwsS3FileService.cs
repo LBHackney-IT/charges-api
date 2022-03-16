@@ -62,9 +62,9 @@ namespace ChargesApi.V1.Gateways.Services
             }
         }
 
-        public async Task<List<FileProcessingLogResponse>> GetProcessedFiles()
+        public async Task<List<FileProcessingLogResponse>> GetProcessedFiles(string prefix)
         {
-            var prefix = "uploads/";
+            //var prefix = "uploads/";
 
             var request = new ListObjectsV2Request()
             {
@@ -79,7 +79,7 @@ namespace ChargesApi.V1.Gateways.Services
 
             foreach (var s3Object in s3ObjectList)
             {
-                var (year, fileStatus, valuesType) = await GetObjectTags(s3Object.Key).ConfigureAwait(false);
+                var (year, fileStatus, valuesType, fileType) = await GetObjectTags(s3Object.Key).ConfigureAwait(false);
                 var fileUrl = GeneratePreSignedUrl(s3Object.Key);
                 filesList.Add(new FileProcessingLogResponse
                 {
@@ -88,7 +88,8 @@ namespace ChargesApi.V1.Gateways.Services
                     FileUrl = new Uri(fileUrl),
                     DateUploaded = s3Object.LastModified,
                     Year = year,
-                    ValuesType = valuesType
+                    ValuesType = valuesType,
+                    FileType = fileType
                 });
             }
 
@@ -109,7 +110,7 @@ namespace ChargesApi.V1.Gateways.Services
             return url;
         }
 
-        private async Task<(string year, string fileStatus, string valuesType)> GetObjectTags(string objectKey)
+        private async Task<(string year, string fileStatus, string valuesType, string fileType)> GetObjectTags(string objectKey)
         {
             var request = new GetObjectTaggingRequest
             {
@@ -121,7 +122,8 @@ namespace ChargesApi.V1.Gateways.Services
             var year = taggingResponse.Tagging.Where(t => t.Key == "year").Select(t => t.Value).FirstOrDefault();
             var fileStatus = taggingResponse.Tagging.Where(t => t.Key == "status").Select(t => t.Value).FirstOrDefault();
             var valuesType = taggingResponse.Tagging.Where(t => t.Key == "valuesType").Select(t => t.Value).FirstOrDefault();
-            return (year, fileStatus, valuesType);
+            var fileType = taggingResponse.Tagging.Where(t => t.Key == "fileType").Select(t => t.Value).FirstOrDefault();
+            return (year, fileStatus, valuesType, fileType);
         }
 
         public async Task<Stream> GetFile(string key)
