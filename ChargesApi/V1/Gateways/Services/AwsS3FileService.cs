@@ -33,7 +33,7 @@ namespace ChargesApi.V1.Gateways.Services
                 var tagSet = new List<Tag>
                 {
                     new Tag { Key = "status", Value = "Uploaded" },
-                    new Tag { Key = "fileType", Value = "Estimate"}
+                    new Tag { Key = "fileType", Value = "EstimateOrActual"}
                 };
                 if (fileTags != null && fileTags.Count > 0)
                 {
@@ -72,7 +72,7 @@ namespace ChargesApi.V1.Gateways.Services
             string prefix;
             switch (fileType)
             {
-                case FileType.Estimate:
+                case FileType.EstimateOrActual:
                     prefix = Constants.EstimateUpload;
                     break;
 
