@@ -10,5 +10,6 @@ namespace ChargesApi.V1.Boundary.Response
         public DateTimeOffset DateUploaded { get; set; }
         public string Year { get; set; }
         public string ValuesType { get; set; }
+        public string FileType { get; set; }
     }
 }

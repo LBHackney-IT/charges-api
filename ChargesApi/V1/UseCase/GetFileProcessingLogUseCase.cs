@@ -3,6 +3,7 @@ using ChargesApi.V1.Gateways.Services.Interfaces;
 using ChargesApi.V1.UseCase.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ChargesApi.V1.Domain;
 
 namespace ChargesApi.V1.UseCase
 {
@@ -15,9 +16,9 @@ namespace ChargesApi.V1.UseCase
             _s3FileService = s3FileService;
         }
 
-        public async Task<List<FileProcessingLogResponse>> ExecuteAsync()
+        public async Task<List<FileProcessingLogResponse>> ExecuteAsync(FileType fileType)
         {
-            var response = await _s3FileService.GetProcessedFiles().ConfigureAwait(false);
+            var response = await _s3FileService.GetProcessedFiles(fileType).ConfigureAwait(false);
             return response;
         }
     }

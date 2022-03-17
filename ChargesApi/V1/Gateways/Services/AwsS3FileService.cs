@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ChargesApi.V1.Domain;
 
 namespace ChargesApi.V1.Gateways.Services
 {
@@ -29,7 +30,11 @@ namespace ChargesApi.V1.Gateways.Services
             var location = $"uploads/{fileName}";
             using (var stream = formFile.OpenReadStream())
             {
-                var tagSet = new List<Tag> { new Tag { Key = "status", Value = "Uploaded" } };
+                var tagSet = new List<Tag>
+                {
+                    new Tag { Key = "status", Value = "Uploaded" },
+                    new Tag { Key = "fileType", Value = "EstimateOrActual"}
+                };
                 if (fileTags != null && fileTags.Count > 0)
                 {
                     tagSet.AddRange(fileTags);
@@ -62,9 +67,23 @@ namespace ChargesApi.V1.Gateways.Services
             }
         }
 
-        public async Task<List<FileProcessingLogResponse>> GetProcessedFiles()
+        public async Task<List<FileProcessingLogResponse>> GetProcessedFiles(FileType fileType)
         {
-            var prefix = "uploads/";
+            string prefix;
+            switch (fileType)
+            {
+                case FileType.EstimateOrActual:
+                    prefix = Constants.EstimateUpload;
+                    break;
+
+                case FileType.PrintRoom:
+                    prefix = Constants.PrintRentRoom;
+                    break;
+
+                default:
+                    throw new ArgumentException(
+                        $"Unknown file type: {fileType}");
+            }
 
             var request = new ListObjectsV2Request()
             {
@@ -79,7 +98,7 @@ namespace ChargesApi.V1.Gateways.Services
 
             foreach (var s3Object in s3ObjectList)
             {
-                var (year, fileStatus, valuesType) = await GetObjectTags(s3Object.Key).ConfigureAwait(false);
+                var (year, fileStatus, valuesType, fileTypeTag) = await GetObjectTags(s3Object.Key).ConfigureAwait(false);
                 var fileUrl = GeneratePreSignedUrl(s3Object.Key);
                 filesList.Add(new FileProcessingLogResponse
                 {
@@ -88,7 +107,8 @@ namespace ChargesApi.V1.Gateways.Services
                     FileUrl = new Uri(fileUrl),
                     DateUploaded = s3Object.LastModified,
                     Year = year,
-                    ValuesType = valuesType
+                    ValuesType = valuesType,
+                    FileType = fileTypeTag
                 });
             }
 
@@ -109,7 +129,7 @@ namespace ChargesApi.V1.Gateways.Services
             return url;
         }
 
-        private async Task<(string year, string fileStatus, string valuesType)> GetObjectTags(string objectKey)
+        private async Task<(string year, string fileStatus, string valuesType, string fileType)> GetObjectTags(string objectKey)
         {
             var request = new GetObjectTaggingRequest
             {
@@ -121,7 +141,8 @@ namespace ChargesApi.V1.Gateways.Services
             var year = taggingResponse.Tagging.Where(t => t.Key == "year").Select(t => t.Value).FirstOrDefault();
             var fileStatus = taggingResponse.Tagging.Where(t => t.Key == "status").Select(t => t.Value).FirstOrDefault();
             var valuesType = taggingResponse.Tagging.Where(t => t.Key == "valuesType").Select(t => t.Value).FirstOrDefault();
-            return (year, fileStatus, valuesType);
+            var fileType = taggingResponse.Tagging.Where(t => t.Key == "fileType").Select(t => t.Value).FirstOrDefault();
+            return (year, fileStatus, valuesType, fileType);
         }
 
         public async Task<Stream> GetFile(string key)

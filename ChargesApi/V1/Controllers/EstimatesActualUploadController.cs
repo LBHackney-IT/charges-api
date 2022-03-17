@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using ChargesApi.V1.Domain;
 
 namespace ChargesApi.V1.Controllers
 {
@@ -63,6 +64,7 @@ namespace ChargesApi.V1.Controllers
         /// Gets latest file processing logs.
         /// </summary>
         /// <param name="useCase">The use case.</param>
+        /// <param name="fileType">The file type for requested folder.</param>
         /// <response code="200">List of processed files</response>
         /// <response code="400">Bad Request</response>
         /// <response code="500">Internal Server Error</response>
@@ -70,9 +72,9 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpGet("file-processing-logs")]
         [LogCall(LogLevel.Information)]
-        public async Task<ActionResult<List<FileProcessingLogResponse>>> GetAllFileProcessingLogsAsync([FromServices] IGetFileProcessingLogUseCase useCase)
+        public async Task<ActionResult<List<FileProcessingLogResponse>>> GetAllFileProcessingLogsAsync([FromServices] IGetFileProcessingLogUseCase useCase, [FromQuery] FileType fileType)
         {
-            var response = await useCase.ExecuteAsync().ConfigureAwait(false);
+            var response = await useCase.ExecuteAsync(fileType).ConfigureAwait(false);
             return Ok(response);
         }
     }

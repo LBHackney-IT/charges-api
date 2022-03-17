@@ -335,7 +335,7 @@ namespace ChargesApi.V1.Controllers
         }
 
         /// <summary>
-        /// Returns the Property Charges Csv File
+        /// Generate print rent room csv file
         /// </summary>
         /// <param name="queryParameters">Search parameters to filter property charges</param>
         /// <response code="204">Success. File generated successfully</response>
@@ -345,8 +345,8 @@ namespace ChargesApi.V1.Controllers
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(BaseErrorResponse), StatusCodes.Status404NotFound)]
-        [HttpGet("file")]
-        public async Task<ActionResult> DownloadPropertyChargesFile([FromQuery] PropertyChargesQueryParameters queryParameters)
+        [HttpGet("generate-file")]
+        public async Task<ActionResult> GeneratePropertyChargesFile([FromQuery] PropertyChargesQueryParameters queryParameters)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new BaseErrorResponse((int) HttpStatusCode.BadRequest,

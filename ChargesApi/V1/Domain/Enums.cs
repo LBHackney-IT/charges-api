@@ -51,12 +51,19 @@ namespace ChargesApi.V1.Domain
     public enum ChargeFrequency
     {
         Monthly,
-        Weekly
+        Weekly,
+        Yearly
     }
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ChargeSubGroup
     {
         Estimate,
         Actual
+    }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum FileType
+    {
+        EstimateOrActual,
+        PrintRoom
     }
 }
