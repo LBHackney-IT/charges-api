@@ -16,6 +16,9 @@ package:
 # TODO: Rename zipfile in build.sh and build.cmd to match this
   artifact: ./bin/release/netcoreapp3.1/charges-api.zip
 
+  plugins:
+  - serverless-associate-waf
+
 functions:
   ChargesApi:
     name: ${self:service}-${self:provider.stage}
@@ -219,6 +222,9 @@ resources:
                           - Ref: 'AWS::AccountId'
                           - 'table/ChargesMaintenance'
 custom:
+  associateWaf:
+    name: Platform_APIs_Web_ACL
+    version: V2
   s3:
     development: lbh-charges-api-bucket-development
     staging: lbh-charges-api-bucket-staging
