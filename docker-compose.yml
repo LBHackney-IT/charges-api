@@ -6,6 +6,8 @@ services:
     build:
       context: ChargesApi/
       dockerfile: ./Dockerfile
+      args:
+      - SONAR_TOKEN=${SONAR_TOKEN}        
     ports:
       - 3000:3000
     environment:
